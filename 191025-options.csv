@@ -1,4 +1,0 @@
-root_dir,p_index,mode,puckid,pinid,sample_name,wavelength,raster_vbeam,raster_hbeam,att_raster,hebi_att,exp_raster,dist_raster,loopsize,score_min,score_max,maxhits,total_osc,osc_width,ds_vbeam,ds_hbeam,exp_ds,dist_ds,dose_ds,offset_angle,reduced_fact,ntimes,meas_name,cry_min_size_um,cry_max_size_um,hel_full_osc,hel_part_osc,raster_roi,ln2_flag,cover_scan_flag,zoomcap_flag,warm_time
-/isilon/users/admin45/admin45/191025_ZOO_test/cover_test6/,1,multi,CPS0734,3,test,1,20,20,20,20,0.02,650,400,10,9999,3,10,0.1,20,20,0.02,350,10,0,1,1,normal_collection,20,20,40,60,1,1,1,1,30
-/isilon/users/admin45/admin45/191025_ZOO_test/cover_test6/,1,multi,CPS0734,4,test,1,20,20,20,20,0.02,650,400,10,9999,3,10,0.1,20,20,0.02,350,10,0,1,1,normal_collection,20,20,40,60,1,1,1,1,30
-/isilon/users/admin45/admin45/191025_ZOO_test/cover_test6/,1,multi,CPS0734,5,test,1,20,20,20,20,0.02,650,400,10,9999,3,10,0.1,20,20,0.02,350,10,0,1,1,normal_collection,20,20,40,60,1,1,1,1,30
