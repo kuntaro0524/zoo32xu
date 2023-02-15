@@ -304,25 +304,25 @@ class Zoo:
                 error_code = int(recstr.split('/')[4])
                 self.logger.debug("ErrorCode= %5d" % error_code)
                 if error_code == -1005000001:
-                    message = "Failed to connect to the SPACE server"
+                    message = "Failed to connect to the SPACE server: (%s)" % error_code
                 elif error_code == -1005000002:
                     message = "Failed to get Tray ID"
                 elif error_code == -1005000003:
                     message = "Failed to mount the designated pin. CODE:%s" % error_code
                 elif error_code == -1005000004:
-                    message = "Failed to dismount the designated pin."
+                    message = "Failed to dismount the designated pin:(%s)" % error_code
                 elif error_code == -1005000005:
-                    message = "Failed to get information on goniometer"
+                    message = "Failed to get information on goniometer: (%s)" % error_code
                 elif error_code == -1005000006:
-                    message = "Failed in cleaning SPACE"
+                    message = "Failed in cleaning SPACE: (%s)" % error_code
                 elif error_code == -1005000007:
-                    message = "Failed in clearing the warning flag."
+                    message = "Failed in clearing the warning flag:(%s)"% error_code
                 elif error_code == -1005100001:
                     message = "Warning!! Check existence of the designated pin. CODE:%s" % error_code
                 elif error_code == -1005000008:
-                    message = "Failed in cleaning SPACE"
+                    message = "Failed in cleaning SPACE: (%s)" % error_code
                 elif error_code == -1000000000:
-                    message = "Busy for doing something. Really???"
+                    message = "Busy for doing something. Really??? (%s)" % error_code
                     self.logger.info(message)
                     self.logger.info("waiting for 2 seconds and retry...")
                     time.sleep(2.0)

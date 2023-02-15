@@ -115,7 +115,7 @@ class ZooNavigator():
         # For cleaning information
         self.num_pins = 0
         self.n_pins_for_cleaning = 16
-        self.cleaning_interval_hours = 1.0 #[hour]
+        self.cleaning_interval_hours = 1.00 #[hour]
         self.time_for_elongation = 0.0 #[sec]
 
         # Bukkake & capture
@@ -515,7 +515,7 @@ class ZooNavigator():
                 message = "SPACE accident occurred! Please contact a beamline scientist."
                 message += "Check if 'puckid' matches in CSV file and SPACE server."
                 self.logger.error(message)
-                self.esa.updateValueAt(o_index, "log_mount", msg)
+                self.esa.updateValueAt(o_index, "log_mount", message)
                 self.esa.addEventTimeAt(o_index, "meas_end")
                 self.logger.critical(message)
                 self.esa.updateValueAt(o_index, "isDone", 9999)
@@ -524,7 +524,7 @@ class ZooNavigator():
                 message = "SPACE accident occurred! Please contact a beamline scientist.\n"
                 message += "L-head value is negative in picking up the designated pin."
                 self.logger.error(message)
-                self.esa.updateValueAt(o_index, "log_mount", msg)
+                self.esa.updateValueAt(o_index, "log_mount", message)
                 self.esa.addEventTimeAt(o_index, "meas_end")
                 self.logger.critical(message)
                 self.esa.updateValueAt(o_index, "isDone", 9997)
@@ -551,6 +551,17 @@ class ZooNavigator():
                 return
             elif exception_message.rfind('-1005100003') != -1:
                 message = "'SPACE_WARNING_rotate_too_much_%s_%s'" % (trayid, pinid)
+                self.logger.warning(message)
+                self.esa.updateValueAt(o_index, "log_mount", message)
+                self.zoo.skipSample()
+                self.logger.info("Go to the next sample...")
+                self.esa.addEventTimeAt(o_index, "meas_end")
+                self.esa.updateValueAt(o_index, "isDone", 5001)
+                self.logger.info("Breaking the loop of %s-%02d" % (trayid, pinid))
+                return
+            # 220629 K.Hirata added from BSS log.
+            elif exception_message.rfind('-1005100007') != -1:
+                message = "'Failed to pickup the sample pin from the tray. %s_%s'" % (trayid, pinid)
                 self.logger.warning(message)
                 self.esa.updateValueAt(o_index, "log_mount", message)
                 self.zoo.skipSample()
