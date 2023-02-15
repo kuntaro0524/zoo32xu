@@ -73,7 +73,7 @@ class NeedlePicture:
 		# Additionally, FWHM is a distance of the 2 codes.
 		######################################################
 		fwhm,center=ana.calcFWHM_PPM(px,py)
-		print "FWHM=",fwhm,"Center=",center
+		print("FWHM=",fwhm,"Center=",center)
 
 		# Obsoleted on 140528 by K.Hirata
 		#fwhm,center=ana.calcFWHM(px,py)
@@ -85,7 +85,7 @@ if __name__=="__main__":
 	fwhm,center=np.getCenterFWHM()
 
 	#print fwhm,center
-	print center
+	print(center)
 
         # Pixel resolution
         pix2um_highz=0.07125   # [um/pixel]
@@ -94,4 +94,4 @@ if __name__=="__main__":
 	fwhm_um=pix2um_highz*fwhm
 	center_um=pix2um_highz*(center-240)
 
-	print "%12.5f %12.5f"%(fwhm_um,center_um)
+	print("%12.5f %12.5f"%(fwhm_um,center_um))

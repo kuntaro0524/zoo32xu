@@ -22,7 +22,7 @@ if __name__=="__main__":
         # set Target/Back images
         cip.setImages(filename, bfile)
         prefix = "%s/con_check_%05d"%(picpath, i)
-        print prefix
+        print(prefix)
         cont = cip.getContour(logprefix = prefix)
 
         time.sleep(1.0)

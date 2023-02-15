@@ -96,7 +96,7 @@ if __name__ == "__main__":
         	# horizontal resolution -0.00684848
         	# vertical resolution -0.00915152
                 h_diff_um,v_diff_um,max_2d=inocc.moveToOtehon()
-		print "2D=",max_2d
+		print("2D=",max_2d)
 
         	# preparation
         	#dev.prepCenteringLargeHolderCam2()
@@ -112,7 +112,7 @@ if __name__ == "__main__":
         endtime=datetime.datetime.now()
         time_sec= (endtime-starttime).seconds
 
-	print time_sec
+	print(time_sec)
 
 	################# Loop measurement
 	lm=LoopMeasurement.LoopMeasurement(s,root_dir,prefix)
@@ -154,12 +154,12 @@ if __name__ == "__main__":
                 zooprog.write("%s "%logstr)
                 zooprog.flush()
 
-        except MyException, tttt:
-                print "Skipping this loop!!"
+        except MyException as tttt:
+                print("Skipping this loop!!")
                 zooprog.write("\n")
                 zooprog.flush()
                 # Disconnecting capture in this loop's 'capture' instance
-                print "Disconnecting capture"
+                print("Disconnecting capture")
                 lm.closeCapture()
 		sys.exit(1)
 	"""
@@ -176,11 +176,11 @@ if __name__ == "__main__":
 	"""
 
         if len(glist)==0:
-                print "Skipping this loop!!"
+                print("Skipping this loop!!")
                 zooprog.write("\n")
                 zooprog.flush()
                 # Disconnecting capture in this loop's 'capture' instance
-                print "Disconnecting capture"
+                print("Disconnecting capture")
                 lm.closeCapture()
 		sys.exit(1)
 
@@ -203,6 +203,6 @@ if __name__ == "__main__":
         zooprog.write("%s\n"%logstr)
         zooprog.flush()
         # Disconnecting capture in this loop's 'capture' instance
-        print "Disconnecting capture"
+        print("Disconnecting capture")
         lm.closeCapture()
 	zoo.disconnect()

@@ -39,10 +39,10 @@ if __name__ == "__main__":
     d = Date.Date()
     time_str = d.getNowMyFormat(option="date")
     logname = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooLogs/zoo_%s.log" % time_str
-    print "changing mode of %s" % logname
+    print("changing mode of %s" % logname)
     logging.config.fileConfig('/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/logging.conf', defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
-    os.chmod(logname, 0666)
+    os.chmod(logname, 0o666)
 
     zoo=Zoo.Zoo()
     zoo.connect()

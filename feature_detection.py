@@ -14,7 +14,7 @@ bf = cv2.BFMatcher(cv2.NORM_HAMMING)
 detector = cv2.AKAZE_create()
 (target_kp, target_des) = detector.detectAndCompute(target_img, None)
 
-print('TARGET_FILE: %s' % (TARGET_FILE))
+print(('TARGET_FILE: %s' % (TARGET_FILE)))
 
 files = os.listdir(IMG_DIR)
 for file in files:
@@ -32,4 +32,4 @@ for file in files:
     except cv2.error:
         ret = 100000
 
-    print(file, ret)
+    print((file, ret))

@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     wavelength = float(sys.argv[1])
     if wavelength > 1.5 or wavelength < 0.8:
-        print "wavelength 1.5 - 0.8A"
+        print("wavelength 1.5 - 0.8A")
         sys.exit()
 
     zoo.setWavelength(wavelength)

@@ -92,7 +92,7 @@ if __name__=="__main__":
 		#######################
 		# Wait for 180 sec
 		#######################
-		print "Waiting for thermal equilibrium of scintillator stage"
+		print("Waiting for thermal equilibrium of scintillator stage")
 		time.sleep(60.0)
 
 	if STYTUNE==True:

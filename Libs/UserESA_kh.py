@@ -34,7 +34,7 @@ class UserESA():
         if self.isRead == False:
             self.read()
         for cols in self.cols:
-            print cols
+            print(cols)
 
     def extractRealList(self):
         if self.isRead == False:
@@ -170,7 +170,7 @@ class UserESA():
             score_min = 7
             score_max = 70
         else:
-            print "No desired experiments", desired_exp_string
+            print("No desired experiments", desired_exp_string)
             sys.exit()
 
         return score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, att_raster, hebi_att
@@ -251,7 +251,7 @@ class UserESA():
         ofile=open("%s_zoo.csv" % prefix, "w")
         for line in line_strs:
             ofile.write("%s\n" % line)
-            print line
+            print(line)
         #print line_strs
 
         self.isGot = True

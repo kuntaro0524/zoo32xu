@@ -32,7 +32,7 @@ class DiffscanLog:
         	self.readfile()
 		# Count number of scans in this diffscan.log
         	self.countScan()
-		print "N scan=",self.nscan
+		print("N scan=",self.nscan)
 		# Making the list of all xyz data
         	self.storeList()
 		self.isInit=True
@@ -44,7 +44,7 @@ class DiffscanLog:
 	#) A simple function to read lines
 	#)
 	def readfile(self):
-		print "Reading %s"%self.filename
+		print("Reading %s"%self.filename)
 		ifile=open(self.filename,"r")
 		self.lines=ifile.readlines()
 		ifile.close()
@@ -189,7 +189,7 @@ class DiffscanLog:
 		x=y=z=0.0
 		for i in range(0,len(xyzlist)):
 			#if xyzlist[1]==ipoint:
-			print xyzlist[1]
+			print(xyzlist[1])
 			if int(xyzlist[i][1])==ipoint:
 				x= xyzlist[i][2]
 				y= xyzlist[i][3]
@@ -201,22 +201,22 @@ class DiffscanLog:
 	def getPrevious(self):
 		idx=self.nscan-2
 		if idx<0:
-			print "You may not have a previous scan yet."
+			print("You may not have a previous scan yet.")
 			return
 		else:
 			self.getBlock(idx)
 
 	def getXYZindex(self,frame_index,scan_index=0):
 		if self.debug==True:
-			print "getXYZindex: Finding FRAME_INDEX=",frame_index
+			print("getXYZindex: Finding FRAME_INDEX=",frame_index)
 		if self.isInit==False:
 			self.prep()
 		xyzlist=self.getCodeList(scan_index)
 		n_xyz=len(xyzlist)
 
 		if self.debug==True:
-			print "getXYZindex: n_xyz=",n_xyz
-			print "getXYZindex: frame_index=",frame_index
+			print("getXYZindex: n_xyz=",n_xyz)
+			print("getXYZindex: frame_index=",frame_index)
 
 		if frame_index > n_xyz or frame_index < 0:
 			raise MyException("getXYZindex: invalid index number")
@@ -244,9 +244,9 @@ class DiffscanLog:
 			self.prep()
 		xyzlist=self.getCodeList(scan_index)
 		nv,nh,stepv,steph=self.allstep[0]
-		print self.allstep[0]
-		print "horizontal=",nh,stepv
-		print "vertical  =",nv,steph
+		print(self.allstep[0])
+		print("horizontal=",nh,stepv)
+		print("vertical  =",nv,steph)
 
 		ar=numpy.array(xyzlist)
 		ma=numpy.reshape(ar,(nv,nh,5))
@@ -277,7 +277,7 @@ if __name__=="__main__":
 	dl.prep()
 	ma=dl.getNumpyArray(scan_index=0)
 
-	print ma.shape
+	print(ma.shape)
 
 	#print dl.getXYZindex(7)
 

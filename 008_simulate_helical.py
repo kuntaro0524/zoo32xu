@@ -19,4 +19,4 @@ if __name__ == "__main__":
     for dist_vec in range(50,500,10.0):
         transmission=kuma.estimateAttFactor(exptime,total_osc,stepphi,dist_vec,phosec_meas,beam_vert)
         #print "%e"%photon_density_limit
-        print "%5.2f [um] crystal Trans =" % dist_vec, transmission
+        print("%5.2f [um] crystal Trans =" % dist_vec, transmission)

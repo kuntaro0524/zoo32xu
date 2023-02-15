@@ -37,7 +37,7 @@ class FES:
 	def setApert(self,height,width):
 		self.fes_height.move(height)
 		self.fes_width.move(width)
-		print "current fes aperture : %8.5f %8.5f\n" %(height,width)
+		print("current fes aperture : %8.5f %8.5f\n" %(height,width))
 
 	def scanBothNoAnal(self,prefix,scan_width,another_width,start,end,step,cnt_ch1,cnt_ch2,time):
 		self.scanVNoAnal(prefix,scan_width,another_width,start,end,step,cnt_ch1,cnt_ch2,time)
@@ -76,7 +76,7 @@ class FES:
 		center=round(center,4)
         	self.fes_vert.move(center)
 
-        	print "Final position: %smm" % center
+        	print("Final position: %smm" % center)
 		# Aperture setting
 		self.setApert(0.3,0.3)
 
@@ -106,7 +106,7 @@ class FES:
                 center=round(center,4)
                 self.fes_hori.move(center)
 
-                print "Final position: %smm" % center
+                print("Final position: %smm" % center)
 		self.setApert(0.3,0.3)
 
 		return fwhm,center
@@ -192,7 +192,7 @@ class FES:
 
 		ndata=int((scan_end-scan_start)/scan_step)+1
 		if ndata <=0 :
-			print "Set correct scan step!!\n"
+			print("Set correct scan step!!\n")
 			return 1
 
 		outfile=open(ofile,"w")
@@ -224,7 +224,7 @@ class FES:
 
 		ndata=int((scan_end-scan_start)/scan_step)+1
 		if ndata <=0 :
-			print "Something wrong"
+			print("Something wrong")
 			return 1
 
 		outfile=open(ofile,"w")

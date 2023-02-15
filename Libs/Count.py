@@ -44,7 +44,7 @@ class Count:
                 	cnt_buf=Received(recbuf).get(3)
 			info_list=cnt_buf.split('_')
 			value=int(info_list[2].replace("count",""))
-			print value
+			print(value)
                 	time.sleep(0.05) # wait
 
 		return True
@@ -94,7 +94,7 @@ class Count:
                 # obtain the 3rd column in the returned buffer
                 cnt_buf=Received(recbuf).get(3)
 
-		print cnt_buf
+		print(cnt_buf)
 
 		return cnt_buf
 
@@ -177,7 +177,7 @@ class Count:
 	def getPIN(self,gain):
 		if self.is_count==0:
 			current=self.getCount(1.0)
-			print current
+			print(current)
 			self.is_count==1
     		const_gain=math.pow(10,float(gain-1.0))
     		value=current[0]/const_gain
@@ -190,17 +190,17 @@ class Count:
                 if self.isInit==False:
                         self.init()
                 # shutter close
-                print "Shutter close: estimation of background"
+                print("Shutter close: estimation of background")
                 shutter.close()
                 # average back ground
                 ave1,ave2=self.simpleCount(ch1,ch2,inttime,ndata)
 
                 # shutter open
-                print "Shutter open: estimation of actual count"
+                print("Shutter open: estimation of actual count")
                 self.prepScan()
                 ave3,ave4=self.simpleCount(ch1,ch2,inttime,ndata,ave1,ave2)
 
-                print "Average ch1: %8d ch2: %8d\n"%(ave3,ave4)
+                print("Average ch1: %8d ch2: %8d\n"%(ave3,ave4))
                 return ave3,ave4
 
         def simpleCount(self,ch1,ch2,inttime,ndata,back1=0,back2=0):
@@ -259,7 +259,7 @@ class Count:
                 return str
 
 	def calcPIN(self,energy):
-		print "calcPIN"
+		print("calcPIN")
 		#flux=(3.6/energy)*(1/(1-exp(absorption)*2.33*0.03)*(currennt/1.602E-19)
 
 if __name__=="__main__":
@@ -269,7 +269,7 @@ if __name__=="__main__":
 	s.connect((host,port))
 	
 	counter=Count(s,0,3)
-	print counter.getCount(1.0)
+	print(counter.getCount(1.0))
 
 	f=File("./")
 

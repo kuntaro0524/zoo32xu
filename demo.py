@@ -30,8 +30,8 @@ if __name__ == "__main__":
 		try:
 			zoo.mountSample("2501",1)
 			zoo.waitTillReady()
-		except MyException, ttt:
-			print "Sample mounting failed. Contact BL staff!"
+		except MyException as ttt:
+			print("Sample mounting failed. Contact BL staff!")
 			sys.exit(1)
 
 		dev.prepCentering()
@@ -47,8 +47,8 @@ if __name__ == "__main__":
 		try:
 			zoo.mountSample("2501",2)
 			zoo.waitTillReady()
-		except MyException, ttt:
-			print "Sample mounting failed. Contact BL staff!"
+		except MyException as ttt:
+			print("Sample mounting failed. Contact BL staff!")
 			sys.exit(1)
 		dev.prepCentering()
 		dev.gonio.rotatePhi(90.0)

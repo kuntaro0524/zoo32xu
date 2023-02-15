@@ -65,7 +65,7 @@ class Att:
 
         if self.isDebug:
             for i, thick, pulse in zip(self.att_idx, self.att_thick, self.att_pulse):
-                print i, thick, pulse
+                print(i, thick, pulse)
         # flag on
         self.isInit = True
 
@@ -74,10 +74,10 @@ class Att:
             self.init()
         for t_conf, p_conf in zip(self.att_thick, self.att_pulse):
             if thick == t_conf:
-                print "Set thickness to %5d [um]" % thick
+                print("Set thickness to %5d [um]" % thick)
                 self.move(p_conf)
                 return True
-        print "No attenuator in the list"
+        print("No attenuator in the list")
         return False
 
     def getAttList(self):
@@ -93,7 +93,7 @@ class Att:
         mu = self.calcMu(wl, cnfac)
         thickness = (-1.0 * math.log(transmission) / mu) * 10000
 
-        print "IDEAL thickness: %8.1f[um]" % thickness
+        print("IDEAL thickness: %8.1f[um]" % thickness)
 
         idx = 0
         for att in attlist:
@@ -112,7 +112,7 @@ class Att:
         mu = self.calcMu(wl, cnfac)
         thickness = (-1.0 * math.log(transmission) / mu) * 10000
 
-        print "IDEAL thickness: %8.1f[um]" % thickness
+        print("IDEAL thickness: %8.1f[um]" % thickness)
 
         near_idx = 0
         for att in attlist:
@@ -127,7 +127,7 @@ class Att:
             curr_trans = self.calcAttFac(wl, attlist[i])
             exptime = transmission / curr_trans
             if exptime <= 1.5 and exptime > 0.2:
-                print attlist[i], curr_trans, exptime
+                print(attlist[i], curr_trans, exptime)
                 return attlist[i], exptime
 
     def getAttBefore(self, althick):
@@ -143,7 +143,7 @@ class Att:
 
     def setAttTrans(self, wl, trans):
         best_att = self.getBestAtt(wl, trans)
-        print "Set Al thickness to ", best_att, "[um]"
+        print("Set Al thickness to ", best_att, "[um]")
         self.setAtt(best_att)
         return best_att
 
@@ -158,7 +158,7 @@ class Att:
         for i, thick in zip(self.att_idx, self.att_thick):
             if thick == t:
                 return i
-        print "Something wrong: No attenuator at this beamline"
+        print("Something wrong: No attenuator at this beamline")
         return -9999
 
     def cnFactor(self, wl):

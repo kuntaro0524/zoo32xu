@@ -29,9 +29,9 @@ import logging
 import logging.config
 
 def check_abort(lm):
-    print "Abort check"
+    print("Abort check")
     ret = lm.isAbort()
-    if ret: print "ABORTABORT"
+    if ret: print("ABORTABORT")
     return ret
 # check_abort()
 
@@ -41,7 +41,7 @@ def check_abort(lm):
 
 class ZooNavigator():
     def __init__(self, zoo, ms, esa_csv, is_renew_db=False):
-        print "ZooNavigator was called."
+        print("ZooNavigator was called.")
         # From arguments
         self.zoo = zoo
         self.esa_csv = esa_csv
@@ -235,7 +235,7 @@ class ZooNavigator():
         # Check if the pin is mounted or not
         try:
             self.zoo.dismountCurrentPin()
-        except MyException, tttt:
+        except MyException as tttt:
             self.logger.info("dismounting sample for capturing background image failed.")
             sys.exit()
         # Background image for centering
@@ -250,7 +250,7 @@ class ZooNavigator():
                 time.sleep(0.5)
                 self.logger.debug("The 2nd image..")
                 self.dev.capture.capture(self.backimg)
-            except MyException, tttt:
+            except MyException as tttt:
                 raise MyException("Capture background file failed")
                 sys.exit()
 
@@ -311,7 +311,7 @@ class ZooNavigator():
 
     def goAround(self, zoodb="none"):
         # Common settings
-        print "goAround=", zoodb
+        print("goAround=", zoodb)
         if zoodb == "none":
             self.prepESA()
         else:
@@ -700,7 +700,7 @@ class ZooNavigator():
             if self.dump_recov.checkAndRecover(cond['wavelength']) == False:
                 # 2019/04/21 K.Hirata Skipped at BL45XU
                 # self.bsc.changeBeamsizeHV(cond['raster_hbeam'],cond['raster_vbeam'])
-                print "skipping change beam size"
+                print("skipping change beam size")
 
         # Check point of 'skipping' this loop
         # check 'isSkip' in zoo.db
@@ -818,19 +818,19 @@ class ZooNavigator():
 
             self.zooprog.flush()
 
-        except MyException, tttt:
-            print "Skipping this loop!!"
+        except MyException as tttt:
+            print("Skipping this loop!!")
             self.esa.updateValueAt(o_index, "isDone", 4002)
             self.zooprog.write("\n")
             self.zooprog.flush()
             # Disconnecting capture in this loop's 'capture' instance
-            print "Disconnecting capture"
+            print("Disconnecting capture")
             self.lm.closeCapture()
             return
 
         finally:
             try:
-                print "FINALLY"
+                print("FINALLY")
                 # nhits = len(glist)
                 # self.html_maker.add_result(puckname=trayid, pin=pinid,
                 # h_grid=self.lm.raster_n_width, v_grid=self.lm.raster_n_height,
@@ -838,13 +838,13 @@ class ZooNavigator():
                 # prefix=self.lm.prefix, start_time=raster_start_time)
                 # self.html_maker.write_html()
             except:
-                print traceback.format_exc()
+                print(traceback.format_exc())
 
         if len(glist) == 0:
-            print "Skipping this loop!!"
+            print("Skipping this loop!!")
             self.esa.updateValueAt(o_index, "isDone", 4001)
             # Disconnecting capture in this loop's 'capture' instance
-            print "Disconnecting capture"
+            print("Disconnecting capture")
             self.lm.closeCapture()
             return
 
@@ -862,8 +862,8 @@ class ZooNavigator():
             self.zooprog.write("Multi: Beam size = %5.2f %5.2f um Measured flux : %5.2e\n" % (cond['ds_hbeam'], cond['ds_vbeam'], flux))
 
         # For dose estimation
-        print "Beam size = ", cond['ds_hbeam'], cond['ds_vbeam'], " [um]"
-        print "Photon flux=%8.3e" % flux
+        print("Beam size = ", cond['ds_hbeam'], cond['ds_vbeam'], " [um]")
+        print("Photon flux=%8.3e" % flux)
 
         # Generate Schedule file
         multi_sch = self.lm.genMultiSchedule(sphi, glist, cond, flux, prefix=data_prefix)
@@ -890,7 +890,7 @@ class ZooNavigator():
         # self.zooprog.write("%s\n"%logstr)
         # self.zooprog.flush()
         # Disconnecting capture in this loop's 'capture' instance
-        print "Disconnecting capture"
+        print("Disconnecting capture")
         self.lm.closeCapture()
 
     # Collect single
@@ -1022,8 +1022,8 @@ class ZooNavigator():
 
                     crystals = CrystalList.CrystalList(crystal_array)
                     final_cxyz = crystals.getBestCrystalCode()
-                except Exception, e:
-                    print "Analyze vertical scans failed.\n"
+                except Exception as e:
+                    print("Analyze vertical scans failed.\n")
                     self.logger.info("ZN.collectSingle: Left vertical scan analysis failed.")
                     self.logger.error("ERROR", exc_info=True)
                     vertical_index += 1
@@ -1099,7 +1099,7 @@ class ZooNavigator():
         self.data_proc_file.flush()
 
         # Disconnecting capture in this loop's 'capture' instance
-        print "Disconnecting capture"
+        print("Disconnecting capture")
         self.lm.closeCapture()
 
     # collectSingle
@@ -1109,8 +1109,8 @@ class ZooNavigator():
     def collectHelical(self, trayid, pinid, prefix, cond, sphi):
         o_index = cond['o_index']
         # Beamsize
-        print "now moving to the beam size to raster scan..."
-        print "Liar: beam size should be changed by BSS"
+        print("now moving to the beam size to raster scan...")
+        print("Liar: beam size should be changed by BSS")
         # self.bsc.changeBeamsizeHV(cond['raster_hbeam'],cond['raster_vbeam'])
 
         # Initial 2D scan
@@ -1183,7 +1183,7 @@ class ZooNavigator():
         # Pin index
         o_index = cond['o_index']
         # Beamsize
-        print "now moving to the beam size to raster scan..."
+        print("now moving to the beam size to raster scan...")
         # Specific code for BL41XU and obsoleted temporally on 2019/06/03
         #self.bsc.changeBeamsizeHV(cond['raster_hbeam'], cond['raster_vbeam'])
 
@@ -1327,21 +1327,21 @@ class ZooNavigator():
             gfile.close()
             self.zooprog.flush()
 
-        except MyException, tttt:
-            print "Skipping this loop!!"
+        except MyException as tttt:
+            print("Skipping this loop!!")
             self.zooprog.write("\n")
             self.zooprog.flush()
             # Disconnecting capture in this loop's 'capture' instance
-            print "Disconnecting capture"
+            print("Disconnecting capture")
             self.lm.closeCapture()
             return
 
         finally:
             try:
-                print "FINALLY"
+                print("FINALLY")
                 # Disconnecting capture in this loop's 'capture' instance
-                print "Disconnecting capture"
+                print("Disconnecting capture")
                 self.lm.closeCapture()
                 return
             except:
-                print traceback.format_exc()
+                print(traceback.format_exc())

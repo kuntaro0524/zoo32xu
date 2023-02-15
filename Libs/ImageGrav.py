@@ -89,4 +89,4 @@ if __name__=="__main__":
 	p=ImageGrav(sys.argv[1])
 
 	y,value=p.getXline(240)
-	print y,value
+	print(y,value)

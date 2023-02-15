@@ -108,7 +108,7 @@ class ScheduleBSS:
         gv = GonioVec()
         lvec = gv.makeLineVec(startvec, endvec)
         length = gv.calcDist(lvec) * 1000.0
-        print length
+        print(length)
         # npoints
         self.npoints = int(length / astep)
         self.isAdvanced = 1

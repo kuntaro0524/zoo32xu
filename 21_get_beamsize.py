@@ -13,15 +13,15 @@ bss_port=5555
 if __name__ == "__main__":
     zoo=Zoo.Zoo()
     zoo.connect()
-    print datetime.datetime.now()
+    print(datetime.datetime.now())
     try:
         beamsize_index = zoo.getBeamsize()
-        print datetime.datetime.now()
-        print "Beamsize index from BSS=", beamsize_index
+        print(datetime.datetime.now())
+        print("Beamsize index from BSS=", beamsize_index)
         config_dir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooConfig/bss"
         bsc = BeamsizeConfig.BeamsizeConfig(config_dir)
         # bsc.readConfig()
-        print bsc.getBeamsizeAtIndex(beamsize_index)
+        print(bsc.getBeamsizeAtIndex(beamsize_index))
         zoo.disconnect()
     except:
-        print "Beamsize index cannot be got"
+        print("Beamsize index cannot be got")

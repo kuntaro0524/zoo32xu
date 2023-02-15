@@ -20,7 +20,7 @@ def create_message(from_addr, to_addr, subject, body, encoding):
     alt = MIMEMultipart('alternative')
     related.attach(alt)
 
-    print body
+    print(body)
     content = MIMEText(body, 'plain', encoding)
     alt.attach(content)
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
                 starttime = "%s"%cond['t_meas_start']
                 endtime   = "%s"%cond['t_dismount_end']
                 if endtime == "none":
-                    print "NO ENDTIME"
+                    print("NO ENDTIME")
                 else:
                     t1 = time_date.getTimeFromZooDB(starttime)
                     t2 = time_date.getTimeFromZooDB(endtime)
@@ -120,9 +120,9 @@ if __name__ == '__main__':
         nowtime = datetime.datetime.now()
         exp_finish_time = nowtime + datetime.timedelta(hours = exp_hour)
         logline+="Expected finishing time: %s\n"%(exp_finish_time)
-        print logline
+        print(logline)
 
         msg = create_message_text(from_addr, to_addr, title, logline, 'utf-8')
         send_via_gmail(from_addr, to_addr, msg)
-        print "Now sleeping for 15mins...."
+        print("Now sleeping for 15mins....")
         time.sleep(15*60)

@@ -18,4 +18,4 @@ class TCSsimple:
 	def setApert(self,height,width):
 		self.tcs_height.move(height)
 		self.tcs_width.move(width)
-		print "current tcs aperture : %8.5f %8.5f\n" %(height,width)
+		print("current tcs aperture : %8.5f %8.5f\n" %(height,width))

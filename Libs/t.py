@@ -3,7 +3,7 @@ import sys
 import socket
 import time
 import datetime
-import commands
+import subprocess
 #from Count import *
 
 class MXserver:
@@ -14,10 +14,10 @@ class MXserver:
 		self.isConnect=False
 
 	def isRunning(self):
-		print "isRunnning"
+		print("isRunnning")
 		command="ssh %s ps -el | grep hss"%self.host
-		check = commands.getoutput(command)
-		print check
+		check = subprocess.getoutput(command)
+		print(check)
 
 		if check.rfind("hsserver_legacy")!=-1:
 			return True
@@ -30,7 +30,7 @@ class MXserver:
 			self.isConnect=True
 			return True
 		else:
-			print "Server program is not running"
+			print("Server program is not running")
 			return False
 
         def startServer(self):
@@ -39,7 +39,7 @@ class MXserver:
 
 	def isReady(self):
 		if self.isConnect==False:
-			print self.connect()
+			print(self.connect())
 		message="get_state"
 		self.s.sendall(message)
 		rec=self.s.recv(8000)
@@ -54,12 +54,12 @@ class MXserver:
 	def abort(self): # stop data collection
 		message="abort"
 		self.s.sendall(message)
-		print self.s.recv(8000) # dummy buffer
+		print(self.s.recv(8000)) # dummy buffer
 
 	def end_automation(self): # stop the server program
 		message="end_automation"
 		self.s.sendall(message)
-		print self.s.recv(8000) # dummy buffer
+		print(self.s.recv(8000)) # dummy buffer
 
 	def close(self):
 		self.s.close()
@@ -68,6 +68,6 @@ if __name__=="__main__":
 	mxs=MXserver()
 	option=sys.argv[1]
 
-	print mxs.isReady()
+	print(mxs.isReady())
 
 	mxs.close()

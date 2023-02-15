@@ -34,7 +34,7 @@ class SPACE:
 		cnt=0
 		while(self.queryAll()=="active"):
 			if cnt%60==0:
-				print "another one second waiting..."
+				print("another one second waiting...")
 			time.sleep(1.0)
 			cnt+=1
 
@@ -62,7 +62,7 @@ class SPACE:
 
 		# string analysis
 		judge_str=judge_str[judge_str.find("_")+1:]
-		print judge_str
+		print(judge_str)
 
 		if judge_str=="none":
 			return 0,0
@@ -94,7 +94,7 @@ class SPACE:
 	
 		# Mounting sample
 		com="I/put/bl_32in_sc_all/mount_%d_%d"%(trayid,sampleid)
-		print com
+		print(com)
 		self.do(com)
 
 		# Evacuate off
@@ -133,7 +133,7 @@ if __name__=="__main__":
                 #print ttt.args[0]
 
 	#print space.checkOnGonio()
-	print space.skipSample()
+	print(space.skipSample())
 	#try :
 		#space.dismountSample(1,1)
         #except MyException,ttt:

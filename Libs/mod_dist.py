@@ -10,17 +10,17 @@ if __name__ == "__main__":
     esa.getTableName()
     esa.listDB()
 
-    print "BEFORE"
+    print("BEFORE")
     ppp = esa.getDict()
     for p in ppp:
         oindex = p['o_index']
         isDone = p['isDone']
         if isDone == 0:
-            print oindex,p['dist_ds']
+            print(oindex,p['dist_ds'])
             esa.updateValueAt(oindex,"dist_ds", 500.0)
 
     ppp = esa.getDict()
-    print "AFTER"
+    print("AFTER")
     for p in ppp:
         oindex = p['o_index']
-        print oindex, p['dist_ds']
+        print(oindex, p['dist_ds'])

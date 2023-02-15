@@ -158,4 +158,4 @@ if __name__=="__main__":
     for en in en_list:
         dose=e.getDose(beam_h,beam_v,flux,exptime,energy=en)
         #exptime_for_10MGy = dose/
-        print "%8.1f %8.3f MGy"%(en,dose)
+        print("%8.1f %8.3f MGy"%(en,dose))

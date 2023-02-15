@@ -20,7 +20,7 @@ class ConfigFile:
 			if x.find("fed"): 
 				defend+=1
 		if defstart!=defend:
-			print " 'def' and 'fed' statement must be same!\n"
+			print(" 'def' and 'fed' statement must be same!\n")
 			sys.exit(1)
 		return 1
 
@@ -96,6 +96,6 @@ if __name__=="__main__":
 
 	try :
 		tmp=conf.getCondition2(sys.argv[1],sys.argv[2])
-		print tmp
-        except MyException,ttt:
-                print ttt.args[0]
+		print(tmp)
+        except MyException as ttt:
+                print(ttt.args[0])

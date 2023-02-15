@@ -64,7 +64,7 @@ while True:
 
 		# dtheta1 tune
 		prefix="%03d_%s_%f"%(f.getNewIdx3(),enstr,gap)
-		print prefix
+		print(prefix)
 		mono.scanDt1Config(prefix,"DTSCAN_LOWENERGY",tcs)
 	
     exs1.closeV()

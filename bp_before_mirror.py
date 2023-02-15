@@ -70,7 +70,7 @@ while True:
 
 	# Waiting for a thermal equilibrium
 	if en<12.398:
-		print "Energy < 12.3984"
+		print("Energy < 12.3984")
 		time.sleep(600)
 
 	# TCS aperture 0.1x0.1mm

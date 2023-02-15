@@ -44,8 +44,8 @@ class CryImageProc():
 		self.edge = cv2.Canny(gray,low_thresh,high_thresh)
 
 		self.height,self.width=gray.shape
-		print "Height:",self.height	
-		print "Width :",self.width
+		print("Height:",self.height)	
+		print("Width :",self.width)
 
 		self.edge_min_max(self.edge)
 		cv2.imshow("Show Image",self.edge)
@@ -71,7 +71,7 @@ class CryImageProc():
 		contours,hierarchy = cv2.findContours(thresh, 1, 2)
 		cnt = contours[0]
 		M = cv2.moments(cnt)
-		print M
+		print(M)
 
 	def rotatedRectangle(self):
 		img = cv2.imread(self.imagefile,0)
@@ -79,7 +79,7 @@ class CryImageProc():
 		contours,hierarchy = cv2.findContours(thresh, 1, 2)
 		cnt = contours[0]
 		M = cv2.moments(cnt)
-		print M
+		print(M)
 
 		x,y,w,h=cv2.boundingRect(cnt)
 		imim=cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
@@ -151,9 +151,9 @@ class CryImageProc():
 
 	def calcEdge(self,infile,debug=False):
 		inum=0
-		print "input file=",infile
+		print("input file=",infile)
 		im = cv2.imread(infile)
-		print "Backfile=%s"%self.backfile
+		print("Backfile=%s"%self.backfile)
 		bk = cv2.imread(self.backfile)
 
 		self.image_show(im)
@@ -174,14 +174,14 @@ class CryImageProc():
 		cv2.imwrite(log_img,th)
 		try:
 			edge_data=self.edge_bin_codes(th)
-		except MyException,ttt:
+		except MyException as ttt:
 			raise MyException("No good points were found:%s"%ttt.args[0])
 
 		if debug:
 			self.height,self.width=th.shape
 			for x in np.arange(0,self.width-1):
 				for y in np.arange(0,self.height-1):
-					print x,y,th[y][x]
+					print(x,y,th[y][x])
 		return edge_data
 
 	def getGravity(self,codes):
@@ -272,7 +272,7 @@ class CryImageProc():
 		grav_x=int(xsum/float(count))
 		grav_y=int(ysum/float(count))
 
-		print "Gravity =",grav_x,grav_y
+		print("Gravity =",grav_x,grav_y)
 
 
 		return grav_x,grav_y,ywmax,xedge,area
@@ -285,9 +285,9 @@ class CryImageProc():
 		# videoserv sometimes includes "strange values" in 
 		# y=0 line (Top of the image on videosrv)
 		# Then this 
-		print "Read image consits of %d x %d pixels"%(height,width)
-		print "RANGE X: %d - %d"%(self.roi_startx,self.roi_endx-1)
-		print "RANGE y: %d - %d"%(self.roi_starty,self.roi_endy-1)
+		print("Read image consits of %d x %d pixels"%(height,width))
+		print("RANGE X: %d - %d"%(self.roi_startx,self.roi_endx-1))
+		print("RANGE y: %d - %d"%(self.roi_starty,self.roi_endy-1))
 		n_good=0
 
 		x_ymin_ymax=[]
@@ -329,7 +329,7 @@ class CryImageProc():
                         self.roi_endy=480
                 try:
                         edge_codes=self.calcEdge(imgfile,debug)
-                except MyException, tttt:
+                except MyException as tttt:
                         raise MyException("No loop was found!")
 
                 grav_x,grav_y,ywmax,xedge,area=self.getParams(edge_codes)
@@ -368,29 +368,29 @@ class CryImageProc():
 			self.roi_endy=480
 		try:
 			edge_codes=self.calcEdge(imgfile,debug)
-		except MyException, tttt:
+		except MyException as tttt:
 			raise MyException("No loop was found!")
 
 		grav_x,grav_y,ywmax,xedge,area=self.getParams(edge_codes)
 
 		if debug: 
-			print "XEDGE:",xedge
-			print "YWMAX:",ywmax
+			print("XEDGE:",xedge)
+			print("YWMAX:",ywmax)
 		# X/Y width
 		if loop_size=="large":
-			print "NORMAL ROI"
+			print("NORMAL ROI")
 			dist_cenx_edgex=np.fabs(grav_x-xedge)
 			xwidth=2*int(dist_cenx_edgex)
 			ywidth=ywmax
 
 		elif loop_size=="small" or loop_size=="medium":
-			print "FINAL ROI"
+			print("FINAL ROI")
 			xwidth=np.fabs(self.roi_endx-xedge)
 			ywidth=ywmax
 			grav_x=int((self.roi_endx+xedge)/2.0)
 
 		elif loop_size=="very_small":
-			print "VERY SMALL ROI"
+			print("VERY SMALL ROI")
 			# manually defined
 			# 2.78 um / pixel on captured file
 			# 60.0 um = ~21 pixels

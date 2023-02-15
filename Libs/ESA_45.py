@@ -17,19 +17,19 @@ class ESA:
         self.db = sqlite3.connect(self.dbname)
         self.cur = self.db.cursor()
         self.n_cur += 1
-        print "preparation succeeded"
+        print("preparation succeeded")
 
     def getTableName(self):
         if self.n_cur == 0:
             self.prepReadDB()
         self.cur.execute("select name from sqlite_master where type='table'")
         params = self.cur.fetchall()
-        print "getTableName:", params
+        print("getTableName:", params)
 
         if len(params) == 0:
             return "None"
 
-        print params
+        print(params)
         for catalog in params:
             self.tableName = catalog[0]
             columnIndex = 0
@@ -38,7 +38,7 @@ class ESA:
 
     def getColumnsName(self):
         self.cur.execute("PRAGMA table_info(my_tbl)")
-        print self.cur.fetchall()
+        print(self.cur.fetchall())
 
         """
         self.db.row_factory = sqlite3.Row
@@ -52,7 +52,7 @@ class ESA:
         # Fetch one test
         self.cur.execute("SELECT * FROM %s" % self.tableName)
         row = self.cur.fetchone()
-        print row
+        print(row)
 
     def fetchOne(self):
         self.prepReadDB()
@@ -82,7 +82,7 @@ class ESA:
         cur.execute("SELECT * FROM ESA")
         results = []
         for row in cur.fetchall():
-            x = dict(zip([d[0] for d in cur.description], row))
+            x = dict(list(zip([d[0] for d in cur.description], row)))
             results.append(x)
         return results
 
@@ -101,12 +101,12 @@ class ESA:
         cur = con.cursor()
         condition = "where p_index=%d" % p_index
         command = "update ESA set %s = %s %s" % (paramname, value, condition)
-        print command
+        print(command)
         cur.execute(command)
         con.commit()
 
     def addIntegerList_TEST(self):
-        CREATE_TABLE = u"""
+        CREATE_TABLE = """
         create table if not exists testtable (
             id integer primary key,
             intlist IntList
@@ -121,11 +121,11 @@ class ESA:
         con.execute(CREATE_TABLE)
 
         insert_list = [1, 2, 3]
-        con.execute(u'insert into testtable values(?,?)', (1, insert_list))
+        con.execute('insert into testtable values(?,?)', (1, insert_list))
         con.commit()
 
         cur = con.cursor()
-        cur.execute(u'select * from testtable;')
+        cur.execute('select * from testtable;')
         assert insert_list == cur.fetchone()['intlist']
 
     def listDB(self):
@@ -137,7 +137,7 @@ class ESA:
         sql = "select * from %s" % self.tableName
         self.cur.execute(sql)
         for row in self.cur:
-            print row[0], row[1], row[2]
+            print(row[0], row[1], row[2])
             # sql="select * from "
 
     def save_csv(self, csvfile):
@@ -185,12 +185,12 @@ class ESA:
     def makeTable(self, csvfile, force_to_make=False):
         # Does db file exist or not.
         if self.getTableName() != "None":
-            print "DB exists"
+            print("DB exists")
             if force_to_make == True:
-                print "Removing the existing ESA"
+                print("Removing the existing ESA")
                 self.cur.execute("drop table ESA")
             else:
-                print "Nothings done"
+                print("Nothings done")
                 return
 
         # 190702 Added parameters
@@ -263,7 +263,7 @@ class ESA:
 
         try:
             condition_list = self.readCSV(csvfile)
-            print "KKKKKKK"
+            print("KKKKKKK")
             db_list = self.makeDBlist(condition_list)
             for cond in db_list:
                 self.cur.execute(
@@ -279,8 +279,8 @@ class ESA:
                 self.db.commit()
             self.db.close()
 
-        except Exception, ex:
-            print ex
+        except Exception as ex:
+            print(ex)
             return []
 
     # makeTable
@@ -334,14 +334,14 @@ class ESA:
         cols = re.split('[.+;]', pin_char)
         for col in cols:
             if col.rfind("-") != -1:
-                print "COL = ", col
+                print("COL = ", col)
                 startnum = int(col.split("-")[0])
                 endnum = int(col.split("-")[1])
                 for i in range(startnum, endnum + 1):
                     pinid_list.append(i)
             else:
                 pinid_list.append(int(col))
-        print pinid_list
+        print(pinid_list)
         return pinid_list
 
     def readCSV(self, csvfile):
@@ -352,15 +352,15 @@ class ESA:
             b = csv.reader(f)
             header = next(b)
             for t in b:
-                print "PINID part=", t[4]
+                print("PINID part=", t[4])
                 pinid_list = self.analyzePinList(t[4])
 
                 for pinid in pinid_list:
                     t[1] = process_index
                     t[4] = pinid
                     p = copy.copy(t)
-                    print "LEN in CSV=", len(t)
-                    print "T=", t
+                    print("LEN in CSV=", len(t))
+                    print("T=", t)
                     condition_list.append(p)
                     process_index += 1
 
@@ -379,7 +379,7 @@ class ESA:
                 if tmp_puck == check_puck and tmp_pin == check_pin and check_root == tmp_root:
                     msg = "Duplication in CSV file: %s-%s and %s-%s. Please fix it!\n" % (
                         check_puck, check_pin, tmp_puck, tmp_pin)
-                    print msg
+                    print(msg)
                     raise MyException.MyException(msg)
 
         # experimental scheme check
@@ -404,12 +404,12 @@ class ESA:
     def conditionGet(self):
         self.cur.execute('SELECT wavelength, exp_time, raster_vbeam FROM ESA WHERE raster_hbeam < 20;')
         for row in self.cur:
-            print row
+            print(row)
 
     def choufukunashiGet(self):
         # Chouhuku nashi rekkyo
         self.cur.execute('SELECT DISTINCT wavelength FROM ESA;')
-        print "DISTINCE=", self.cur.fetchall()
+        print("DISTINCE=", self.cur.fetchall())
 
     def getParam(self):
         con = sqlite3.connect(self.dbname)
@@ -417,7 +417,7 @@ class ESA:
         cur = con.cursor()
         condition = "where p_index=%d" % p_index
         command = "update ESA set %s = %s %s" % (paramname, value, condition)
-        print command
+        print(command)
         cur.execute(command)
         con.commit()
 
@@ -430,22 +430,22 @@ if __name__ == "__main__":
     # esa.getTableName()
     # esa.listDB()
     # esa.fetchAll()
-    print "BEFORE"
+    print("BEFORE")
     ppp = esa.getDict()
-    print "LNE=", len(ppp)
+    print("LNE=", len(ppp))
     for p in ppp:
-        print p
-        print "SCAN_WIDTH=", p['scan_width']
-        print "n_mount=", p['n_mount']
-        print "nds_multi=", p['nds_multi']
-        print "nds_helical=", p['nds_helical']
-        print "nds_helpart=", p['nds_helpart']
-        print "t_meas_start=", p['t_meas_start']
-        print "t_mount_end=", p['t_mount_end']
-        print "t_cent_start=", p['t_cent_start']
-        print "t_cent_end=", p['t_cent_end']
-        print "t_raster_start=", p['t_raster_start']
-        print "t_raster_end=", p['t_raster_end']
-        print "t_ds_start=", p['t_ds_start']
-        print "t_ds_end=", p['t_ds_end']
-        print "t_dismount_start=", p['t_dismount_start']
+        print(p)
+        print("SCAN_WIDTH=", p['scan_width'])
+        print("n_mount=", p['n_mount'])
+        print("nds_multi=", p['nds_multi'])
+        print("nds_helical=", p['nds_helical'])
+        print("nds_helpart=", p['nds_helpart'])
+        print("t_meas_start=", p['t_meas_start'])
+        print("t_mount_end=", p['t_mount_end'])
+        print("t_cent_start=", p['t_cent_start'])
+        print("t_cent_end=", p['t_cent_end'])
+        print("t_raster_start=", p['t_raster_start'])
+        print("t_raster_end=", p['t_raster_end'])
+        print("t_ds_start=", p['t_ds_start'])
+        print("t_ds_end=", p['t_ds_end'])
+        print("t_dismount_start=", p['t_dismount_start'])

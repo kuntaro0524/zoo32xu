@@ -50,7 +50,7 @@ while True:
 
     # wait time
     time.sleep(10)
-    print "10sec!"
+    print("10sec!")
     time.sleep(1800)
 
     for en in en_list :
@@ -104,7 +104,7 @@ while True:
     	pin_value=counter.getPIN(3)
 
 	max3=id.scanID(prefix,start,end,sfine_step,idch1,0,0.2)
-	print max3
+	print(max3)
 
 	# Writing log file
 	logf.write("%8.3f keV ID %8.5f PIN: %8s uA\n"%(en,max3[0],pin_value))

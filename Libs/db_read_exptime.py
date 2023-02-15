@@ -18,5 +18,5 @@ if __name__ == "__main__":
         ds_vbeam = p['ds_vbeam']
         ds_hbeam = p['ds_hbeam']
         wt = p['warm_time']
-        print puckid,pinid,exp_time,rot,total_osc, "raster=", raster_vbeam, raster_hbeam," DSbeam=", ds_vbeam, ds_hbeam, "WARM=",wt
+        print(puckid,pinid,exp_time,rot,total_osc, "raster=", raster_vbeam, raster_hbeam," DSbeam=", ds_vbeam, ds_hbeam, "WARM=",wt)
         #print "wavelength=", p['wavelength'], type(p['wavelength'])

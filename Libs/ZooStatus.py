@@ -28,7 +28,7 @@ class ZooStatus:
 
 if __name__ == "__main__":
 	zs=ZooStatus("/isilon/users/target/target/Staff/kuntaro/160701/Auto/")
-	print zs.status
+	print(zs.status)
 	zs.finish("center")
 	#zs.finish("mount")
 	#zs.finish("raster")

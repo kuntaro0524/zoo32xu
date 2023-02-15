@@ -20,7 +20,7 @@ if __name__=="__main__":
 	#####
 
 	if len(sys.argv)!=2:
-		print "[Usage]: id_detune.py ENERGY"
+		print("[Usage]: id_detune.py ENERGY")
 		sys.exit(1)
 	en=float(sys.argv[1])
         #proc.detuneID(energy,cnt1,cnt2,inttime,nback=30):

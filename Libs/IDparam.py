@@ -75,4 +75,4 @@ if __name__=="__main__":
 	test=[8.005,12.3984,12.3985,13.50050,15.0099]
 
 	for en in test:
-		print p.getGap(float(en))
+		print(p.getGap(float(en)))

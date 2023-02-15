@@ -33,7 +33,7 @@ for p in ppp:
         p['score_min'],p['score_max'],p['maxhits'],p['dist_ds'],
         p['cry_min_size_um'],p['cry_max_size_um'],p['loopsize'],p['n_mount'])
     index_list.append((p['p_index'],gui_index))
-    print ttt
+    print(ttt)
     packages.append(ttt)
     gui_index+=1
 
@@ -77,10 +77,10 @@ class ChildFrame(wx.Frame):
     def OnChoice(self, event):
         choice = event.GetEventObject()
         n = choice.GetSelection()
-        print choice.GetString(n) + ', ' + choice.GetClientData(n)
+        print(choice.GetString(n) + ', ' + choice.GetClientData(n))
 
     def PushUpdate(self, event):
-        print "Push update!"
+        print("Push update!")
 
 class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin,listmix.CheckListCtrlMixin):
     ''' TextEditMixin allows any column to be edited. '''
@@ -132,8 +132,8 @@ class Repository(wx.Frame):
 
             #Priority index
             ichar = "%s"%p_index
-            self.start_index = sys.maxint
-            index = self.list.InsertStringItem(sys.maxint, ichar)
+            self.start_index = sys.maxsize
+            index = self.list.InsertStringItem(sys.maxsize, ichar)
             # isSkip
             ichar = "%s"%isSkip
             self.list.SetStringItem(index, 1, ichar)
@@ -295,8 +295,8 @@ class Repository(wx.Frame):
         num = self.list.GetItemCount()
         for n_column in range(num):
             # isSkip
-            print "Reading"
-            print self.list.GetItemText(n_column, 1)
+            print("Reading")
+            print(self.list.GetItemText(n_column, 1))
 
     def OnSelectAll(self, event):
         num = self.list.GetItemCount()
@@ -311,7 +311,7 @@ class Repository(wx.Frame):
     def PushSkip(self, event):
         num = self.list.GetItemCount()
         for i in range(num):
-            print "PushSkip:"
+            print("PushSkip:")
             if self.list.IsChecked(i): 
                 #p_index=self.list.GetItemText(i,0)
                 isSkip = 1
@@ -319,24 +319,24 @@ class Repository(wx.Frame):
                 #pin_id=self.list.GetItemText(i,4)
                 # isSkip
                 ichar = "%s"%isSkip
-                print "PushSkip:selected = ",i, isSkip
-                print "ichar = ", ichar
+                print("PushSkip:selected = ",i, isSkip)
+                print("ichar = ", ichar)
                 self.list.SetStringItem(i, 1, ichar)
                 pindex = i
                 esa.updateValueAt(pindex,"isSkip", isSkip)
                 self.list.SetItemBackgroundColour(i, 'Grey')
 
     def OnApply(self, event):
-        print "##########################"
+        print("##########################")
         self.readCurrentSkipList()
-        print "##########################"
+        print("##########################")
 
         num = self.list.GetItemCount()
         for i in range(num):
-            print i
+            print(i)
             if i == 0: 
                 self.log.Clear()
-            print self.list[i]
+            print(self.list[i])
 
     def UnsetSkip(self, event):
         num = self.list.GetItemCount()
@@ -347,11 +347,11 @@ class Repository(wx.Frame):
             if self.list.IsChecked(i):
                 isSkip = 0
                 ichar = "%s"%isSkip
-                print "PushSkip:selected = ",i, isSkip
-                print "ichar = ", ichar
+                print("PushSkip:selected = ",i, isSkip)
+                print("ichar = ", ichar)
                 self.list.SetStringItem(i, 1, ichar)
                 pindex = i
-                print "PINDEX=",pindex
+                print("PINDEX=",pindex)
                 esa.updateValueAt(pindex,"isSkip", isSkip)
                 self.list.SetItemBackgroundColour(i, 'CYAN')
 
@@ -376,14 +376,14 @@ class Repository(wx.Frame):
         dialog.Destroy()
 
     def PushMod(self,event):
-        print "PUSHMOD"
+        print("PUSHMOD")
         num = self.list.GetItemCount()
         list_selected=[]
         for i in range(num):
             if self.list.IsChecked(i):
                 list_selected.append(i)
         if len(list_selected) == 0:
-            print "nothing to do"
+            print("nothing to do")
             return
 
         childFrame = MyDialog(self, list_selected, self.list)
@@ -419,15 +419,15 @@ class MyDialog(wx.Frame):
         # end wxGlade
     def PushSet(self, event):
         n = self.choice_1.GetSelection()
-        print self.element_array[n]
+        print(self.element_array[n])
         value = self.combo_box_1.GetValue()
         # max hit
         #ichar = "%s" % value
         for i in self.list_sel:
-            print "MOD", i
+            print("MOD", i)
             self.list_window.SetStringItem(i, n, value)
 
-        print "PUSHSET"
+        print("PUSHSET")
 
     def PushCancel(self, event):
         self.Destroy()

@@ -30,4 +30,4 @@ for file in files:
     except cv2.error:
         ret = 100000
 
-    print "%20s %5.2f"%(file, ret)
+    print("%20s %5.2f"%(file, ret))

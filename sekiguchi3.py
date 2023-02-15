@@ -21,7 +21,7 @@ if __name__ == "__main__":
 	for trayid in [2]:
 		for pinid in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]:
 			prefix="sekiguchi%02d-%02d"%(trayid,pinid)
-			print "Doing %s"%prefix
+			print("Doing %s"%prefix)
 
 			lm=LoopMeasurement.LoopMeasurement(ms,root_dir,prefix)
 
@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
 			try:
 				glist,phi_mid=lm.shikaTalk()
-			except MyException, tttt:
-				print "Skipping this loop!!"
+			except MyException as tttt:
+				print("Skipping this loop!!")
 				continue
 
 			# Data collection

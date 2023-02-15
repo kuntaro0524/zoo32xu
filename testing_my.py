@@ -12,4 +12,4 @@ pz=0.0
 v1=np.array((gx,gy,gz))
 v2=np.array((px,py,pz))
 
-print v1-v2
+print(v1-v2)

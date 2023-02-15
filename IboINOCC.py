@@ -130,7 +130,7 @@ class IboINOCC:
 
         # Making today's directory
         if os.path.exists(self.loop_dir):
-            print "%s already exists" % self.loop_dir
+            print("%s already exists" % self.loop_dir)
         else:
             os.makedirs(self.loop_dir)
             os.system("chmod a+rw %s" % self.loop_dir)
@@ -217,7 +217,7 @@ class IboINOCC:
         # Binarization
         th = self.variousBinarize(subimg)
         oimg = "%s_bin.png" % (prefix)
-        print("writing %s" % oimg)
+        print(("writing %s" % oimg))
         cv2.imwrite(oimg, th)
         # ROI
         if isTemplate:
@@ -317,7 +317,7 @@ class IboINOCC:
             self.getImage("back", bcimg, 2)
             self.getImage("side", scimg, 4)
             # Analysis
-            print "anaImage start"
+            print("anaImage start")
             self.anaImage(bcimg, "back", bin_thresh=20)
             self.anaImage(scimg, "side", bin_thresh=20)
 
@@ -345,7 +345,7 @@ class IboINOCC:
             scimg = "%s/sc_%s.png" % (picture_path, phis)
             self.dev.gonio.rotatePhi(phi)
             self.getImage(view, scimg, 4)
-            print "anaImage start"
+            print("anaImage start")
             roi = self.anaImage(scimg, view, bin_thresh=40)
             cv2.imwrite("%s/sc_%s_template.jpg" % (picture_path, phis), roi)
 
@@ -363,7 +363,7 @@ class IboINOCC:
         lpm = LargePlateMatching.LargePlateMatching(template_path, template_prefix)
         ok_file, ok_phi, max_sim = lpm.match(roi)
 
-        print ok_file, ok_phi, max_sim
+        print(ok_file, ok_phi, max_sim)
 
     # 2018/11/04 Back camera is the farest camera from sample
     # Capture back camera image & template matching of the target holder template to
@@ -418,7 +418,7 @@ class IboINOCC:
         roi = self.anaImage(bcimg, "side", bin_thresh=40)
         lpm = LargePlateMatching.LargePlateMatching(template_path, template_prefix)
         ok_file, ok_phi, max_sim = lpm.match(roi)
-        print ok_file, ok_phi, max_sim
+        print(ok_file, ok_phi, max_sim)
         self.dev.gonio.rotatePhiRelative(ok_phi)
         return max_sim
 
@@ -430,16 +430,16 @@ class IboINOCC:
         template = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/holder_otehon_0deg.png"
         self.getImage(filename)
         max_value, max_loc = lpm.comp(filename, self.backimg1, template)
-        print "LOG", max_value, max_loc
+        print("LOG", max_value, max_loc)
         # 0.967775225639 (238, 275)
         h_diff = max_loc[0] - 238
         v_diff = max_loc[1] - 275
-        print h_diff, v_diff
+        print(h_diff, v_diff)
 
         h_diff_um = h_diff / 0.00684848
         v_diff_um = v_diff / 0.00915152
 
-        print h_diff_um, v_diff_um
+        print(h_diff_um, v_diff_um)
 
         self.dev.gonio.moveTrans(h_diff_um)
         self.dev.gonio.moveUpDown(v_diff_um)
@@ -447,7 +447,7 @@ class IboINOCC:
         return h_diff_um, v_diff_um, max_value
 
     def anaim(self, prefix, gauss=5):
-        print "Start calcEdge"
+        print("Start calcEdge")
         im = cv2.imread(self.pinimg)
         bk = cv2.imread(self.backimg)
 
@@ -466,7 +466,7 @@ class IboINOCC:
         cv2.imwrite("./%s_bin.jpg" % prefix, th)
 
         # ROI
-        print im.shape
+        print(im.shape)
         # roi=th[self.roi_x0:self.roi_x1,self.roi_y0:self.roi_y1]
         self.roi = th[self.roi_y0:self.roi_y1, self.roi_x0:self.roi_x1]
         cv2.imwrite("%s_binroi.jpg" % (prefix), self.roi)
@@ -494,7 +494,7 @@ class IboINOCC:
         roiy1 = self.roi_y1 + 20
         roix0 = self.roi_x0 - 20
         roix1 = self.roi_x1 + 20
-        print roiy0, roiy1, roix0, roix1
+        print(roiy0, roiy1, roix0, roix1)
         # self.roi=th[self.roi_y0:self.roi_y1,self.roi_x0:self.roi_x1]
         self.roi = th[roiy0:roiy1, roix0:roix1]
 
@@ -502,7 +502,7 @@ class IboINOCC:
 
     # RINKAKU
     def rinkaku(self, prefix):
-        print "Start calcEdge"
+        print("Start calcEdge")
         im = cv2.imread(self.pinimg)
         bk = cv2.imread(self.backimg)
 
@@ -522,7 +522,7 @@ class IboINOCC:
         cv2.imwrite("./%s.jpg" % prefix, th)
 
         # ROI
-        print im.shape
+        print(im.shape)
         # roi=th[self.roi_x0:self.roi_x1,self.roi_y0:self.roi_y1]
         self.roi = th[self.roi_y0:self.roi_y1, self.roi_x0:self.roi_x1]
         cv2.imwrite("%s_roi.jpg" % (prefix), self.roi)
@@ -532,13 +532,13 @@ class IboINOCC:
         contours, hierarchy = cv2.findContours(self.roi, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         # contours,hierarchy=cv2.findContours(self.roi,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
         cv2.drawContours(self.roi, contours, 0, (0, 255, 0), 3)
-        print len(contours)
+        print(len(contours))
         for con in contours:
-            print con
+            print(con)
         cv2.imwrite("%s_rinkaku.jpg" % (prefix), self.roi)
         plt.imshow(self.roi, 'gray')
 
-        print "Image subtraction in calcEdge finished"
+        print("Image subtraction in calcEdge finished")
 
     # KUKEI
     def kukei(self, phi):
@@ -548,7 +548,7 @@ class IboINOCC:
         self.getImage(self.pinimg)
         roi = self.anaim(prefix)
 
-        print "Start calcEdge"
+        print("Start calcEdge")
         im = cv2.imread(self.pinimg)
         bk = cv2.imread(self.backimg)
 
@@ -652,10 +652,10 @@ class IboINOCC:
             gradient = float(ay - ry) / float(ax - rx)
         else:
             gradient = 0.0
-            print "ax-rx was 0.0"
+            print("ax-rx was 0.0")
 
         # print phi,gradient
-        print "CHECK", phi, ywidth, dy, gradient
+        print("CHECK", phi, ywidth, dy, gradient)
 
         # print x_upper,y_upper,x_lower,y_lower,xgrav,ygrav
         # x,y,w,h=cv2.boundingRect(cnt)
@@ -673,7 +673,7 @@ class IboINOCC:
         # cv2.imwrite("%s_rinkaku.jpg"%(prefix),self.roi)
         # plt.imshow(self.roi,'gray')
 
-        print "Image subtraction in calcEdge finished"
+        print("Image subtraction in calcEdge finished")
 
     def findRightPosition(self):
         while (1):
@@ -681,7 +681,7 @@ class IboINOCC:
             self.pinimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/%s.jpg" % prefix
             self.getImage(self.pinimg)
 
-            print "Start calcEdge"
+            print("Start calcEdge")
             im = cv2.imread(self.pinimg)
             bk = cv2.imread(self.backimg)
 
@@ -706,7 +706,7 @@ class IboINOCC:
             cv2.drawContours(self.roi, contours, 0, (0, 255, 0), 3)
             cv2.imwrite("roi_check.png", self.roi)
             cnt = contours[0]
-            print len(cnt), cnt
+            print(len(cnt), cnt)
             if len(cnt) < 50:
                 continue
             else:
@@ -724,7 +724,7 @@ class IboINOCC:
         xgsum = 0.0
         ygsum = 0.0
         ndat = 0
-        print "CONTOURS=", len(cnt)
+        print("CONTOURS=", len(cnt))
         for d in cnt:
             for p in d:
                 x, y = p
@@ -743,7 +743,7 @@ class IboINOCC:
                 ygsum += y
                 ndat += 1
 
-        print "XMAX,Y_XMAX", xmax, ymax_at_xmax
+        print("XMAX,Y_XMAX", xmax, ymax_at_xmax)
         return xmax, ymax_at_xmax
 
     # This analyzes x line for detecting line bunch
@@ -809,7 +809,7 @@ class IboINOCC:
         y_len_max_cen = 0.0
         none_x = 150
 
-        print "STARTING PHI=", phi
+        print("STARTING PHI=", phi)
         for xline in [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140]:
             # print "XLINE=",xline
             find_flag = False
@@ -826,10 +826,10 @@ class IboINOCC:
             # Line not found
             elif n_found == 0:
                 if none_x > xline:
-                    print "NOT FOUND", xline, none_x
+                    print("NOT FOUND", xline, none_x)
                     none_x = xline
 
-        print "NONE X=", none_x
+        print("NONE X=", none_x)
         # good_index=none_x-20
         hashi_index1 = none_x - 20
         hashi_index2 = none_x - 10
@@ -871,7 +871,7 @@ class IboINOCC:
                 break
         diff_hori = xline - 99
         move_y_um = diff_hori / -0.00686466
-        print "moving gonio Y ", move_y_um
+        print("moving gonio Y ", move_y_um)
         self.dev.gonio.moveTrans(-move_y_um)
 
         # print self.roi.shape
@@ -888,9 +888,9 @@ class IboINOCC:
         # print yline
         diff_vert = yline - 93
         move_v_um = diff_vert / -0.00963158
-        print yline, diff_vert, move_v_um
+        print(yline, diff_vert, move_v_um)
         self.dev.gonio.moveUpDown(-move_v_um)
-        print "moving gonio UpDown ", move_v_um
+        print("moving gonio UpDown ", move_v_um)
         return xline, yline
 
     def captureROI(self, phi):
@@ -943,11 +943,11 @@ class IboINOCC:
         filename = "./%s.jpg" % prefix
         self.getImage(filename)
         hori, ver = lpm.getPosition(filename)
-        print hori, ver
+        print(hori, ver)
         # Gonio Y direction
         diff_x = hori - good_position
         moving_um = diff_x / um2pix
-        print "Y,DIFF_Y", hori, diff_x, moving_um
+        print("Y,DIFF_Y", hori, diff_x, moving_um)
 
     def translateToCenterROI(self):
         # Gonio Y(+) -> pix(-)
@@ -960,11 +960,11 @@ class IboINOCC:
         self.getImage(filename)
         roi_image = self.getTargetROI(filename)
         hori, ver = lpm.getPosition2(roi_image)
-        print hori, ver
+        print(hori, ver)
         # Gonio Y direction
         diff_x = hori - good_position
         moving_um = diff_x / um2pix
-        print "Y,DIFF_Y", hori, diff_x, moving_um
+        print("Y,DIFF_Y", hori, diff_x, moving_um)
 
     def rotateToFace(self):
         lpm = LargePlateMatching.LargePlateMatching(self.template_path, self.template_prefix)
@@ -995,12 +995,12 @@ class IboINOCC:
             th = cv2.threshold(blur, 20, 150, 0)[1]
             ok_file, ok_phi, similarity = lpm.match(th)
 
-            print "(Matched PHI(relative),Similarity,PHI(abs))=", ok_phi, similarity, phi
+            print("(Matched PHI(relative),Similarity,PHI(abs))=", ok_phi, similarity, phi)
             if ok_phi == 0.0 or ok_phi == 180.0:
                 if max_similarity < similarity:
                     max_similarity = similarity
                     max_phi = phi
-        print "Rotating to the max phi", max_phi
+        print("Rotating to the max phi", max_phi)
         self.dev.gonio.rotatePhi(max_phi)
 
     def recoverFaceAngle(self):
@@ -1008,7 +1008,7 @@ class IboINOCC:
         filename = "./%s.jpg" % prefix
         self.getImage(filename)
 
-        print "Start calcEdge"
+        print("Start calcEdge")
         im = cv2.imread(filename)
         bk = cv2.imread(self.backimg1)
 
@@ -1033,7 +1033,7 @@ class IboINOCC:
             rel_phi = -(ok_phi - 180.0)
         else:
             rel_phi = -float(ok_phi)
-        print ok_phi, rel_phi
+        print(ok_phi, rel_phi)
         self.dev.gonio.rotatePhiRelative(rel_phi)
 
     def find_under_edge(self, roi_xy):
@@ -1051,7 +1051,7 @@ class IboINOCC:
                         continue
                 else:
                     continue
-            print "CONTOUR=", xsave, ysave
+            print("CONTOUR=", xsave, ysave)
             under_edge.append((xsave, ysave))
 
         return under_edge
@@ -1089,7 +1089,7 @@ class IboINOCC:
         self.logger.info("angle=%s deg score=%s ymean=%s" % (angle, score, ymean))
 
         if self.DEBUG:
-            print angle, score, ymean
+            print(angle, score, ymean)
 
         return angle, score, ymean
 
@@ -1101,10 +1101,10 @@ class IboINOCC:
         # found contours are included in 'contours'
         # This loop is a treatment for each 'found contour'.
         if self.DEBUG:
-            print "Found contours=", len(contours)
+            print("Found contours=", len(contours))
             # self.print_contours(contours)
         if len(contours) != 1:
-            print "Found contours are not single."
+            print("Found contours are not single.")
             # self.print_contours(contours)
 
         for i, cnt in enumerate(contours):
@@ -1120,13 +1120,13 @@ class IboINOCC:
     def print_contours(self, contours):
         for contour in contours:
             if len(contour.shape) == 1:
-                print contour
+                print(contour)
                 continue
             else:
-                print contour
+                print(contour)
                 ndata, dummy = contour.shape
                 for i in range(0, ndata):
-                    print contour[i]
+                    print(contour[i])
 
     # This routines limits a given contours to the preferred
     # region defined at the header of this file.
@@ -1191,7 +1191,7 @@ class IboINOCC:
                 else:
                     continue
             if self.DEBUG:
-                print "CONTOUR=", xsave, ysave
+                print("CONTOUR=", xsave, ysave)
             upper_edge.append((xsave, ysave))
 
         return upper_edge
@@ -1238,15 +1238,15 @@ class IboINOCC:
         # Print log
         for x, y in zip(xa, ya):
             if self.DEBUG:
-                print "FITTED=,", x, a * x + b
+                print("FITTED=,", x, a * x + b)
             residual = (a * x + b) - y
             score += residual * residual
 
         final_score = score / float(len(xa))
 
         if self.DEBUG:
-            print "a=", a
-            print "b=", b
+            print("a=", a)
+            print("b=", b)
         angle = numpy.degrees(numpy.arctan(a))
         ymean = numpy.mean(ya)
         ymin = numpy.min(ya)
@@ -1297,7 +1297,7 @@ class IboINOCC:
                 continue
             # Finishing condition
             elif score < 40.0:
-                print "Good score"
+                print("Good score")
                 self.dev.gonio.rotatePhiRelative(-diff_from_good_facing)
                 break
             elif numpy.fabs(diff_from_good_facing) < 10.0 and numpy.fabs(diff_from_good_facing) > 3.0:
@@ -1305,7 +1305,7 @@ class IboINOCC:
                 ifail += 1
 
             if ifail > 10:
-                print "Rough facing value was applied"
+                print("Rough facing value was applied")
                 self.dev.gonio.rotatePhi(face_phi)
                 break
 
@@ -1317,18 +1317,18 @@ class IboINOCC:
         while (1):
             self.getImage("side", target_image, binning=4)
             angle, score, ymean = self.tune_phi(target_image)
-            print "Fitting pint score = ", score
+            print("Fitting pint score = ", score)
 
             if score > 100.0:
                 self.dev.gonio.rotatePhiRelative(180.0)
                 ifail += 1
 
-            print "LOG=", ymean, self.pint_ymean
+            print("LOG=", ymean, self.pint_ymean)
             diff_y = ymean - self.pint_ymean
             move_um = diff_y / pix_resol
 
-            print "Dpix(y)=", diff_y
-            print "Dpint[um]=", move_um
+            print("Dpix(y)=", diff_y)
+            print("Dpint[um]=", move_um)
 
             if numpy.fabs(move_um) < 3.0:
                 break

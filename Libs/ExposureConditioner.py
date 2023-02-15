@@ -97,5 +97,5 @@ if __name__ == "__main__":
     expcon = ExposureConditioner("/isilon/blconfig/bl32xu/bss/bss.config")
     a,b,c = expcon.balanceExposure(1.0, 0.12213, 1.0, isRaster=True)
 
-    print(a,b,c)
+    print((a,b,c))
     # print expcon.calculateGoodExpTime(0.01112222)

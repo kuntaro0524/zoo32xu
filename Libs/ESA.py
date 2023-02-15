@@ -45,7 +45,7 @@ class ESA:
 
     def getColumnsName(self):
         self.cur.execute("PRAGMA table_info(my_tbl)")
-        print(self.cur.fetchall())
+        print((self.cur.fetchall()))
 
         """
         self.db.row_factory = sqlite3.Row
@@ -107,7 +107,7 @@ class ESA:
             x = dict(list(zip([d[0] for d in cur.description], row)))
             results.append(x)
         if self.debug == True:
-            print("RESULTS=", results)
+            print(("RESULTS=", results))
         return results
 
     def getPriorPinCond(self):
@@ -167,15 +167,15 @@ class ESA:
         command = "select * from ESA %s" % (condition)
         cur.execute(command)
         tmp_cond = cur.fetchone()
-        print(tmp_cond, param_name)
+        print((tmp_cond, param_name))
         previous_str = tmp_cond[param_name]
         d_index = tmp_cond['n_mount']
-        print("Previous=",previous_str)
+        print(("Previous=",previous_str))
         # Making string to be stored
         if previous_str != "0":
             print("LOLOLO")
             current_str = "%s,%s" % (previous_str, timestr)
-            print("C=",current_str)
+            print(("C=",current_str))
             # Att strings to the value
             command = "update ESA set %s=\"%s\" %s" % (param_name, current_str, condition)
             print(command)
@@ -239,7 +239,7 @@ class ESA:
         # Making string to be stored
         if previous_str != "0":
             current_str = "%s,%s" % (previous_str, timestr)
-            print("C=",current_str)
+            print(("C=",current_str))
             # Att strings to the value
             command = "update ESA set %s=\"%s\" %s" % (param_name, current_str, condition)
             print(command)
@@ -305,7 +305,7 @@ class ESA:
         sql = "select * from %s" % self.tableName
         self.cur.execute(sql)
         for row in self.cur:
-            print(row[0], row[1], row[2])
+            print((row[0], row[1], row[2]))
             # sql="select * from "
 
     def save_csv(self, csvfile):
@@ -589,7 +589,7 @@ class ESA:
     def choufukunashiGet(self):
         # Chouhuku nashi rekkyo
         self.cur.execute('SELECT DISTINCT wavelength FROM ESA;')
-        print("DISTINCE=", self.cur.fetchall())
+        print(("DISTINCE=", self.cur.fetchall()))
 
     def getParam(self):
         con = sqlite3.connect(self.dbname)
@@ -611,27 +611,27 @@ if __name__ == "__main__":
     # esa.fetchAll()
     print("BEFORE")
     ppp = esa.getDict()
-    print("LNE=", len(ppp))
+    print(("LNE=", len(ppp)))
     for p in ppp:
         print(p)
-        print("SCAN_WIDTH=", p['scan_width'])
-        print("n_mount=", p['n_mount'])
-        print("nds_multi=", p['nds_multi'])
-        print("nds_helical=", p['nds_helical'])
-        print("nds_helpart=", p['nds_helpart'])
-        print("t_meas_start=", p['t_meas_start'])
-        print("t_mount_end=", p['t_mount_end'])
-        print("t_cent_start=", p['t_cent_start'])
-        print("t_cent_end=", p['t_cent_end'])
-        print("t_raster_start=", p['t_raster_start'])
-        print("t_raster_end=", p['t_raster_end'])
-        print("t_ds_start=", p['t_ds_start'])
-        print("t_ds_end=", p['t_ds_end'])
-        print("t_dismount_start=", p['t_dismount_start'])
-        print("roi=", p['raster_roi'])
-        print("ln2_flag=", p['ln2_flag'])
-        print("cover_scan_flag=", p['cover_scan_flag'])
-        print("zoomcap_flag=", p['zoomcap_flag'])
-        print("warm_time=", p['warm_time'])
-        print("wavelength=", p['wavelength'], type(p['wavelength']))
+        print(("SCAN_WIDTH=", p['scan_width']))
+        print(("n_mount=", p['n_mount']))
+        print(("nds_multi=", p['nds_multi']))
+        print(("nds_helical=", p['nds_helical']))
+        print(("nds_helpart=", p['nds_helpart']))
+        print(("t_meas_start=", p['t_meas_start']))
+        print(("t_mount_end=", p['t_mount_end']))
+        print(("t_cent_start=", p['t_cent_start']))
+        print(("t_cent_end=", p['t_cent_end']))
+        print(("t_raster_start=", p['t_raster_start']))
+        print(("t_raster_end=", p['t_raster_end']))
+        print(("t_ds_start=", p['t_ds_start']))
+        print(("t_ds_end=", p['t_ds_end']))
+        print(("t_dismount_start=", p['t_dismount_start']))
+        print(("roi=", p['raster_roi']))
+        print(("ln2_flag=", p['ln2_flag']))
+        print(("cover_scan_flag=", p['cover_scan_flag']))
+        print(("zoomcap_flag=", p['zoomcap_flag']))
+        print(("warm_time=", p['warm_time']))
+        print(("wavelength=", p['wavelength'], type(p['wavelength'])))
 

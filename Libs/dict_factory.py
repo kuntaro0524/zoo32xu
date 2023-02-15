@@ -16,7 +16,7 @@ cur.execute("SELECT * FROM ESA")
 row= cur.fetchone()
 
 
-print row
+print(row)
 
-print("key = ", row['exp_raster'])
-print("value = ", row['exp_ds'])
+print(("key = ", row['exp_raster']))
+print(("value = ", row['exp_ds']))

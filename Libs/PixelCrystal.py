@@ -308,7 +308,7 @@ class PixelCrystal:
             try:
                 self.makeCrystalInfo(dc_block)
             except Exception as e:
-                print "EEEEEEEEEEEEEEEE=",e.args
+                print("EEEEEEEEEEEEEEEE=",e.args)
                 self.logger.info(e.args)
                 continue
 
@@ -356,7 +356,7 @@ class PixelCrystal:
                     # Re-calculate gonio XYZ coordinates
                     self.dc_block_update(dd_block, left_edge, right_edge, osc_new, cry_length)
                     dd_block['cry_length'] = cry_length
-                    print "NEW=",dd_block
+                    print("NEW=",dd_block)
                     dc_block['mode'] = "not_collect"
 
                     self.logger.info("""NEW_CRYSTAL= %(left_edge)d-%(right_edge)d: %(osc_range).2f """ % dc_block)
@@ -574,7 +574,7 @@ class PixelCrystal:
     def getRoughEdges(self):
         if self.isPrep==False:
             self.prepInfo()
-        print self.cry_hsize,self.isSingle,self.score_total,self.edges
+        print(self.cry_hsize,self.isSingle,self.score_total,self.edges)
         return self.edges
 
 if __name__=="__main__":
@@ -616,7 +616,7 @@ if __name__=="__main__":
         index += 1
 
     # Loop property
-    print "MARIO MIN/MAX=", h_min_all, h_max_all
+    print("MARIO MIN/MAX=", h_min_all, h_max_all)
 
     # For logging
     logs = LogString.LogString()

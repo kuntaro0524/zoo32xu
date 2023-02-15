@@ -39,7 +39,7 @@ class BM:
 	def getPos(self):
 		z_pulse=int(self.moni_z.getPosition()[0])
 		x_pulse=int(self.moni_x.getPosition()[0])
-		print x_pulse,z_pulse
+		print(x_pulse,z_pulse)
 
 	def isMoved(self):
 		isY=self.moni_y.isMoved()
@@ -57,7 +57,7 @@ if __name__=="__main__":
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((host,port))
 
-	print "Moving Scintillator Monitor"
+	print("Moving Scintillator Monitor")
 	moni=BM(s)
 	#moni.onPika()
 	moni.offXYZ()

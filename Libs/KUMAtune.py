@@ -98,7 +98,7 @@ class KUMAtune :
 
 	def monoTune(self,logf):
 		# TCS aperture should be set to 0.1mm sq
-		print "TCS is set to 0.1mm square"
+		print("TCS is set to 0.1mm square")
 		self.devctr.setTCSapert(0.1,0.1)
 
 		# Dtheta1 tune : added on 140629 K.Hirata
@@ -139,7 +139,7 @@ class KUMAtune :
 		logf.write("%10s %10s code (Y,Z) = (%5d,%5d)\n"%(self.time_now(),"BeamCen",picy,picz))
 		logf.flush()
 
-		print "Remove beam monitor"
+		print("Remove beam monitor")
 		# Finish (remove beam monitor)
 		self.devctr.closeShutter()
 		self.devctr.finishBCtune()
@@ -147,7 +147,7 @@ class KUMAtune :
 		self.devctr.moveXYZmm(sx,sy,sz)
 
 	def tuneCollimator(self,logf,wavelength=1.0):
-		print "Start collimator scan"
+		print("Start collimator scan")
 		# Collimator scan
         	self.devctr.prepScan()
 		logstr=self.devctr.colliScan(wavelength=wavelength)
@@ -159,7 +159,7 @@ class KUMAtune :
 		#self.devctr.prepBCtune()
 		#self.devctr.tuneAttThick()
 		#self.devctr.tuneAttThick()
-		print "DDDD"
+		print("DDDD")
 
 if __name__=="__main__":
 	kt=KUMAtune()

@@ -26,7 +26,7 @@ class UserESA():
             self.confdir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooConfig/"
         else:
             self.confdir = "/isilon/blconfig/%s/" % beamline.lower()
-            print "DIRDIR=", self.confdir
+            print("DIRDIR=", self.confdir)
         self.bsconf = BeamsizeConfig.BeamsizeConfig(self.confdir)
 
     def getParams(self, desired_exp_string, type_crystal, mode):
@@ -107,29 +107,29 @@ class UserESA():
             photons_per_image = 2E10 # photons
             photons_per_exptime = flux * exp_raster
             trans = photons_per_image / photons_per_exptime * 100.0
-            print "Transmission = %10.5f" % trans
+            print("Transmission = %10.5f" % trans)
             att_raster = trans
             hebi_att = trans
 
         elif desired_exp_string == "high_dose_scan":
             dose_for_raster = 0.3 # MGy
             dose_per_exptime = e.getDose(beam_h, beam_v, flux, exp_raster, energy=energy)
-            print "dose_per_exptime=", dose_per_exptime, " MGy"
+            print("dose_per_exptime=", dose_per_exptime, " MGy")
             trans = dose_for_raster / dose_per_exptime * 100.0
-            print "Transmission = %10.5f" % trans
+            print("Transmission = %10.5f" % trans)
 
         elif desired_exp_string == "ultra_high_dose_scan":
             dose_for_raster = 1.0  # MGy
             dose_per_exptime = e.getDose(beam_h, beam_v, flux, exp_raster, energy=energy)
             trans = dose_for_raster / dose_per_exptime * 100.0
-            print "Transmission = %10.5f" % trans
+            print("Transmission = %10.5f" % trans)
 
         # When a calculated transmission exceeds '1.00'
         if trans > 100.0:
             mod_exp_raster = exp_raster * trans / 100.0
             trans = 100.0
-            print "The transmission is over 1.000!", trans
-            print "Exposure time for raster scan is set to %5.2f sec" % mod_exp_raster
+            print("The transmission is over 1.000!", trans)
+            print("Exposure time for raster scan is set to %5.2f sec" % mod_exp_raster)
         else:
             mod_exp_raster = exp_raster
 
@@ -256,7 +256,7 @@ class UserESA():
             pin_flag            = cols[15]
             zoom_flag           = 0 if cols[16] == "no" else 1
 
-            print "pin_flag=_%s_"% pin_flag.lower()
+            print("pin_flag=_%s_"% pin_flag.lower())
             if pin_flag.lower() == "spine":
                 wait_time = 10
             elif pin_flag.lower() == "als + ssrl":
@@ -266,7 +266,7 @@ class UserESA():
             elif pin_flag.lower() == "no-wait":
                 wait_time = 0
             else:
-                print "OTHER!"
+                print("OTHER!")
                 wait_time = 30
 
             #for BL32XU modified by HM 2020/06/04
@@ -277,7 +277,7 @@ class UserESA():
 
             # Reading flux value
             flux = self.bsconf.getFluxAtWavelength(hbeam, vbeam, wavelength)
-            print "Flux value is read from beamsize.conf: %5.2e\n" % flux
+            print("Flux value is read from beamsize.conf: %5.2e\n" % flux)
 
             # Dose estimation for raster scan
             score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag = self.getParams(desired_exp, type_crystal, mode)

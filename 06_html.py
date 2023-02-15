@@ -22,7 +22,7 @@ def getHTMLstring(title, picpath):
 
 piclist = glob.glob("./CPS*.png")
 
-print piclist
+print(piclist)
 
 for pic in piclist:
-    print getHTMLstring(pic, pic)
+    print(getHTMLstring(pic, pic))

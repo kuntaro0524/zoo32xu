@@ -22,7 +22,7 @@ class CryImageProc():
         self.roi_len_um = 200.0 #[um]
 
         # Pixel resolution
-        print "Beamline is %s"%beamline
+        print("Beamline is %s"%beamline)
         if beamline == "BL32XU":
             # self.pix_size = 2.36 #[um]
             # 201002 Pixel resolution for the minimum zoom
@@ -44,7 +44,7 @@ class CryImageProc():
             # threshold in binarization
             self.bin_thresh = 10
 
-        print self.roi_len_um, self.pix_size
+        print(self.roi_len_um, self.pix_size)
         self.roi_len_pix = self.roi_len_um / self.pix_size
         
         # Flags 
@@ -101,8 +101,8 @@ class CryImageProc():
         #print "Height, Width=", im_height, im_width
         for i in range(0, im_height):
             for j in range(0, im_width):
-                print i,j,image[i,j]
-            print "\n"
+                print(i,j,image[i,j])
+            print("\n")
 
     # Coax CCD camera sometimes include 'noise at edges'
     def trimEdges(self, cvimage, ntrim):
@@ -180,7 +180,7 @@ class CryImageProc():
         self.ymin = 10
         self.ymax = self.im_height - 10
 
-        print self.im_width, self.im_height
+        print(self.im_width, self.im_height)
 
         # Top centering edge
         self.xmin_top = self.edge_margin_pix
@@ -291,7 +291,7 @@ class CryImageProc():
         cv2.imwrite(outimage, baseimg)
 
     def drawContourTop(self, contour, top_xy, outimage):
-        print "drawContourTop"
+        print("drawContourTop")
         #baseimg = cv2.imread(self.target_file)
         baseimg = copy.deepcopy(self.timg)
 
@@ -302,7 +302,7 @@ class CryImageProc():
         #print topx, topy
         cv2.circle(baseimg,(topx,topy),3,(255,0,0),3)
         cv2.imwrite(outimage, baseimg)
-        print "drawContourTop"
+        print("drawContourTop")
 
     def drawRasterSquare(self, xmin, xmax, ymin, ymax, xcen, ycen, outimage):
         #baseimg = cv2.imread(self.target_file)
@@ -394,7 +394,7 @@ class CryImageProc():
         try:
             if self.isContourROI == False:
                 self.roi_cont = self.getROIcontour(loop_size)
-        except MyException, ttt:
+        except MyException as ttt:
             raise MyException(ttt)
 
         # Area of the ROI contour
@@ -416,7 +416,7 @@ class CryImageProc():
         # Find centering point
         try:
             target_x, target_y = self.findCenteringPoint(self.roi_cont, self.roi_pix_len, self.top_xy)
-        except MyException,ttt:
+        except MyException as ttt:
             raise MyException("CIP.getCenterInfo could not find any centering target.")
 
         # Hamidashi flag
@@ -519,9 +519,9 @@ class CryImageProc():
         cnt = self.squeeze_contours(cont1)
 
         if self.debug == True:
-            print "Hierarchy:",hi1
-            print "Contour  :",cont1
-            print "Contour type, length=",type(cont1),len(cont1)
+            print("Hierarchy:",hi1)
+            print("Contour  :",cont1)
+            print("Contour type, length=",type(cont1),len(cont1))
             #for c in cnt:
                 #print c
 
@@ -534,12 +534,12 @@ class CryImageProc():
     def ana_contours(contours):
         for contour in contours:
             if len(contour.shape) == 1:
-                print contour
+                print(contour)
                 continue
             else:
                 ndata,dummy=contour.shape
                 for i in range(0,ndata):
-                    print contour[i]
+                    print(contour[i])
 
     def find_top_x(self, contours):
         # Gonio from right 
@@ -655,7 +655,7 @@ class CryImageProc():
         left_flag, right_flag, lower_flag, upper_flag = self.isTouchedToEdge(contour)
         if (left_flag == False and right_flag == False and 
                 lower_flag == False and upper_flag == False):
-            print "No loop was detected."
+            print("No loop was detected.")
             return False
         return True
 
@@ -740,7 +740,7 @@ class CryImageProc():
         #ywa = sorted(ywa, key=lambda x: x[1],reverse=False)
 
         for x,y in ywa:
-            print "DEDED:",x,y
+            print("DEDED:",x,y)
     
         return width_x_ywidth
     
@@ -816,7 +816,7 @@ class CryImageProc():
         # Linear arregression
         a,b=np.polyfit(xa,ya,1)
         ab = a,b
-        print "A,B = ",ab
+        print("A,B = ",ab)
         
         # scoring the fitting
         score=0.0
@@ -850,12 +850,12 @@ class CryImageProc():
         dya = np.array(dy_list)
         thick_mean = dya.mean()
         thick_std = dya.std()
-        print "Thick mean = ",thick_mean,thick_std
+        print("Thick mean = ",thick_mean,thick_std)
         return thick_mean, thick_std
     
     def printROI(self, roi_xy):
         for x,y in roi_xy:
-            print x,y
+            print(x,y)
 
     # Evaluate dekoboko of the line
     def calculateGradient(self, xy_data):
@@ -872,7 +872,7 @@ class CryImageProc():
         
         x_dy_array = []
         for x,y,dy in zip(xna,yna,dy):
-            print "GRAD:",x,y,dy
+            print("GRAD:",x,y,dy)
             x_dy_array.append((x,dy))
     
         return x_dy_array
@@ -887,13 +887,13 @@ class CryImageProc():
         xy_smooth_grad2, xy_smooth2 = self.calcSmoothGrad(xy_smooth_grad)
 
         for i in range(0, len(xy_smooth_grad)):
-            print i
+            print(i)
             x = xy_smooth_grad[i][0]
             yg = xy_smooth_grad[i][1]
             ys = xy_smooth[i][1]
             yss = xy_smooth2[i][1]
             ygg = xy_smooth_grad2[i][1]
-            print "SSSS:",x,ys,yg,yss,ygg
+            print("SSSS:",x,ys,yg,yss,ygg)
 
     def calcSmoothLine(self, xy_data, nsmooth = 15):
         # Calculate gradient of the line
@@ -907,7 +907,7 @@ class CryImageProc():
         y2a = np.convolve(ya, v, mode='same')
 
         for x,y in zip(xa, y2a):
-            print "SMOOTH:",x,y
+            print("SMOOTH:",x,y)
 
     #def calcYdistAgainstGoniometer
 
@@ -931,7 +931,7 @@ class CryImageProc():
         x_ysmooth_array = []
         x_ysmooth_grad_array = []
         for x,y,ysmooth,dy,dys in zip(xna,yna,y2a,dy,dys):
-            print "SMS:",x,y,ysmooth,dy,dys
+            print("SMS:",x,y,ysmooth,dy,dys)
             x_ysmooth_array.append((x,int(ysmooth)))
             x_ysmooth_grad_array.append((x,int(dys)))
         
@@ -959,8 +959,8 @@ if __name__=="__main__":
     roi_len_um = 200.0
     roi_xy = cip.selectHoriROI(cont, top_xy, roi_len_um)
 
-    print type(roi_xy)
-    print roi_xy
+    print(type(roi_xy))
+    print(roi_xy)
 
     outimage = "con_check.png"
     cip.drawContourOnTarget(roi_xy, outimage)
@@ -969,10 +969,10 @@ if __name__=="__main__":
 
     # ROI
     left_flag, right_flag, lower_flag, upper_flag, n_true = cip.isTouchedToEdge(roi_xy)
-    print "LEFT = ",left_flag
-    print "RIGH = ",right_flag
-    print "LOWE = ",lower_flag
-    print "UPPE = ",upper_flag
+    print("LEFT = ",left_flag)
+    print("RIGH = ",right_flag)
+    print("LOWE = ",lower_flag)
+    print("UPPE = ",upper_flag)
 
     # Defining raster area
     roi_xmin, roi_xmax, roi_ymin, roi_ymax, roi_cenx, roi_ceny = cip.getRasterArea(roi_xy)

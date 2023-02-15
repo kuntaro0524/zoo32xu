@@ -51,10 +51,10 @@ def run_not_from_args(subport=5559):
     control_send = zmq_context.socket(zmq.PUB)
 
     try:
-        print "BINDS!"
+        print("BINDS!")
         control_send.bind("tcp://*:%d"%subport)
-    except zmq.ZMQError, e:
-        print("Error in binding SUB port: %s" % e.strerror)
+    except zmq.ZMQError as e:
+        print(("Error in binding SUB port: %s" % e.strerror))
         return
 
     control_send.send_pyobj(dict(params=params))
@@ -72,15 +72,15 @@ def run_from_args(args, subport=5559):
 
     try:
         control_send.bind("tcp://*:%d"%subport)
-    except zmq.ZMQError, e:
-        print("Error in binding SUB port: %s" % e.strerror)
+    except zmq.ZMQError as e:
+        print(("Error in binding SUB port: %s" % e.strerror))
         return
 
-    print "Conn."
+    print("Conn.")
     time.sleep(1)
 
     control_send.send_pyobj(dict(params=params))
-    print "Sent.", params
+    print("Sent.", params)
 # run_from_args()
 
 if __name__ == "__main__":

@@ -85,7 +85,7 @@ class LargePlateMatchingBC:
         cv2.rectangle(result, top_left, bottom_right, (255, 0, 0), 2)
         cv2.imwrite("result.jpg", result)
 
-        print "MAX_LOC=", max_loc
+        print("MAX_LOC=", max_loc)
         return max_loc
 
     # Modified on 2018/11/08 K.Hirata
@@ -151,7 +151,7 @@ class LargePlateMatchingBC:
         self.template_list = sorted(self.template_list, key=lambda x: x[1], reverse=False)
 
     def match(self, target_pic):
-        print "Matching"
+        print("Matching")
         if self.isSeiri == False:
             self.fileSeiri()
         # print self.template_list
@@ -166,7 +166,7 @@ class LargePlateMatchingBC:
                 ok_file = f
                 ok_phi = phi
 
-        print ok_file, max_sim
+        print(ok_file, max_sim)
         return ok_file, ok_phi, max_sim
 
     def comp(self, pinimg, back, template_image):
@@ -187,7 +187,7 @@ class LargePlateMatchingBC:
         cv2.rectangle(result, top_left, bottom_right, (255, 0, 0), 2)
         cv2.imwrite("result1.jpg", result)
 
-        print "Max value=", max_val, "TOP_LEFT=", top_left
+        print("Max value=", max_val, "TOP_LEFT=", top_left)
         return max_val, top_left
 
 

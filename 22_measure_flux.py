@@ -21,4 +21,4 @@ if __name__ == "__main__":
     dev.init()
 
     phosec = dev.measureFlux()
-    print "Measured flux = %5.2e photons/sec" % phosec
+    print("Measured flux = %5.2e photons/sec" % phosec)

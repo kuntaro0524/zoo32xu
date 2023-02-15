@@ -36,9 +36,9 @@ class FittingForFacing:
 
         param_opt, covariance = scipy.optimize.curve_fit(self.func, self.phi_list, self.area_list, p0=parameter_initial)
 
-        print "phi_list = ", self.phi_list
-        print "area_list = ", self.area_list
-        print "parameter =", param_opt
+        print("phi_list = ", self.phi_list)
+        print("area_list = ", self.area_list)
+        print("parameter =", param_opt)
 
         # DEBUGGING PLOT
         phi_tmp = np.linspace(0, 360, 100)
@@ -66,11 +66,11 @@ class FittingForFacing:
                 min_value=value
                 phi_min=phi
 
-        print phi_min, self.phi_min_obs
-        print min_value, self.area_min_obs
+        print(phi_min, self.phi_min_obs)
+        print(min_value, self.area_min_obs)
 
         face_angle=phi_min+90.0
-        print "findFaceAngle=%5.1f deg."%face_angle
+        print("findFaceAngle=%5.1f deg."%face_angle)
         return face_angle
     
 if __name__=="__main__":
@@ -91,4 +91,4 @@ if __name__=="__main__":
     ffff = FittingForFacing(phis, areas, logpath = logpath)
     face_angle = ffff.findFaceAngle()
 
-    print "eog %s/fitted.png" % logpath
+    print("eog %s/fitted.png" % logpath)

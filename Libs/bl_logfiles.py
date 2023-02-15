@@ -15,6 +15,7 @@ from collections import OrderedDict
 #sys.path.append("/oys/xtal/yamtbx/")
 #from yamtbx.dataproc.dataset import template_to_filenames, re_pref_num_ext
 from dataset import template_to_filenames, re_pref_num_ext
+from functools import reduce
 
 class ScanInfo:
     def __init__(self):
@@ -176,7 +177,7 @@ class BssDiffscanLog:
                     assert not self.scans[-1].need_treatment_on_image_numbers
                     continue
                 else:
-                    gonio = tuple(map(lambda x:float(x), r.groups()[1:]))
+                    gonio = tuple([float(x) for x in r.groups()[1:]])
 
                 num = int(r.group(1))
                 if self.scans[-1].need_treatment_on_image_numbers and self.scans[-1].is_shutterless() and self.scans[-1].hpoints > 1:
@@ -199,7 +200,7 @@ class BssDiffscanLog:
 
     def __getitem__(self, filename):
         for scan in reversed(self.scans):
-            print scan.filename_coords
+            print(scan.filename_coords)
             if filename in scan.filename_coords:
                 return scan
         raise KeyError
@@ -271,8 +272,8 @@ class BssDiffscanLog:
             if scan.filename_coords:
                 table.setdefault(scan.filename_template, []).append(i)
 
-        table = filter(lambda x: len(x[1])>1, table.items())
-        rem_idxes = map(lambda x: x[1][:-1], table) # last indexes will be alive
+        table = [x for x in list(table.items()) if len(x[1])>1]
+        rem_idxes = [x[1][:-1] for x in table] # last indexes will be alive
         if not rem_idxes: return
         rem_idxes = reduce(lambda x,y:x+y, rem_idxes) 
         for i in sorted(rem_idxes, reverse=True):
@@ -304,7 +305,7 @@ class ImageStatus:
     # __init__()
 
     def parse_line(self, line):
-        sp = map(lambda s:s.strip(), line.split(","))
+        sp = [s.strip() for s in line.split(",")]
         if len(sp) == 14:
             junk, self.imagenum, self.wavelength, self.exp_time, self.osc_start, self.osc_step, gx,gy,gz, self.filename, self.ringcurrent, self.I0, self.time, self.date = sp
             self.gonio_xyz = (gx, gy, gz)
@@ -411,7 +412,7 @@ class JobInfo:
         elif "scan_from" in line:
             r = re_scan.search(line)
             if r:
-                self.osc_start, self.osc_end, self.osc_step = map(float, r.groups())
+                self.osc_start, self.osc_end, self.osc_step = list(map(float, r.groups()))
         elif "sampling_interval = " in line:
             r = re_sampling.search(line)
             if r:
@@ -446,7 +447,7 @@ class JobInfo:
         elif "center #" in line: # NEED to also take care of "skipped point:"
             r = re_gonio_center.search(line)
             if r:
-                self.advanced_centering.setdefault("centers", []).append(map(float, r.groups()[1:]))
+                self.advanced_centering.setdefault("centers", []).append(list(map(float, r.groups()[1:])))
         elif line.startswith(" IMAGE_STATUS"):
             self.images.append(ImageStatus(line))
     # parse_line()
@@ -494,7 +495,7 @@ class BssJobLog:
         filenames = [] # (i, j, filename)
         for i, job in enumerate(self.jobs):
             for j, img in enumerate(job.images):
-                fltr = filter(lambda x:x[2]==img.filename, filenames)
+                fltr = [x for x in filenames if x[2]==img.filename]
                 #assert len(fltr) in (0,1)
                 if len(fltr) > 0:
                     #del_indices.append((fltr[-1][0],fltr[-1][1]))
@@ -507,11 +508,11 @@ class BssJobLog:
         if remove:
             for i in del_indices:
                 for j in sorted(del_indices[i], reverse=True):
-                    print "overwritten:", self.jobs[i].logfilename, self.jobs[i].job_id, self.jobs[i].images[j].filename
+                    print("overwritten:", self.jobs[i].logfilename, self.jobs[i].job_id, self.jobs[i].images[j].filename)
                     del self.jobs[i].images[j]
                     ow_flag = True
 
         if ow_flag:
-            print
+            print()
     # remove_overwritten_images()
 # class BssJobLog

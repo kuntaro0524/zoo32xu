@@ -56,8 +56,8 @@ class BSSconfig:
             self.my=self.getValue("Cmount_Gonio_Y:")
             self.mz=self.getValue("Cmount_Gonio_Z:")
 
-        except MyException,ttt:
-            print ttt.args[0]
+        except MyException as ttt:
+            print(ttt.args[0])
 
         self.isPrep=True
 

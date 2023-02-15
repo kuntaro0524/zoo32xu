@@ -20,12 +20,12 @@ from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
 import datetime
 import time
 import glob
-import cPickle as pickle
+import pickle as pickle
 import collections
 import threading
 import subprocess
 import socket
-import xmlrpclib
+import xmlrpc.client
 import re
 import copy
 import zmq
@@ -46,12 +46,12 @@ if c.fetchone() is None:
     shikalog.error("No 'status' in %s" % dbfile)
 
 c = con.execute("select filename,spots from spots")
-results = dict(map(lambda x: (str(x[0]), pickle.loads(str(x[1]))), c.fetchall()))
+results = dict([(str(x[0]), pickle.loads(str(x[1]))) for x in c.fetchall()])
 
-for r in results.values():
-    print r
+for r in list(results.values()):
+    print(r)
     if not r["spots"]: continue
-    ress = numpy.array(map(lambda x: x[3], r["spots"]))
+    ress = numpy.array([x[3] for x in r["spots"]])
     test = numpy.zeros(len(r["spots"])).astype(numpy.bool)
     for i in reversed(numpy.where(test)[0]): del r["spots"][i]
 

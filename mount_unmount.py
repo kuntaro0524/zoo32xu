@@ -20,7 +20,7 @@ if __name__ == "__main__":
     time_str = d.getNowMyFormat(option="date")
     logname = "./mount_unmount_%s.log" % (time_str)
 
-    print "changing mode of %s" % logname
+    print("changing mode of %s" % logname)
     logging.config.fileConfig('/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/logging.conf', defaults={'logfile_name': logname})
     logger = logging.getLogger('SPACE')
 
@@ -34,8 +34,8 @@ if __name__ == "__main__":
                 try:
                     zoo.mountSample(trayid, pinid)
                     zoo.waitTillReady()
-                except MyException, ttt:
-                    print "Sample mounting failed. Contact BL staff!"
+                except MyException as ttt:
+                    print("Sample mounting failed. Contact BL staff!")
                     sys.exit(1)
                 logger.info("Tray %s - Pin %02d mount finished." % (trayid, pinid))
                 logger.info("Waiting for 2 minutes from now")

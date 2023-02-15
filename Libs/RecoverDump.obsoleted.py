@@ -30,9 +30,9 @@ class RecoverDamp():
         	prefix="%03d"%f.getNewIdx3()
         	self.dev.mono.scanDt1PeakConfig(prefix,"DTSCAN_NORMAL",self.dev.tcs)
         	dtheta1=int(self.mono.getDt1())
-        	print "Final dtheta1 = %d pls"%dtheta1
+        	print("Final dtheta1 = %d pls"%dtheta1)
 
-		print "OKAY"
+		print("OKAY")
 
 if __name__ == '__main__':
 	rd=RecoverDamp()

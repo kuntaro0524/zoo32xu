@@ -57,7 +57,7 @@ if __name__ == "__main__":
         	# horizontal resolution -0.00684848
         	# vertical resolution -0.00915152
                 h_diff_um,v_diff_um,max_2d=inocc.moveToCenter()
-		print "2D=",max_2d
+		print("2D=",max_2d)
 
         	# preparation
         	#dev.prepCenteringLargeHolderCam2()
@@ -72,9 +72,9 @@ if __name__ == "__main__":
         dy=y-cy
         dz=z-cz
         diff=math.sqrt(dx*dx+dy*dy+dz*dz)
-        print "Distance=%8.3f mm\n"%diff
+        print("Distance=%8.3f mm\n"%diff)
 
         endtime=datetime.datetime.now()
         time_sec= (endtime-starttime).seconds
 
-	print time_sec
+	print(time_sec)

@@ -1,5 +1,5 @@
 import sys,os,math,datetime
-import os,re,urllib,urlparse
+import os,re,urllib.request,urllib.parse,urllib.error,urllib.parse
 
 class EigerLog:
 
@@ -17,22 +17,22 @@ class EigerLog:
 		except OSError:
   			pass
 
-		t=urllib.urlopen(self.eiger_logsite)
+		t=urllib.request.urlopen(self.eiger_logsite)
 		txt=t.read()
-		print txt
+		print(txt)
 		p = re.compile('href.*?log\"') 
 		m=p.findall(txt)
 		for f in m:
-  			File=urlparse.urljoin(self.eiger_logsite,f[6:-1])
-			print File
+  			File=urllib.parse.urljoin(self.eiger_logsite,f[6:-1])
+			print(File)
   			Savename=os.path.join(self.outdir,os.path.basename(File)) 
-  			urllib.urlretrieve(File,Savename)
+  			urllib.request.urlretrieve(File,Savename)
 
 	def saveStreamLog(self):
-  		File=urlparse.urljoin(self.eiger_logsite,"stream_api.log")
-		print File
+  		File=urllib.parse.urljoin(self.eiger_logsite,"stream_api.log")
+		print(File)
   		Savename=os.path.join(self.outdir,os.path.basename(File)) 
-  		urllib.urlretrieve(File,Savename)
+  		urllib.request.urlretrieve(File,Savename)
 
 	def countDrops(self):
 		self.saveStreamLog()
@@ -71,10 +71,10 @@ class EigerLog:
 			logstr="%30s %s %6.4f"%(oc_time,lines[iline].strip(),acquisition_rate)
 
 			if acquisition_rate < 0.90:
-				print "Severe!!",logstr
+				print("Severe!!",logstr)
 				
 			else:
-				print logstr
+				print(logstr)
 
 	# Start time
 	def checkDropDuring(self,starttime,endtime):
@@ -93,7 +93,7 @@ class EigerLog:
 			acq_rate_final=float(total_acquired)/float(total_frame)
 		else:	
 			acq_rate_final=1.0
-		print "Total in this time: %6d/%6d (dropped=%5d)"%(int(total_acquired),int(total_frame),int(total_frame-total_acquired))
+		print("Total in this time: %6d/%6d (dropped=%5d)"%(int(total_acquired),int(total_frame),int(total_frame-total_acquired)))
 		if total_acquired==0 and total_frame==0:
 			return acq_rate_final
 		else:
@@ -105,4 +105,4 @@ if __name__=="__main__":
 	#el.saveStreamLog()
 	#el.countDrops()
 	acq= el.checkDropDuring("2016-06-23 19:21:00","2016-06-23 19:24:00")
-	print acq
+	print(acq)

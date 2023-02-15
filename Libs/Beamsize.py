@@ -78,8 +78,8 @@ class Beamsize:
     def getTCSapertureWithBeamHV(self,hsize,vsize):
         if self.isInit==False:
             self.readConfig()
-        print "OKAY"
-        print self.beamsize
+        print("OKAY")
+        print(self.beamsize)
         for beam in self.beamsize:
             b_idx,h_beam,v_beam=beam
             if hsize==h_beam and vsize==v_beam:
@@ -88,11 +88,11 @@ class Beamsize:
     def changeBeamsizeHV(self,hsize,vsize):
         hsize=float(hsize)
         vsize=float(vsize)
-        print hsize,vsize
+        print(hsize,vsize)
         tcs_hsize,tcs_vsize=self.getTCSapertureWithBeamHV(hsize,vsize)
-        print tcs_hsize,tcs_vsize
+        print(tcs_hsize,tcs_vsize)
         self.tcs.setApert(tcs_vsize,tcs_hsize)
-        print "OKOKOKOKOK"
+        print("OKOKOKOKOK")
 
     def getNumBeamsizeList(self):
         if self.isInit==False:
@@ -122,7 +122,7 @@ if __name__=="__main__":
     #print bsc.getBeamIndexHV(10.0,18.0)
     #print bsc.getBeamIndexHV(3.0,3.0)
     #print bsc.getTCSapertureWithBeamHV(10.0,18.0)
-    print bsc.getTCSapertureWithBeamHV(3.0,3.0)
+    print(bsc.getTCSapertureWithBeamHV(3.0,3.0))
     #print bsc.changeBeamsizeHV(3.0,3.0)
     #print bsc.changeBeamsizeHV(10.0,18.0)
     #bsc.getMaxBeam()

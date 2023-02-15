@@ -17,4 +17,4 @@ dev = Device.Device(s,bl="bl32xu")
 dev.init()
 
 phosec = dev.measureFlux()
-print phosec *2.0
+print(phosec *2.0)

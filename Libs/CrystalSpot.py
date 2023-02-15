@@ -28,7 +28,7 @@ class CrystalSpot:
 		xa=numpy.array(self.x_list)
 		ya=numpy.array(self.y_list)
 
-		print xa
+		print(xa)
 
 		# horizontal dimensions
 		xmin=xa.min()
@@ -36,7 +36,7 @@ class CrystalSpot:
 		ymin=ya.min()
 		ymax=ya.max()
 
-		print xmin,xmax,ymin,ymax
+		print(xmin,xmax,ymin,ymax)
 		
 		self.h_size=numpy.fabs(xmax-xmin)+hbeam
 		self.v_size=numpy.fabs(ymax-ymin)+vbeam
@@ -58,7 +58,7 @@ class CrystalSpot:
                     y=self.y_list[i]
                     s=float(self.score_list[i])
 		    imgnum=self.imgNumList[i]
-                    print "%8.4f %8.4f %5.2f %5d"%(x,y,s,imgnum)
+                    print("%8.4f %8.4f %5.2f %5d"%(x,y,s,imgnum))
 
         def getXYlist(self):
 		return self.x_list,self.y_list
@@ -73,14 +73,14 @@ class CrystalSpot:
                 for i in numpy.arange(0,len(self.x_list)):
                     x=self.x_list[i]
                     y=self.y_list[i]
-                    if self.DEBUG: print "CrystalSpot.check",x,y,x1,y1,self.check_list[i]
+                    if self.DEBUG: print("CrystalSpot.check",x,y,x1,y1,self.check_list[i])
                     if x==x1 and y==y1:
-                        if self.DEBUG: print "CrystalSpot.check True=",x1,y1
+                        if self.DEBUG: print("CrystalSpot.check True=",x1,y1)
                         self.check_list[i]=True
-                        if self.DEBUG: print "Atta!"
+                        if self.DEBUG: print("Atta!")
                         return 1
 
-                print "something wrong"
+                print("something wrong")
                 sys.exit(1)
 
 	def addXY(self,x,y,score,imgnum,isCheck=True):
@@ -99,7 +99,7 @@ class CrystalSpot:
                     #print "UNUNUNUN",compo
                     uncheck_list.append(compo)
     
-            if self.DEBUG: print uncheck_list
+            if self.DEBUG: print(uncheck_list)
             return uncheck_list
 
 	def getPeakCode(self,score_thresh=10):
@@ -152,7 +152,7 @@ class CrystalSpot:
 		gv_y=sum_yscore/sum_score
 		gv_z=sum_zscore/sum_score
 
-		print gv_x,gv_y,gv_z
+		print(gv_x,gv_y,gv_z)
 		self.gv_xyz=gv_x,gv_y,gv_z
 
                 return self.gv_xyz
@@ -195,7 +195,7 @@ class CrystalSpot:
 		# Convertion unit [mm]
 		d_hori=rx
 		d_vert=ry
-		print "Relative=",d_hori,d_vert,self.phi
+		print("Relative=",d_hori,d_vert,self.phi)
 		
 		# Convertion to GXYZ
 		dx,dz=self.calcVlenAtPhi(d_vert,self.phi)

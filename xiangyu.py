@@ -38,7 +38,7 @@ if __name__ == "__main__":
 	# Raster attenuator
 	att_raster=500.0 #[um]
 	att_idx=int(att_raster/100.0)
-	print "ATT INDEX=",att_idx
+	print("ATT INDEX=",att_idx)
 
 	# Test of reading conditions from ZooConditions
 	condition=conditions['COLLECTION']
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 	distance=condition['DISTANCE']
 	att_raster=condition['ATT_RASTER']
 
-	print beamsize,osc_width,total_osc,exp_henderson,exp_time,distance,att_raster
+	print(beamsize,osc_width,total_osc,exp_henderson,exp_time,distance,att_raster)
 
 
 """

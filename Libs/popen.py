@@ -7,7 +7,7 @@ def exec_cmd(cmd):
     from subprocess import Popen, PIPE
     p = Popen(cmd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
-    print out
+    print(out)
     return [ s for s in out.split('\n') if s ]
 
 if __name__ == '__main__':

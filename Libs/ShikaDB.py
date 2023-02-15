@@ -3,7 +3,7 @@ import getpass
 #import pysqlite2.dbapi2 as sqlite3
 import sqlite3
 import time
-import cPickle as pickle
+import pickle as pickle
 import numpy
 import bl_logfiles
 sys.path.append("/oys/xtal/yamtbx/")
@@ -41,21 +41,21 @@ class ShikaDB:
 
 			c = cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='status';")
 			if c.fetchone() is None:
-				print "c.fetchone failed"
+				print("c.fetchone failed")
 				return
 
 			c = con.execute("select filename,spots from spots")
-			results = dict(map(lambda x: (str(x[0]), pickle.loads(str(x[1]))), c.fetchall()))
+			results = dict([(str(x[0]), pickle.loads(str(x[1]))) for x in c.fetchall()])
 
-			for r in results.values():
+			for r in list(results.values()):
 				if not r["spots"]: continue
-				ress = numpy.array(map(lambda x: x[3], r["spots"]))
+				ress = numpy.array([x[3] for x in r["spots"]])
 				test = numpy.zeros(len(r["spots"])).astype(numpy.bool)
 				#for rr in exranges: test |= ((min(rr) <= ress) & (ress <= max(rr)))
 				for i in reversed(numpy.where(test)[0]): del r["spots"][i]
 
 			if len(self.slog.scans)!=1:
-				print "Scan results are duplicated."
+				print("Scan results are duplicated.")
 				system.exit()
 	
 			for scan in self.slog.scans:
@@ -67,7 +67,7 @@ class ShikaDB:
 					if imgf not in results: continue
 					#print "IMGF=",imgf
 					nspots=len(results[imgf]["spots"])
-					snrlist = map(lambda x: x[2], results[imgf]["spots"])
+					snrlist = [x[2] for x in results[imgf]["spots"]]
 					#print "RESULTS:",imgf,nspots,len(snrlist)
 	
 					""" KEITARO ORIGINAL
@@ -118,8 +118,8 @@ class ShikaDB:
 
 if __name__=="__main__":
 	jj=ShikaDB("./asada.db","./asada.log")
-	print jj.getCompleteness()
+	print(jj.getCompleteness())
 	good_spots=jj.getThresh(1)
 	
 	for s in good_spots:
-		print s
+		print(s)

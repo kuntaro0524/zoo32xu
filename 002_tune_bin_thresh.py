@@ -32,11 +32,11 @@ if __name__=="__main__":
         for cn in gain:
             bfile="%s/back_%d-%d.ppm"%(cappath,br,cn)
             cfile="%s/loop_%d-%d.ppm"%(cappath,br,cn)
-            print bfile, cfile
+            print(bfile, cfile)
             # set Target/Back images
             cip.setImages(cfile, bfile)
             prefix = "%s/con_check_%s_%s"%(cappath, br, cn)
-            print prefix
+            print(prefix)
             cont = cip.getContour()
             prep_str = "%4d-%4d" % (br,cn)
             bin_name = "%s/bin_%s.png" % (cappath, prep_str)

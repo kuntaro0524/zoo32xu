@@ -23,5 +23,5 @@ if __name__ == "__main__":
 
     wavelength = zoo.getWavelength()
     zoo.onlySampleQuery()
-    print wavelength
+    print(wavelength)
     zoo.disconnect()

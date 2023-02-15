@@ -48,7 +48,7 @@ class Device(Singleton.Singleton):
             self.s.connect((host,port))
     """
     def __init__(self,server):
-        print server
+        print(server)
         self.s=server
 
     def readConfig(self):
@@ -70,14 +70,14 @@ class Device(Singleton.Singleton):
             self.total_num=conf.getCondition2("FIXED_POINT","total_num")
             self.count_time=conf.getCondition2("FIXED_POINT","time")
 
-        except MyException,ttt:
-            print ttt.args[0]
-            print "Check your config file carefully.\n"
+        except MyException as ttt:
+            print(ttt.args[0])
+            print("Check your config file carefully.\n")
             sys.exit(1)
 
     def init(self):
         # settings
-        print "Initialization starts"
+        print("Initialization starts")
         self.mono=Mono.Mono(self.s)
         self.tcs=TCS.TCS(self.s)
         self.bm=BM.BM(self.s)
@@ -102,7 +102,7 @@ class Device(Singleton.Singleton):
         self.mbs=MBS.MBS(self.s)
         self.dss=DSS.DSS(self.s)
 
-        print "Device. initialization finished"
+        print("Device. initialization finished")
         self.isInit=True
 
     def tuneDt1(self,logpath):
@@ -112,7 +112,7 @@ class Device(Singleton.Singleton):
         prefix="%s/%03d"%(logpath,self.f.getNewIdx3())
         self.mono.scanDt1PeakConfig(prefix,"DTSCAN_NORMAL",self.tcs)
         dtheta1=int(self.mono.getDt1())
-        print "Final dtheta1 = %d pls"%dtheta1
+        print("Final dtheta1 = %d pls"%dtheta1)
 
     def changeEnergy(self,en,isTune=True,logpath="/isilon/BL32XU/BLsoft/Logs/Zoo/"):
         # Energy change
@@ -134,7 +134,7 @@ class Device(Singleton.Singleton):
         ff=Flux.Flux(en)
         phosec=ff.calcFluxFromPIN(pin_uA)
         self.finishScan(cover_off=True)
-        print "PHOSEC: %e"%phosec
+        print("PHOSEC: %e"%phosec)
         return phosec
 
     def getBeamsize(self,config_dir="/isilon/blconfig/bl32xu/"):
@@ -290,7 +290,7 @@ class Device(Singleton.Singleton):
             # Tune gain
             gain=self.cap.tuneGain()
     
-        print "##### GAIN %5d\n"%gain
+        print("##### GAIN %5d\n"%gain)
     
         ### averaging center x,y
         path=os.path.abspath("./")
@@ -307,11 +307,11 @@ class Device(Singleton.Singleton):
         ring_current=float(strs[len(strs)-2].replace("mA",""))
     
         if ring_current > current_threshold:
-            print "Ring current %5.1f"%ring_current
+            print("Ring current %5.1f"%ring_current)
             return True
         else:
-            print "Ring aborted."
-            print "Ring current %5.1f"%ring_current
+            print("Ring aborted.")
+            print("Ring current %5.1f"%ring_current)
             return False
 
 if __name__=="__main__":

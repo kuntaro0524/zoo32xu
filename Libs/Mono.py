@@ -48,7 +48,7 @@ class Mono:
 	# Please see 150917/04..../Matome/*.png
 	z2float = 213.2*energy + 412
 	z2int = int(z2float)
-	print "estimated Z2 is ",z2int
+	print("estimated Z2 is ",z2int)
 	return z2int
 
     def calcZ2(self,energy):
@@ -62,7 +62,7 @@ class Mono:
 	# Please see /isilon/users/target/target/Staff/2015B/151020/03.MakeTableTy1Z2/Z2.plt
 	z2float = 269.65*energy-279.715
 	z2int = int(z2float)
-	print "estimated Z2 is ",z2int
+	print("estimated Z2 is ",z2int)
 	return z2int
 
     def changeWL(self,wavelength):
@@ -82,7 +82,7 @@ class Mono:
 
     def moveZt(self,position):
 	if position < -5000 or position > 5000:
-		print "Zt error!"
+		print("Zt error!")
 		return False
 
 	self.m_zt.move(position)
@@ -133,7 +133,7 @@ class Mono:
         maxval=self.m_dtheta1.axisScan(ofile,cnt_ch1,cnt_ch2,sec)
 
         counter_1_max=maxval[0]
-	print "Peak: %5d\n"%counter_1_max
+	print("Peak: %5d\n"%counter_1_max)
 
         # Analysis and Plot
         outfig=prefix+"_dtheta1.png"
@@ -171,9 +171,9 @@ class Mono:
                 tcsh=conf.getCondition2(confchar,"tcsh")
                 detune_pls=int(conf.getCondition2(confchar,"detune"))
 
-        except MyException,ttt:
-                print ttt.args[0]
-                print "Check your config file carefully.\n"
+        except MyException as ttt:
+                print(ttt.args[0])
+                print("Check your config file carefully.\n")
 
 	# Setting tcs
 	tcs.setApert(tcsv,tcsh)
@@ -191,7 +191,7 @@ class Mono:
         maxval=self.m_dtheta1.axisScan(ofile,ch1,ch2,time)
 
         counter_1_max=maxval[0]+detune_pls
-        print "Peak: %5d\n"%counter_1_max
+        print("Peak: %5d\n"%counter_1_max)
 
 	return counter_1_max
 
@@ -209,9 +209,9 @@ class Mono:
                 tcsh=conf.getCondition2(confchar,"tcsh")
                 detune_pls=int(conf.getCondition2(confchar,"detune"))
 
-        except MyException,ttt:
-                print ttt.args[0]
-                print "Check your config file carefully.\n"
+        except MyException as ttt:
+                print(ttt.args[0])
+                print("Check your config file carefully.\n")
 
 	# Setting tcs
 	tcs.setApert(tcsv,tcsh)
@@ -227,8 +227,8 @@ class Mono:
         backlash=2000+detune_pls
 
 	# Find max of channel 1
-        print self.m_dtheta1.findMax(ch1,time)
-        print "Peak: %5d\n"%maxval
+        print(self.m_dtheta1.findMax(ch1,time))
+        print("Peak: %5d\n"%maxval)
 
 	return maxval
 
@@ -246,9 +246,9 @@ class Mono:
                 tcsh=conf.getCondition2(confchar,"tcsh")
                 detune_pls=int(conf.getCondition2(confchar,"detune"))
 
-        except MyException,ttt:
-                print ttt.args[0]
-                print "Check your config file carefully.\n"
+        except MyException as ttt:
+                print(ttt.args[0])
+                print("Check your config file carefully.\n")
 
 	# Setting tcs
 	tcs.setApert(tcsv,tcsh)
@@ -267,9 +267,9 @@ class Mono:
 
         counter_1_max=maxval[0]+detune_pls
 #        print "Peak: %5d\n"%counter_1_max
-        print "Peak: %5d pls\n"%maxval[0]
-        print "detune: %5d pls\n"%detune_pls
-        print "target pos: %5d pls\n"%counter_1_max
+        print("Peak: %5d pls\n"%maxval[0])
+        print("detune: %5d pls\n"%detune_pls)
+        print("target pos: %5d pls\n"%counter_1_max)
 
         # Analysis and Plot
         outfig=prefix+"_dtheta1.png"
@@ -277,7 +277,7 @@ class Mono:
         comment=AxesInfo(self.s).getLeastInfo()
 	try:
         	fwhm,center=ana.analyzeAll("dtheta1[pulse]","Intensity",outfig,comment,"OBS","PEAK")
-        except MyException,ttt:
+        except MyException as ttt:
 		raise MyException("Dtheta1 tune peak analysis failed.%s"%ttt.args[0])
 
 	if fwhm==0.0:
@@ -313,9 +313,9 @@ class Mono:
                 tcsh=conf.getCondition2(confchar,"tcsh")
                 detune_pls=int(conf.getCondition2(confchar,"detune"))
 
-        except MyException,ttt:
-                print ttt.args[0]
-                print "Check your config file carefully.\n"
+        except MyException as ttt:
+                print(ttt.args[0])
+                print("Check your config file carefully.\n")
 
         detune_pls=detune
 	# Setting tcs
@@ -334,7 +334,7 @@ class Mono:
         maxval=self.m_dtheta1.axisScan(ofile,ch1,ch2,time)
 
         counter_1_max=maxval[0]+detune_pls
-        print "Peak: %5d\n"%counter_1_max
+        print("Peak: %5d\n"%counter_1_max)
 
         # Analysis and Plot
         outfig=prefix+"_dtheta1.png"
@@ -342,7 +342,7 @@ class Mono:
         comment=AxesInfo(self.s).getLeastInfo()
 	try:
         	fwhm,center=ana.analyzeAll("dtheta1[pulse]","Intensity",outfig,comment,"OBS","PEAK")
-        except MyException,ttt:
+        except MyException as ttt:
 		raise MyException("Dtheta1 tune peak analysis failed.%s"%ttt.args[0])
 
 	if fwhm==0.0:

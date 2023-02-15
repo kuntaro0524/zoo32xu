@@ -27,5 +27,5 @@ if __name__=="__main__":
                 s.connect((host,port))
 
 		p=RingCurrent(s)
-		print p.getRingCurrent()
-		print p.isAborted()
+		print(p.getRingCurrent())
+		print(p.isAborted())

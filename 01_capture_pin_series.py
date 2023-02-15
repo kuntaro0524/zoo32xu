@@ -29,7 +29,7 @@ if __name__ == "__main__":
     for br in bright:
         for ga in gain:
             filename="%s/%s_%d-%d.ppm"%(cappath,prefix,br,ga)
-            print "Captureing..",filename
+            print("Captureing..",filename)
             cap.setBright(br)
             cap.setGain(ga)
             cap.capture(filename)

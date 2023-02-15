@@ -17,7 +17,7 @@ bss_port=5555
 if __name__ == "__main__":
     zoo=Zoo.Zoo()
     zoo.connect()
-    print zoo.getSampleInformation()
+    print(zoo.getSampleInformation())
     zoo.skipSample()
     zoo.waitTillReady()
     zoo.disconnect()

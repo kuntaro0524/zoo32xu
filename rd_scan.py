@@ -87,7 +87,7 @@ if __name__=="__main__":
 		h_off=offset[0]
 		v_off=offset[1]
 		newxyz=moveHV(cen,h_off,v_off,phi)
-		print idx,newxyz
+		print(idx,newxyz)
 		idx+=1
 		prefix="%03d"%idx
 		#dire="%s/%03d/"%(curr_dir,idx)

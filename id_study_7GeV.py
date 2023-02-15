@@ -59,7 +59,7 @@ while True:
 	en=en_start+float(idx)*float(en_step)
 
 	if en<8.6:
-		print "wainting"
+		print("wainting")
 		time.sleep(900)
 
     	# Set TCS aperture full open
@@ -111,7 +111,7 @@ while True:
     	pin_value=counter.getPIN(5)
 
 	max3=id.scanID(prefix,start,end,sfine_step,idch1,0,0.2)
-	print max3
+	print(max3)
 
 	# Writing log file
 	logf.write("%8.3f keV ID %8.5f PIN: %8s uA\n"%(en,max3[0],pin_value))

@@ -51,7 +51,7 @@ root dir: %(root_dir)s<br>
 </div>
 """ % dict(name = "BL45XU Starting up", root_dir ="/isilon/BL45XU/BLsoft/PPPP/10.Zoo", datename = "START", cdate = time_str)
 
-print html_head
+print(html_head)
 
 png_list = glob.glob("*.png")
 
@@ -63,4 +63,4 @@ for pngfile in png_list:
     s = """
   <td><a href="Raster area" onmouseover="document.getElementById('ph-%(idx)d').style.display='block';" onmouseout="document.getElementById('ph-%(idx)d').style.display='none';">%(pngfile)s</a><div style="position:absolute;"><img src="%(pngfile)s" height="240" id="ph-%(idx)d" style="zindex: 100; position: absolute; top: -260px; display:none;" /></div></td><br>
 """ % dict(pngfile = abspath, idx = idx)
-    print s
+    print(s)

@@ -24,7 +24,7 @@ class ZOOhtmlLogMaker:
         else:
             self.htmlout = os.path.join(root_dir, "report_%s.html" % name)
 
-        print self.htmlout
+        print(self.htmlout)
 
         self.dbname = dbname
 
@@ -179,7 +179,7 @@ root dir: %(root_dir)s<br>
             if len(puck_id_list) != 0:
                 for saved_puck in puck_id_list:
                     if saved_puck == puck_id:
-                        print "already saved"
+                        print("already saved")
                         saved_flag = True
                         break
                     else:
@@ -189,7 +189,7 @@ root dir: %(root_dir)s<br>
             else:
                 puck_id_list.append(puck_id)
 
-        print puck_id_list
+        print(puck_id_list)
         # counting each
         for cond in conds:
             puck_id = cond['puckid']
@@ -198,24 +198,24 @@ root dir: %(root_dir)s<br>
             if isDone == 0 or isDone > 1000:
                 continue
             idx = 0
-            print "CHECK ", puck_id, pin_id
+            print("CHECK ", puck_id, pin_id)
             for index in range(0, len(puck_id_list)):
                 if puck_id == puck_id_list[index]:
                     n_pins[index] += 1
 
-        print puck_id_list, pin_id_list
-        print n_pins
+        print(puck_id_list, pin_id_list)
+        print(n_pins)
 
         logstr = ""
         for npin, puck_id in zip(n_pins, puck_id_list):
-            print "%10s(%d)" % (puck_id, npin)
+            print("%10s(%d)" % (puck_id, npin))
             logstr += "%10s(%d) " % (puck_id, npin)
 
         return logstr
 
     def add_condition(self, conds, uname):
         n_meas, wavelength, exp_ds, dist_ds, dose_ds, ds_vbeam, ds_hbeam, dist_raster, att_raster, exp_raster, score_min, score_max, cry_max_size_um = self.get_sample_info(conds)
-        print "EEEEEEEEEEEEEEEEEEEEEEEE"
+        print("EEEEEEEEEEEEEEEEEEEEEEEE")
         puck_pins = self.get_sample_list(conds)
 
         #samples = map(lambda x: "%s (%d pins)" % (x[0], len(x[1])), condition.pucks_and_pins)
@@ -363,8 +363,8 @@ def read_max_score(datf, kind="n_spots"):
     for l in open(datf):
         if " %s " % kind in l: scores.append(float(l.split()[4]))
 
-    print scores
-    print "MMMMMM", max(scores)
+    print(scores)
+    print("MMMMMM", max(scores))
     if len(scores) > 0:
         return max(scores)
     else:
@@ -394,7 +394,7 @@ def make_offline(module_name, root_dir, name):
         zhl.add_condition(cond)
         for trayid, pin_list in cond.pucks_and_pins:
             for pinid in pin_list:
-                print "doing", trayid, pinid
+                print("doing", trayid, pinid)
                 scan_dir = os.path.join(root_dir, "%s-%s-%.2d" % (cond.uname, trayid, pinid), "scan")
                 shika_workdir = os.path.join(scan_dir, "_spotfinder")
                 raster_log = os.path.join(scan_dir, "diffscan.log")

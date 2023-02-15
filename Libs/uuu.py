@@ -38,17 +38,17 @@ if __name__=="__main__":
         pfile=open("peak.dat","w")
         gfile=open("grav.dat","w")
         for crystal in crystals:
-                print "======= START ======"
+                print("======= START ======")
                 #print "<< EDGES >>"
                 #crystal.findHoriEdges()
                 #print "<< EDGES >>"
                 gx,gy,gz=crystal.getGrav()
-                print "Gravity of this crystal",gx,gy,gz
+                print("Gravity of this crystal",gx,gy,gz)
                 #print "getPeakCode!!!"
                 #px,py,pz=crystal.getPeakCode()
                 #pfile.write("%8.5f %8.5f %8.5f\n"%(px,py,pz))
                 #gfile.write("%8.5f %8.5f %8.5f\n"%(gx,gy,gz))
-                print "======= END ======"
+                print("======= END ======")
 
         pfile.close()
         gfile.close()

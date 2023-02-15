@@ -16,7 +16,7 @@ if __name__ == "__main__":
         oindex = p['o_index']
         isDone = p['isDone']
         if p['mode'] == "multi":
-            print oindex,p['total_osc'],p['pinid']
+            print(oindex,p['total_osc'],p['pinid'])
             # p['total_osc'],p['osc_width'],p['isDone'],p['hebi_att'],p['isMount']
             #esa.updateValueAt(oindex,"maxhits", 100)
         

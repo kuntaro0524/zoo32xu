@@ -26,13 +26,13 @@ class KUMA:
         density = total_n_photons / area
         tmp_att_fac = self.limit_dens / density
         if self.debug == True:
-            print "att_factor=",tmp_att_fac
-            print "Nframes = ", nframes
-            print "total exp = ", total_exp_time
-            print "total photons = %8.2e" % total_n_photons
-            print "area = %8.2f  [um^2]" % area
-            print "density = %8.3e" % density, "photons/um^2"
-            print "Limit   = %8.3e" % self.limit_dens, "photons/um^2"
+            print("att_factor=",tmp_att_fac)
+            print("Nframes = ", nframes)
+            print("total exp = ", total_exp_time)
+            print("total photons = %8.2e" % total_n_photons)
+            print("area = %8.2f  [um^2]" % area)
+            print("density = %8.3e" % density, "photons/um^2")
+            print("Limit   = %8.3e" % self.limit_dens, "photons/um^2")
 
         attfactor = self.limit_dens * (crylen * vbeam_um * osc) / (phosec * exp_per_frame * tot_phi)
         return attfactor
@@ -41,7 +41,7 @@ class KUMA:
         en = 12.3984 / wavelength
         radd = Raddose.Raddose()
         dose_1sec = radd.getDose1sec(beam_h, beam_v, flux, en)
-        print dose_1sec
+        print(dose_1sec)
         exptime_limit = dose / dose_1sec
         return exptime_limit
 
@@ -49,9 +49,9 @@ class KUMA:
         en = 12.3984 / wavelength
         radd = Raddose.Raddose()
         dose_per_photon = radd.getDose1sec(1.0, 1.0, 1, en)
-        print "Dose per photon=",dose_per_photon
+        print("Dose per photon=",dose_per_photon)
         self.limit_dens = (dose / dose_per_photon)
-        print "Limit density= %e [phs/um2]" % self.limit_dens
+        print("Limit density= %e [phs/um2]" % self.limit_dens)
 
         return self.limit_dens
 
@@ -66,7 +66,7 @@ class KUMA:
         best_transmission = exptime_limit / float(n_frames) / cond['exp_ds']
 
         mod_transmission = cond['reduced_fact'] * best_transmission
-        print "Exptime limit = ", exptime_limit
+        print("Exptime limit = ", exptime_limit)
         self.logger.info("Multi: Exposure time limit for dose %5.2f MGy = %10.5f " % (cond['dose_ds'], exptime_limit))
         self.logger.info("Multi: Utilized flux = %5.2e " % flux)
 
@@ -82,7 +82,7 @@ class KUMA:
         # Attenuator is required
         else:
             exp_time = exp_orig
-            print "Exposure time is input value: %8.3f [sec]" % exp_orig
+            print("Exposure time is input value: %8.3f [sec]" % exp_orig)
         return exp_time, mod_transmission
 
     def getBestCondsHelical(self, cond, flux, dist_vec_mm):
@@ -110,10 +110,10 @@ class KUMA:
         if mod_transmission >= 1.0:
             exp_time = exp_orig * mod_transmission
             mod_transmission = 1.0
-            print "Exposure time was replaced by %8.4f sec" % exp_time
-            print "Measurement time will be longer than the initial condition"
-            print "Initial data collection time: %8.2f [sec]" % (exp_orig * float(n_frames))
-            print "Current data collection time: %8.2f [sec]" % (exp_time * float(n_frames))
+            print("Exposure time was replaced by %8.4f sec" % exp_time)
+            print("Measurement time will be longer than the initial condition")
+            print("Initial data collection time: %8.2f [sec]" % (exp_orig * float(n_frames)))
+            print("Current data collection time: %8.2f [sec]" % (exp_time * float(n_frames)))
         # Attenuator is required
         else:
             exp_time = exp_orig
@@ -147,13 +147,13 @@ if __name__ == "__main__":
     conds[0]['ds_vbeam'] = 20.0
     conds[0]['total_osc'] = 360.0
 
-    print "hbeam = ", conds[0]['ds_hbeam']
+    print("hbeam = ", conds[0]['ds_hbeam'])
     kuma.getBestCondsHelical(conds[0], flux, dist_vec)
 
 
     flux = 5E12
     conds[0]['ds_hbeam'] = 10.0
-    print "hbeam = ", conds[0]['ds_hbeam']
+    print("hbeam = ", conds[0]['ds_hbeam'])
     kuma.getBestCondsHelical(conds[0], flux, dist_vec)
 
     """

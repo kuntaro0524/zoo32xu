@@ -4,7 +4,7 @@ if __name__ == "__main__":
     zoo.connect()
     puck_list=zoo.getSampleInformation()
 
-    print puck_list
+    print(puck_list)
 
     csvfile = sys.argv[1]
     n_ng = 0
@@ -21,7 +21,7 @@ if __name__ == "__main__":
                     break
             #print "KOKONIKURUKA"
             if found_flag == False:
-                print "NG,",puckid,pinid 
+                print("NG,",puckid,pinid) 
                 n_ng += 1
 
-print "NG number = ", n_ng
+print("NG number = ", n_ng)

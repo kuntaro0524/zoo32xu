@@ -37,7 +37,7 @@ class CoaxYZ:
 		curr_z=int(self.coax_z.getPosition()[0])
 		curr_y=int(self.coax_y.getPosition()[0])
 
-		print curr_z,curr_y
+		print(curr_z,curr_y)
 		#print self.coax_y.getPosition()[0]
 
 		# Scan width [0.5um/pls] 
@@ -50,15 +50,15 @@ class CoaxYZ:
 		start_y=curr_y-2000
 		end_y=curr_y+2000
 
-		print "Z",start_z,end_z
-		print "Y",start_y,end_y
+		print("Z",start_z,end_z)
+		print("Y",start_y,end_y)
 
 		# scan step
 		step_pls=500
 
 		ofile=open("coax.dat","w")
 	
-		print "Scan stage starts"
+		print("Scan stage starts")
 
 		for y in arange(start_y,end_y,step_pls):
 			for z in arange(start_z,end_z,step_pls):
@@ -66,7 +66,7 @@ class CoaxYZ:
 				self.coax_z.move(z)
 				cps=self.count.getCount(0.2)
 				ofile.write("%5d %5d %10s %10s\n"%(y,z,cps[0],cps[1]))
-				print "%5d %5d %10d"%(y,z)
+				print("%5d %5d %10d"%(y,z))
 				ofile.flush()
 			ofile.write("\n")
 
@@ -87,9 +87,9 @@ if __name__=="__main__":
 	
 	co=CoaxYZ(s)
 	curr=co.getZ()
-	print curr
+	print(curr)
 	t=curr+10
-	print t
+	print(t)
 	co.moveZ(t)
 	time.sleep(10)
 	co.moveZ(curr)

@@ -80,7 +80,7 @@ class AxesInfo:
                 	tcs_hori=Motor(self.s,"bl_32in_tc1_slit_1_horizontal","mm").getPosition()[0]
 
 		except :
-			print sys.exc_info()[0]
+			print(sys.exc_info()[0])
 			sys.exit(1)
 
 		cm1="Gap %8.3fmm\nFES[mm]: (He,Wi)=(%6.4f,%6.4f)\nFES[mm]:(V,H)=(%6.4f,%6.4f)\nEnergy=%12.4fkeV\n"%(gap,fesheight,feswidth,fesv,fesh,energy)

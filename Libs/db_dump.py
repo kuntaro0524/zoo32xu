@@ -71,4 +71,4 @@ if __name__ == "__main__":
             t_sukima_raster = (raster_time * 60.0 - nv_raster * exp_raster * nh_raster) / (nv_raster - 1)
             #print "SUKIMA = ", t_sukima_raster
 
-    print "NDS processed = ", n_good
+    print("NDS processed = ", n_good)

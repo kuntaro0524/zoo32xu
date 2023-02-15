@@ -19,21 +19,21 @@ def makeIrradPoints(left_edge,right_edge,y_step):
         # ratio 
         ratio=math.fabs((y_step/1000.0)/y_length)
 
-	print y_length,ratio
+	print(y_length,ratio)
 
 	# step length along with 3D vector of LR
 	stepVec=lr_len*ratio
-	print stepVec
+	print(stepVec)
 
         # number of irradiation points on this helical vector
         step_mm=y_step/1000.0
         npoints=int(y_length/step_mm)+1
-	print npoints
+	print(npoints)
 
         # step in mm
         for i in range(0,npoints):
 		vec=lvec+i*stepVec*unit_vec
-		print "%8.5f %8.5f %8.5f"%(vec[0],vec[1],vec[2])
+		print("%8.5f %8.5f %8.5f"%(vec[0],vec[1],vec[2]))
 
 gx=0.0000
 gy=1.5000

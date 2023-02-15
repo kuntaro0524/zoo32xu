@@ -9,7 +9,7 @@ if __name__ == "__main__":
     bsc = BeamsizeConfig.BeamsizeConfig(config_dir)
     # bsc.readConfig()
     tw, th, bs, ff = bsc.getBeamParamList()
-    print "Available beam size =",len(bs)
+    print("Available beam size =",len(bs))
     for b in bs:
         p, q, r = b
-        print "%5d %5.1f (V) x %5.1f (H)um" % (p, r, q)
+        print("%5d %5.1f (V) x %5.1f (H)um" % (p, r, q))

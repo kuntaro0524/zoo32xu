@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     beam_index = bsc.getBeamIndexHV(hsize, vsize)
 
-    print "Beamsize index should be %5d" % beam_index
+    print("Beamsize index should be %5d" % beam_index)
 
     zoo.setBeamsize(beam_index)
     zoo.disconnect()

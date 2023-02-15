@@ -16,7 +16,7 @@ target_img = cv2.imread(target_img_path)
 target_img = cv2.resize(target_img, IMG_SIZE)
 target_hist = cv2.calcHist([target_img], [0], None, [256], [0, 256])
 
-print('TARGET_FILE: %s' % (TARGET_FILE))
+print(('TARGET_FILE: %s' % (TARGET_FILE)))
 
 files = os.listdir(IMG_DIR)
 for file in files:
@@ -29,4 +29,4 @@ for file in files:
     comparing_hist = cv2.calcHist([comparing_img], [0], None, [256], [0, 256])
 
     ret = cv2.compareHist(target_hist, comparing_hist, 0)
-    print(file, ret)
+    print((file, ret))

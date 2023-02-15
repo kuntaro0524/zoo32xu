@@ -20,7 +20,7 @@ def create_message(from_addr, to_addr, subject, body, encoding):
 	alt = MIMEMultipart('alternative')
 	related.attach(alt)
 
-	print body
+	print(body)
 
 	content = MIMEText(body, 'plain', encoding)
 	alt.attach(content)
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 	infile=open(sys.argv[1],'r')
 	lines=infile.readlines()
 	for line in lines:
-		print line
+		print(line)
 		body+=line
 		
 	msg = create_message(from_addr, to_addr, title, body, 'utf-8')

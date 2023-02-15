@@ -32,17 +32,17 @@ class CrystalList:
             a=x.getTotalScore()
             b=y.getTotalScore()
             if self.debug==True:
-                print "SCORE COMPARE",a,b
+                print("SCORE COMPARE",a,b)
             if a==b: return 0
             if a<b: return 1
             return -1
 
         if self.debug==True:
-            print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
             for c in self.crystals:
                 c.printAll()
             #print self.crystals
-            print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
     
         # Sorting better crystals
         # The top of crystal is the best one
@@ -50,11 +50,11 @@ class CrystalList:
         self.crystals.sort(cmp=compCryScore)
 
         if self.debug==True:
-            print "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
             for c in self.crystals:
                 c.printAll()
             #print self.crystals
-            print "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
 
         self.isSorted=True
 
@@ -86,9 +86,9 @@ class CrystalList:
     def printAll(self):
         index=0
         for x,y,z,score in self.xyzs_list:
-            print "%5d %8.4f %8.4f %8.4f %5d"%(index,x,y,z,score)
+            print("%5d %8.4f %8.4f %8.4f %5d"%(index,x,y,z,score))
             index+=1
-        print "\n\n"
+        print("\n\n")
 
     def getXYlist(self):
         return self.xyzs_list

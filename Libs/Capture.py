@@ -123,7 +123,7 @@ class Capture:
         lines = open("./tmp", "r").readlines()
 
         for line in lines:
-            print("searching %s" % self.videosrv)
+            print(("searching %s" % self.videosrv))
             if line.rfind(self.videosrv) != -1:
                 return True
         return False
@@ -137,7 +137,7 @@ class Capture:
         if self.open_sig == True:
             self.open_sig = False
             self.isPrep = False
-            print "Closing the port..."
+            print("Closing the port...")
             self.s.close()
 
     def setBright(self, bright=40000):
@@ -145,7 +145,7 @@ class Capture:
         com_bright = "put/video_brightness/%d" % bright
         self.s.sendall(com_bright)
         recbuf = self.s.recv(8000)
-        print "setBright:",recbuf
+        print("setBright:",recbuf)
 
     def setCross(self):
         com1 = "put/video_cross/on"
@@ -158,26 +158,26 @@ class Capture:
         com1 = "put/video_cross/off"
         self.s.sendall(com1)
         recbuf = self.s.recv(8000)
-        print recbuf
+        print(recbuf)
 
     def setContrast(self, contrast):
         com1 = "put/video_contrast/%d" % contrast
         self.s.sendall(com1)
         recbuf = self.s.recv(8000)
-        print "setContrast:",recbuf
+        print("setContrast:",recbuf)
 
     def setGain(self, gain):
         com1 = "put/video_color/%d" % gain
         self.s.sendall(com1)
         recbuf = self.s.recv(8000)
-        print "setGain:",recbuf
+        print("setGain:",recbuf)
 
     # Quick capture : 190419
     #def capture(self, filename, speed=150, cross=False):
     # speed is not required except for BL32XU, probablly. K. Hirata 190419
     def capture(self, filename, speed=150, cross=False):
         if self.isPrep == False:
-            print "Preparation is called from capture function"
+            print("Preparation is called from capture function")
             self.prep()
 
         # Unset cross
@@ -190,7 +190,7 @@ class Capture:
         try:
             self.s.sendall(com1)
             recbuf = self.s.recv(8000)
-            print recbuf
+            print(recbuf)
         except socket.error as e:
             raise MyException("capture failed!")
 
@@ -199,7 +199,7 @@ class Capture:
         command="ssh -l %s %s \"echo %d > /sys/class/video4linux/video0/shutter_width\""%(self.user,self.host,speed)
         os.system(command)
         """
-        print "BL41XU skipped"
+        print("BL41XU skipped")
 
     def setBinning(self, binning):
         """
@@ -222,7 +222,7 @@ class Capture:
         recbuf=self.s.recv(8000)
         #print "debug::",recbuf
         """
-        print "BL41XU skipped"
+        print("BL41XU skipped")
 
     def getBinning(self):
         if self.isPrep == False:
@@ -232,13 +232,13 @@ class Capture:
                 if self.connect() == True:
                     break
                 else:
-                    print "Retry Connection"
+                    print("Retry Connection")
                     time.sleep(5)
 
         com1 = "get/video_binning/"
         self.s.sendall(com1)
         recbuf = self.s.recv(8000)
-        print "debug::", recbuf
+        print("debug::", recbuf)
         sp = recbuf.split("/")
         if len(sp) == 5:
             return int(sp[-2])
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     cappath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages"
     #cappath = "/isilon/users/target/target/"
 
-    print "START-connect from main"
+    print("START-connect from main")
     # print cap.checkRunning()
 
     # cap.setGain(1500)

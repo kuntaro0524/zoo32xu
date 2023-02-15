@@ -53,8 +53,8 @@ class MountPin:
 		# Mount pin
         	try :
                 	self.space.mountSample(trayid,pinid)
-        	except MyException,ttt:
-                	print ttt.args[0]
+        	except MyException as ttt:
+                	print(ttt.args[0])
 			sys.exit()
 
 	def dismount(self,trayid,pinid):
@@ -68,8 +68,8 @@ class MountPin:
 		# dismount pin
         	try :
                 	self.space.dismountSample(trayid,pinid)
-        	except MyException,ttt:
-                	print ttt.args[0]
+        	except MyException as ttt:
+                	print(ttt.args[0])
 			sys.exit()
 	
 if __name__=="__main__":

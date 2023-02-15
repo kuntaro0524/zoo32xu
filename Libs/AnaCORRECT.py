@@ -208,26 +208,26 @@ class AnaCORRECT():
             rmeas=self.rmeas[len(self.redun)-1]
             compl=self.compl[len(self.redun)-1]
             isigi=self.isigi[len(self.redun)-1]
-            print "HERE"
+            print("HERE")
             cchalf=self.cchalf[len(self.redun)-1]
 
             return compl,redun,rmeas,isigi,cchalf
 
 if __name__=="__main__":
         ac=AnaCORRECT(sys.argv[1])
-        print "###",sys.argv[1]
+        print("###",sys.argv[1])
         outfile=sys.argv[1].replace(".LP",".csv")
         ofile=open(outfile,"w")
         for logstr in ac.getStatsTable():
                 ofile.write("%s"%logstr)
 
-        print "Inner=",ac.getInnerShellRmeas()
-        print "Total=",ac.getTotalRmeas()
-        print ac.getOuterShellRmeas()
-        print ac.countDatasets()
-        print ac.getCellParm()
-        print ac.getFinalSPG()
-        print "######################"
+        print("Inner=",ac.getInnerShellRmeas())
+        print("Total=",ac.getTotalRmeas())
+        print(ac.getOuterShellRmeas())
+        print(ac.countDatasets())
+        print(ac.getCellParm())
+        print(ac.getFinalSPG())
+        print("######################")
         lines = ac.getStatsTableAsItIs()
         for line in lines:
-            print line
+            print(line)

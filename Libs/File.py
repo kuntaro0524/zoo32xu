@@ -93,7 +93,7 @@ class File:
             return 0
 
         for file in flist:
-            print file
+            print(file)
             curr=self.getHeadNum(file,4)
             #print max,curr
             if max<curr:
@@ -109,7 +109,7 @@ class File:
             return 0
 
         for file in flist:
-            print file
+            print(file)
             curr=self.getHeadNum(file,4)
             #print max,curr
             if max<curr:
@@ -199,7 +199,7 @@ class File:
                 target_abs.append(v)
 
         for dname,abs_path in zip(dnames,target_abs):
-            print dname,abs_path
+            print(dname,abs_path)
         
 if __name__=="__main__":
 

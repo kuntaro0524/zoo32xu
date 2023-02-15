@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	# Directory
 	root_dir="/isilon/users/target/target/Staff/2015B/150919/03.ZooTest/"
 	if os.path.exists(root_dir):
-		print "%s already exists"%root_dir
+		print("%s already exists"%root_dir)
 	else:
 		os.makedirs(root_dir)
 	
@@ -37,14 +37,14 @@ if __name__ == "__main__":
 	# Raster attenuator
 	att_raster=1500.0 #[um]
 	att_idx=int(att_raster/100.0)
-	print "ATT INDEX=",att_idx
+	print("ATT INDEX=",att_idx)
 
 	for trayid in puck_list:
 		#for pinid in np.arange(2,3,4):
 		#for pinid in np.arange(3,4):
 		for pinid in [9,10]:
 			prefix="%s-%s-%02d"%(uname,trayid,pinid)
-			print "Doing %s"%prefix
+			print("Doing %s"%prefix)
 
 			lm=LoopMeasurement.LoopMeasurement(ms,root_dir,prefix)
 
@@ -56,8 +56,8 @@ if __name__ == "__main__":
 
 			try:
 				zoo.mountSample(trayid,pinid)
-			except MyException,ttt:
-				print "Sample mount failed!!"
+			except MyException as ttt:
+				print("Sample mount failed!!")
 				break
 
 			# centering
@@ -71,8 +71,8 @@ if __name__ == "__main__":
 
 			try:
 				glist,phi_mid=lm.shikaTalk()
-			except MyException, tttt:
-				print "Skipping this loop!!"
+			except MyException as tttt:
+				print("Skipping this loop!!")
 				continue
 
 			# Precise centering

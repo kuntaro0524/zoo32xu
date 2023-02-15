@@ -48,7 +48,7 @@ class TCS:
 	def setApert(self,height,width):
 		self.tcs_height.move(height)
 		self.tcs_width.move(width)
-		print "current tcs aperture : %8.5f %8.5f\n" %(height,width)
+		print("current tcs aperture : %8.5f %8.5f\n" %(height,width))
 
 	def scanBoth(self,prefix,scan_width,another_width,start,end,step,cnt_ch1,cnt_ch2,time):
 		vfwhm,vcenter=self.scanV(prefix,scan_width,another_width,start,end,step,cnt_ch1,cnt_ch2,time)
@@ -98,7 +98,7 @@ class TCS:
                 fwhm,center=ana.analyzeAll("TCS vert[mm]","Intensity",outfig,comment,"OBS")
 
                 self.tcs_vert.move(center)
-                print "Final position: %smm" % (center)
+                print("Final position: %smm" % (center))
 		return fwhm,center
 
 	def scanH(self,prefix,height,width,start,end,step,cnt_ch1,cnt_ch2,time):
@@ -141,7 +141,7 @@ class TCS:
 
 		ndata=int((scan_end-scan_start)/scan_step)+1
 		if ndata <=0 :
-			print "Set correct scan step!!\n"
+			print("Set correct scan step!!\n")
 			return 1
 
 		outfile=open(ofile,"w")
@@ -174,7 +174,7 @@ class TCS:
 
 		ndata=int((scan_end-scan_start)/scan_step)+1
 		if ndata <=0 :
-			print "Something wrong"
+			print("Something wrong")
 			return 1
 
 		outfile=open(ofile,"w")
@@ -220,7 +220,7 @@ class TCS:
 
 		ndata=int((scan_end-scan_start)/scan_step)+1
 		if ndata <=0 :
-			print "Something wrong"
+			print("Something wrong")
 			return 1
 
 		outfile=open(ofile,"w")
@@ -253,7 +253,7 @@ if __name__=="__main__":
 	#tcs.scanBoth("VVVV",0.05,0.50,-1.0,1.0,0.05,0,1,0.2)
 	#def scanVrel(self,prefix,height,width,swidth,cnt_ch1,cnt_ch2,time):
 	vsave,hsave=tcs.getPosition()
-	print vsave,hsave
+	print(vsave,hsave)
 	#tcs.scanVrel("test",0.05,0.50,1.0,0.05,0,1,0.2)
 	tcs.scanHrel("test",0.50,0.05,1.0,0.05,0,1,0.2)
 

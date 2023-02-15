@@ -10,20 +10,20 @@ if __name__ == "__main__":
     esa.getTableName()
     esa.listDB()
 
-    print "BEFORE"
+    print("BEFORE")
     ppp = esa.getDict()
     for p in ppp:
         oindex = p['o_index']
         isDone = p['isDone']
         if isDone == 0:
-            print oindex,p['puckid'],p['pinid'],"maxhits=",p['maxhits']
+            print(oindex,p['puckid'],p['pinid'],"maxhits=",p['maxhits'])
             # p['total_osc'],p['osc_width'],p['isDone'],p['hebi_att'],p['isMount']
             esa.updateValueAt(oindex,"maxhits", 100)
         
     ppp = esa.getDict()
-    print "AFTER"
+    print("AFTER")
     for p in ppp:
         isDone = p['isDone']
         if isDone == 0:
             oindex = p['o_index']
-            print oindex,p['puckid'],p['pinid'],"maxhits=",p['maxhits']
+            print(oindex,p['puckid'],p['pinid'],"maxhits=",p['maxhits'])

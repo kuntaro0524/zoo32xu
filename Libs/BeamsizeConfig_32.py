@@ -73,7 +73,7 @@ class BeamsizeConfig:
                     cols=defstr.split(':')
                     valstr=cols[1].replace("[","").replace("]","")
                     self.flux_const=float(valstr)
-                    print "Flux constant is overrided to %9.1e"%self.flux_const
+                    print("Flux constant is overrided to %9.1e"%self.flux_const)
             beam_index+=1
         self.isInit=True
         #print self.beamsize
@@ -146,7 +146,7 @@ class BeamsizeConfig:
             self.readConfig()
         char_beam_list=[]
         for beamparams,ff in zip(self.beamsize,self.flux_factor):
-            print beamparams,ff
+            print(beamparams,ff)
             bindex,h_beam,v_beam=beamparams
             char_beam="%4.1f(H) x %4.1f(V)"%(h_beam,v_beam)
             char_beam_list.append(char_beam)
@@ -184,8 +184,8 @@ if __name__=="__main__":
     #lll=bsc.getBeamsizeListForKUMA()
 
     index=bsc.getBeamIndexHV(10,15)
-    print index
-    print lll[index]
+    print(index)
+    print(lll[index])
 
     #tw,th,bs,ff=bsc.getBeamParamList()
     #for b in bs:

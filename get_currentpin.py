@@ -13,6 +13,6 @@ if __name__ == "__main__":
     zoo.connect()
 
     try:
-        print zoo.getCurrentPin()
+        print(zoo.getCurrentPin())
     except:
-        print "DAME"
+        print("DAME")

@@ -28,7 +28,7 @@ if __name__=="__main__":
     s=0
     gonio = Gonio.Gonio(ms)
     x,y,z = gonio.getXYZmm()
-    print ("current_xyz=",x,y,z)
+    print(("current_xyz=",x,y,z))
 
     y_init = y
 

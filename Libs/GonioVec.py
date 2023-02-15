@@ -139,14 +139,14 @@ class GonioVec:
 		origlist=tmplist.reshape(3,11)
 		rotlist=self.rotVector(origlist,30)
 
-		print "ORIG:",origlist.shape,rotlist.shape
+		print("ORIG:",origlist.shape,rotlist.shape)
 
-		print origlist
-		print rotlist
+		print(origlist)
+		print(rotlist)
 
 		for i in range(0,11):
-			print origlist[:,i]
-			print rotlist[:,i]
+			print(origlist[:,i])
+			print(rotlist[:,i])
 
 		#rotlist=[]
 		#for i in range(0,1001):
@@ -185,12 +185,12 @@ class GonioVec:
 
 		dv=self.calcDist(div_vert)
 		dh=self.calcDist(div_hori)
-		print "DIV: %8.4f %8.4f [mm]" % (dv,dh)
+		print("DIV: %8.4f %8.4f [mm]" % (dv,dh))
 
 		return start_points,end_points,dv,dh
 
 	def getXYZ(self,vec):
-		print vec[0],vec[1],vec[2]
+		print(vec[0],vec[1],vec[2])
 
 if __name__=="__main__":
 

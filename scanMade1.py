@@ -107,9 +107,9 @@ if __name__ == "__main__":
                 logstr="%20s %20s %5d crystals MCRD[min]:%5.2f %5.2f %5.2f"%(
                         stopwatch.getTime("start"),prefix,n_crystals,t_for_mount,t_for_center,t_for_raster)
 
-        except MyException, tttt:
-                print "Skipping this loop!!"
+        except MyException as tttt:
+                print("Skipping this loop!!")
                 # Disconnecting capture in this loop's 'capture' instance
-                print "Disconnecting capture"
+                print("Disconnecting capture")
                 lm.closeCapture()
 		sys.exit(1)

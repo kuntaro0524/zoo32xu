@@ -22,4 +22,4 @@ if __name__=="__main__":
         exptime_for_10MGy = 10.0 / dose
         photons_for_10MGy = exptime_for_10MGy * flux
         density_for_10MGy = photons_for_10MGy / beam_h / beam_v
-        print "%8.1f %8.3f MGy density for 10MGy: %6.3e"%(en,dose,density_for_10MGy)
+        print("%8.1f %8.3f MGy density for 10MGy: %6.3e"%(en,dose,density_for_10MGy))

@@ -28,4 +28,4 @@ if __name__ == "__main__":
         ppp = esa.getPriorPinCond()
 
     except:
-        print "Failed."
+        print("Failed.")

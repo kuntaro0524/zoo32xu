@@ -54,7 +54,7 @@ while True:
 	# file prefix
 	enstr="%fkev"%en
 	prefix="%02d_%s"%(f.getNewIdx(".scn"),enstr)
-	print enstr
+	print(enstr)
 
 	#moving the fisrt position
     	mono.changeE(en)

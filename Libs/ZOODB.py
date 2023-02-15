@@ -19,7 +19,7 @@ class DBinfo():
 
     def str2time(self, esa_timestr):
         if esa_timestr == None:
-            print "No information"
+            print("No information")
             raise MyException("No information")
         #print "esa_timestr=",esa_timestr
         try:
@@ -33,9 +33,9 @@ class DBinfo():
             timestr = "%s-%s-%s %s:%s:%s" % (year, month, date, hour, mins, secs)
             ttime=datetime.datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S')
             return ttime
-        except MyException,tttt:
+        except MyException as tttt:
             message = "Something wrong to read %s" % esa_timestr
-            print message
+            print(message)
             raise MyException(ttt)
 
     # Extract time information from timestr at the designated index
@@ -126,7 +126,7 @@ class DBinfo():
     def getStatus(self):
         if self.isRead == False:
             self.prepParams()
-        print self.prefix,self.meas_start_time, self.meas_end_time, self.isMount, self.isLoopCenter, self.isRaster, self.isDS
+        print(self.prefix,self.meas_start_time, self.meas_end_time, self.isMount, self.isLoopCenter, self.isRaster, self.isDS)
 
         if self.isDS == 1:
             return 1
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     esa.listDB()
     conds = esa.getDict()
 
-    print "Number of crystals processed", len(conds)
+    print("Number of crystals processed", len(conds))
     n_good = 0
     dpfile = open("automerge.csv","w")
     dpfile.write("topdir,name,anomalous\n")
@@ -158,10 +158,10 @@ if __name__ == "__main__":
         n_good += dbinfo.getStatus()
         flag,rootdir,prefix,sample_name = dbinfo.getKAMOinfo()
         meas_time = dbinfo.getMeasTime()
-        print "MEAS=%5.1f min" % meas_time
+        print("MEAS=%5.1f min" % meas_time)
         if flag == True:
             dpfile.write("%s/_kamoproc/%s/,%s,no\n" % (rootdir,prefix,sample_name))
 
-    print "Number of crystals processed", len(conds)
-    print "Number of datasets " ,n_good
-    print "Failed crystals"
+    print("Number of crystals processed", len(conds))
+    print("Number of datasets " ,n_good)
+    print("Failed crystals")

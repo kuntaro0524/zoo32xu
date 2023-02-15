@@ -59,10 +59,10 @@ if __name__=="__main__":
 				ok_file.write("%8.5f %8.5f %8.5f %8.5f\n"%(x,y,hsize,vsize))
 			ok_file.write("\n\n")
 		index+=1
-		print "plot \"nonsingle.dat\" i %d u 1:2 \\"%index
+		print("plot \"nonsingle.dat\" i %d u 1:2 \\"%index)
 
 	# Check overlap
-	print "#########################"
+	print("#########################")
 	perfect=[]
 	kabutteru_index_list=[]
 	check_list=[0]*len(crystals)
@@ -73,7 +73,7 @@ if __name__=="__main__":
 		for index2 in range(index1+1,len(crystals)):
 			crystal2=crystals[index2]
         		crystal2.setDiffscanLog(diffscan_path)
-			print "Crystal1 %5d Crystal2 %5d\n"%(index1,index2)
+			print("Crystal1 %5d Crystal2 %5d\n"%(index1,index2))
 			# Left no houga ookii suuchi
 			l1xyz,r1xyz=crystal1.findHoriEdges()
 			l2xyz,r2xyz=crystal2.findHoriEdges()
@@ -108,7 +108,7 @@ if __name__=="__main__":
 	logfile=open("kabutteru.dat","w")
 	hontouni_kabutteru_index_list=[]
 	for c1,c2 in kabutteru_index_list:
-		print c1,c2
+		print(c1,c2)
 		cry1=crystals[c1]
 		cry2=crystals[c2]
 		x1a,y1a=cry1.getXYlist()
@@ -126,10 +126,10 @@ if __name__=="__main__":
 			logfile.write("%8.5f %8.5f\n"%(x2,y2))
 		logfile.write("\n\n")
 
-	print kabutteru_index_list
+	print(kabutteru_index_list)
 
 	sfile=open("single.dat","w")
-	print "SINGLE"
+	print("SINGLE")
 	for single_crystal in single:
 		xlist,ylist=single_crystal.getXYlist()
 		hsize,vsize=single_crystal.getDimensions(hbeam,vbeam)

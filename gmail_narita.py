@@ -20,7 +20,7 @@ def create_message(from_addr, to_addr, subject, body, encoding):
     alt = MIMEMultipart('alternative')
     related.attach(alt)
 
-    print body
+    print(body)
     content = MIMEText(body, 'plain', encoding)
     alt.attach(content)
 
@@ -86,9 +86,9 @@ if __name__ == '__main__':
             else:
                 continue
         
-        print logline
+        print(logline)
 
         msg = create_message_text(from_addr, to_addr, title, logline, 'utf-8')
         send_via_gmail(from_addr, to_addr, msg)
-        print "Now sleeping for 15mins...."
+        print("Now sleeping for 15mins....")
         time.sleep(60*60)

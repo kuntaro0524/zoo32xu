@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     while(True):
         wavelength = zoo.getWavelength()
-        print("wavelength:", wavelength)
+        print(("wavelength:", wavelength))
         beamsize_index = zoo.getBeamsize()
-        print("beamsize_index:", beamsize_index)
+        print(("beamsize_index:", beamsize_index))
         zoo.waitSPACE()

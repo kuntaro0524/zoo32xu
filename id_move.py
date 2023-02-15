@@ -10,6 +10,6 @@ if __name__=="__main__":
 	s.connect((host,port))
 	
 	id=ID(s)
-	id.move(float(raw_input()))
+	id.move(float(input()))
 
 	s.close()

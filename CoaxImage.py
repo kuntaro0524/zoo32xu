@@ -16,17 +16,17 @@ def read_camera_inf(infin):
     origin_shift_x, origin_shift_y = None, None
     for l in open(infin):
         if "ZoomOptions1:" in l:
-            ret["zoom_opts"] = map(float, l[l.index(":")+1:].split())
+            ret["zoom_opts"] = list(map(float, l[l.index(":")+1:].split()))
         elif "OriginShiftXOptions1:" in l:
-            origin_shift_x = map(float, l[l.index(":")+1:].split())
+            origin_shift_x = list(map(float, l[l.index(":")+1:].split()))
         elif "OriginShiftYOptions1:" in l:
-            origin_shift_y = map(float, l[l.index(":")+1:].split())
+            origin_shift_y = list(map(float, l[l.index(":")+1:].split()))
 
     # TODO read tvextender
 
     if None not in (origin_shift_x, origin_shift_y):
         assert len(origin_shift_x) == len(origin_shift_y)
-        ret["origin_shift"] = zip(origin_shift_x, origin_shift_y)
+        ret["origin_shift"] = list(zip(origin_shift_x, origin_shift_y))
 
     return ret
 # read_camera_inf()
@@ -36,7 +36,7 @@ def read_bss_config(cfgin):
     for l in open(cfgin):
         if "#" in l: l = l[:l.index("#")]
         if "Microscope_Zoom_Options:" in l:
-            ret["zoom_pulses"] = map(int, l[l.index(":")+1:].split())
+            ret["zoom_pulses"] = list(map(int, l[l.index(":")+1:].split()))
     return ret
 
 class CoaxImage:
@@ -49,9 +49,9 @@ class CoaxImage:
         if beamline == "BL45XU":
             self.camera_inf = read_camera_inf(os.path.join(os.environ["BLCONFIG"], "video", "camera.inf"))
             self.bss_config = read_bss_config(os.path.join(os.environ["BLCONFIG"], "bss", "bss.config"))
-            self.coax_pulse2zoom = dict(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"]))
-            self.coax_zoom2pulse = dict(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"]))
-            self.coax_zoom2oshift = dict(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"]))
+            self.coax_pulse2zoom = dict(list(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"])))
+            self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
+            self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
             self.width = 612.0
             self.height = 480.0
             # BL45XU Centos6
@@ -60,9 +60,9 @@ class CoaxImage:
         elif beamline == "BL32XU":
             self.camera_inf = read_camera_inf(os.path.join(os.environ["BLCONFIG"], "video", "camera.inf"))
             self.bss_config = read_bss_config(os.path.join(os.environ["BLCONFIG"], "bss", "bss.config"))
-            self.coax_pulse2zoom = dict(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"]))
-            self.coax_zoom2pulse = dict(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"]))
-            self.coax_zoom2oshift = dict(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"]))
+            self.coax_pulse2zoom = dict(list(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"])))
+            self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
+            self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
 
             self.width = 612.0
             self.height = 480.0
@@ -106,11 +106,11 @@ class CoaxImage:
         origin_shift_x, origin_shift_y = None, None
         for l in open(infin):
             if "ZoomOptions1:" in l:
-                ret["zoom_opts"] = map(float, l[l.index(":")+1:].split())
+                ret["zoom_opts"] = list(map(float, l[l.index(":")+1:].split()))
             elif "OriginShiftXOptions1:" in l:
-                origin_shift_x = map(float, l[l.index(":")+1:].split())
+                origin_shift_x = list(map(float, l[l.index(":")+1:].split()))
             elif "OriginShiftYOptions1:" in l:
-                origin_shift_y = map(float, l[l.index(":")+1:].split())
+                origin_shift_y = list(map(float, l[l.index(":")+1:].split()))
         return ret
 
     def read_bss_config(self,cfgin):
@@ -118,11 +118,11 @@ class CoaxImage:
         for l in open(cfgin):
             if "#" in l: l = l[:l.index("#")]
             if "Microscope_Zoom_Options:" in l:
-                ret["zoom_pulses"] = map(int, l[l.index(":")+1:].split())
+                ret["zoom_pulses"] = list(map(int, l[l.index(":")+1:].split()))
 
         if None not in (origin_shift_x, origin_shift_y):
             assert len(origin_shift_x) == len(origin_shift_y)
-            ret["origin_shift"] = zip(origin_shift_x, origin_shift_y)
+            ret["origin_shift"] = list(zip(origin_shift_x, origin_shift_y))
 
         return ret
 # read_camera_inf()
@@ -197,7 +197,7 @@ class CoaxImage:
         zoom = self.get_zoom()
         origin_shift = self.coax_zoom2oshift[zoom]
         self.logger.info("Origin shift = %s %s" % origin_shift)
-        print "origin_shift = ", origin_shift
+        print("origin_shift = ", origin_shift)
         return origin_shift
     # get_coax_center()
 
@@ -217,7 +217,7 @@ class CoaxImage:
 
     def set_zoom(self, zoom):
         if zoom not in self.coax_zoom2pulse:
-            print "Possible zoom:", self.coax_zoom2pulse.keys()
+            print("Possible zoom:", list(self.coax_zoom2pulse.keys()))
             return
 
         zoomaxis = Zoom.Zoom(self.ms)
@@ -226,7 +226,7 @@ class CoaxImage:
 
         # Currently this function, at least required for BL32XU, is skipped
         if zoom_pulse not in self.coax_zpulse2pint:
-            print "Error. Unknown zoom pulse for pint adjustment:", zoom_pulse
+            print("Error. Unknown zoom pulse for pint adjustment:", zoom_pulse)
             return
         else:
             pintaxis = CoaxPint.CoaxPint(self.ms)
@@ -240,7 +240,7 @@ class CoaxImage:
         elif bin==2: setbin = 1
         elif bin==4: setbin = 3
         else:
-            print "Invalid binning size"
+            print("Invalid binning size")
             return None
 
         self.capture.setBinning(setbin)
@@ -249,11 +249,11 @@ class CoaxImage:
     def get_cross_pix(self):
         um_per_px = self.get_pixel_size()
         origin_shift = self.get_coax_center()
-        origin_shift = map(lambda x: x/um_per_px*1.e3, origin_shift)
+        origin_shift = [x/um_per_px*1.e3 for x in origin_shift]
         w, h = self.width, self.height
         cen_x, cen_y = w/2+origin_shift[0], h/2-origin_shift[1]
-        print "cen_x = %8.2f" % cen_x
-        print "cen_y = %8.2f" % cen_y
+        print("cen_x = %8.2f" % cen_x)
+        print("cen_y = %8.2f" % cen_y)
         return int(cen_x),int(cen_y)
     
     def calc_shift_by_img_px(self, sx, sy, units=("um",)):
@@ -261,11 +261,11 @@ class CoaxImage:
         sx,sy: x,y on videosrv's coordinate system. origin is left top.
         """
         if sx < 0 or sy < 0:
-            print "Invalid sx or sy:", sx, sy
+            print("Invalid sx or sy:", sx, sy)
 
         um_per_px = self.get_pixel_size()
         origin_shift = self.get_coax_center()
-        origin_shift = map(lambda x: x/um_per_px*1.e3, origin_shift)
+        origin_shift = [x/um_per_px*1.e3 for x in origin_shift]
         w, h = self.width, self.height
         cen_x, cen_y = w/2+origin_shift[0], h/2-origin_shift[1]
         self.logger.debug("cen_x, cen_y = (%8.2f, %8.2f)" % (cen_x, cen_y))
@@ -307,10 +307,10 @@ class CoaxImage:
         sx,sy: x,y on shinoda's coordinate system. origin is right top.
         """
         if sx < 0 or sy < 0:
-            print "Invalid sx or sy:", sx, sy
+            print("Invalid sx or sy:", sx, sy)
             return
         dx, dy = self.calc_shift_by_img_px(sx, sy)
-        print "move=", dx, dy
+        print("move=", dx, dy)
         self.move(dx, dy)
     # move_by_img_px()
 
@@ -319,9 +319,9 @@ class CoaxImage:
     # ph: pixel coordinate of horizontal axis
     # pv: pixel coordinate of vertical axis
     def calc_gxyz_of_pix_at(self, ph, pv, gcenx, gceny, gcenz, phi):
-        print "CoaxImage.calc_gxyz_of_pix_at is called"
+        print("CoaxImage.calc_gxyz_of_pix_at is called")
         if ph < 0 or pv < 0:
-            print "Invalid ph or ph:", ph, pv
+            print("Invalid ph or ph:", ph, pv)
             return 
         # distance from center cross [um]
         dh, dv = self.calc_shift_by_img_px(ph, pv)
@@ -329,7 +329,7 @@ class CoaxImage:
         dh_mm = dh/1000.0
         dv_mm = dv/1000.0
         #print "%12.4f %12.4f %12.4f"%(gcenx,gceny,gcenz)
-        print "dH(mm),dV(mm)=",dh_mm,dv_mm
+        print("dH(mm),dV(mm)=",dh_mm,dv_mm)
     
         # Horizontal direction -> Gonio Y axis
         gy=gceny+dh_mm # unit [mm]
@@ -339,8 +339,8 @@ class CoaxImage:
         gx=gcenx+mm_dx # unit [mm]
         gz=gcenz+mm_dz # unit [mm]
 
-        print "(Xpix,Ypix,GX,GY,GZ)=%5d %5d %12.5f %12.5f %12.5f"%(ph,pv,gx,gy,gz)
-        print "CoaxImage.calc_gxyz_of_pix_at ends"
+        print("(Xpix,Ypix,GX,GY,GZ)=%5d %5d %12.5f %12.5f %12.5f"%(ph,pv,gx,gy,gz))
+        print("CoaxImage.calc_gxyz_of_pix_at ends")
         #print "GX,GY,GZ=",gx,gy,gz
         return gx,gy,gz
     # calc_gxyz_of_pix_at()
@@ -359,7 +359,7 @@ class CoaxImage:
 
     def calc_gxyz_diff_mm(self,ph,pv):
         if ph < 0 or pv < 0:
-            print "Invalid ph or ph:", ph, pv
+            print("Invalid ph or ph:", ph, pv)
             return 
         # distance from center cross [um]
         dh, dv = self.calc_shift_by_img_px(ph, pv)
@@ -371,14 +371,14 @@ class CoaxImage:
 
     # 2016/04/13 Videoserv unstable
     def get_coax_image(self, imgout):
-        print "%s size check"%imgout
+        print("%s size check"%imgout)
         for i in range(0,10):
             try:
                 self.capture.capture(imgout)
                 while(os.path.getsize(imgout)!=self.image_size):
-                    print "Waiting...for generate the capture image on the storage"
+                    print("Waiting...for generate the capture image on the storage")
                     time.sleep(1.0)
-                print "%s size check Okay"%imgout
+                print("%s size check Okay"%imgout)
                 return True
             except:
                 return False
@@ -387,7 +387,7 @@ class CoaxImage:
     def move_to_pix_at(self,ph,pv,gcenx,gceny,gcenz,phi):
         # Calculation of gonio xyz first
         tx,ty,tz=self.calc_gxyz_of_pix_at(ph,pv,gcenx,gceny,gcenz,phi)
-        print "move to %10.4f %10.4f %10.4f"%(tx,ty,tz)
+        print("move to %10.4f %10.4f %10.4f"%(tx,ty,tz))
         self.gonio.moveXYZmm(tx,ty,tz)
 
 if __name__ == "__main__":
@@ -395,8 +395,8 @@ if __name__ == "__main__":
     #ms.connect(("192.168.163.1", 10101))
     ms.connect(("172.24.242.41", 10101))
     coax=CoaxImage(ms)
-    print "pix_size=",coax.get_pixel_size()
-    print coax.get_cross_pix()
+    print("pix_size=",coax.get_pixel_size())
+    print(coax.get_cross_pix())
     #def get_cross_pix(self):
 
     """

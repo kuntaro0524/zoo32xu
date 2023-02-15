@@ -17,5 +17,5 @@ if __name__ == "__main__":
     for p in ppp:
         o_index = p['o_index']
         if o_index == int(sys.argv[2]):
-            print p['o_index'], p['p_index'],p['puckid'],p['pinid']
+            print(p['o_index'], p['p_index'],p['puckid'],p['pinid'])
             esa.updateValueAt(o_index,"p_index", 1)

@@ -21,8 +21,8 @@ class Stage:
 		self.p2v_y=10000.0 # 1mm/10000pls
 
 	def getSpeed(self):
-		print self.stage_z.getSpeed()
-		print self.stage_y.getSpeed()
+		print(self.stage_z.getSpeed())
+		print(self.stage_y.getSpeed())
 
 	def getZ(self):
 		return self.stage_z.getPosition()[0]
@@ -34,7 +34,7 @@ class Stage:
 		self.stage_z.move(pulse)
 
 	def moveY(self,pulse):
-		print "Recieved pulse ",pulse
+		print("Recieved pulse ",pulse)
 		backlash=pulse-500
 		self.stage_y.move(backlash)
 		self.stage_y.move(pulse)
@@ -101,7 +101,7 @@ class Stage:
 		# Scan condition [mm]
 		curr=self.getZmm()
 		width_half=float(step_mm)*float(num_half)
-		print "WIDTH:%8.5f"%width_half
+		print("WIDTH:%8.5f"%width_half)
 		start=curr-width_half
 
 		# move to the start position
@@ -141,7 +141,7 @@ class Stage:
 		# Scan condition [mm]
 		curr=self.getZmm()
 		width_half=float(step_mm)*float(num_half)
-		print "WIDTH:%8.5f"%width_half
+		print("WIDTH:%8.5f"%width_half)
 		start=curr-width_half
 
 		# move to the start position
@@ -167,7 +167,7 @@ class Stage:
 		# Scan condition [mm]
 		curr=self.getYmm()
 		width_half=float(step_mm)*float(num_half)
-		print "WIDTH:%8.5f"%width_half
+		print("WIDTH:%8.5f"%width_half)
 		start=curr-width_half
 
 		# move to the start position
@@ -206,12 +206,12 @@ class Stage:
 
 		# save position
 		savep=self.getY()
-		print "start:saved position",savep
+		print("start:saved position",savep)
 
 		# Scan condition [mm]
 		curr=self.getYmm()
 		width_half=float(step_mm)*float(num_half)
-		print "WIDTH:%8.5f"%width_half
+		print("WIDTH:%8.5f"%width_half)
 		start=curr-width_half
 
 		# move to the start position
@@ -226,10 +226,10 @@ class Stage:
 
 		of.close()
 
-		print "After scan",self.getY()
+		print("After scan",self.getY())
         	self.moveY(savep)
-		print "finish:saved position",savep
-		print "After moved",self.getY()
+		print("finish:saved position",savep)
+		print("After moved",self.getY())
 
         	return 10,10
 
@@ -255,11 +255,11 @@ class Stage:
 		cnt_ch2=0
 		cnt_time=0.2
 
-		print "Start scan"
+		print("Start scan")
 		prefix="%03d"%f.getNewIdx3()
 		ofile="%s_sty.scn"%prefix
 		self.stage_y.axisScan(ofile,cnt_ch,cnt_ch2,cnt_time)
-		print "end scan"
+		print("end scan")
 
 		# Moving to the gravity center
 		outfig=prefix+"_sty.png"
@@ -271,11 +271,11 @@ class Stage:
 		fwhm_mm=fwhm/self.p2v_y
 		center_mm=center/self.p2v_y
 
-		print "FWHM Center=",fwhm_mm
-		print "Center     =",center_mm
+		print("FWHM Center=",fwhm_mm)
+		print("Center     =",center_mm)
 
 		if option!="STAY":
-			print "Moving to ",center_mm," [mm]"
+			print("Moving to ",center_mm," [mm]")
 			self.setYmm(center_mm)
 
 		return fwhm_mm,center_mm
@@ -302,11 +302,11 @@ class Stage:
 		cnt_ch2=0
 		cnt_time=0.2
 
-		print "Start scan"
+		print("Start scan")
 		prefix="%03d"%f.getNewIdx3()
 		ofile="%s_stz.scn"%prefix
 		self.stage_z.axisScan(ofile,cnt_ch,cnt_ch2,cnt_time)
-		print "end scan"
+		print("end scan")
 
 		# Moving to the gravity center
 		outfig=prefix+"_stz.png"
@@ -317,11 +317,11 @@ class Stage:
 		# Unit convertion
 		fwhm_mm=fwhm/self.p2v_z
 		center_mm=center/self.p2v_z
-		print "FWHM Center=",fwhm_mm
-		print "Center     =",center_mm
+		print("FWHM Center=",fwhm_mm)
+		print("Center     =",center_mm)
 
 		if option!="STAY":
-			print "Moving to ",center_mm," [mm]"
+			print("Moving to ",center_mm," [mm]")
 			self.setZmm(center_mm)
 
 		return fwhm_mm,center_mm
@@ -336,6 +336,6 @@ if __name__=="__main__":
 	yyy= stage.getYmm()
 	zzz= stage.getZmm()
 	#stage.getSpeed()
-	print yyy,zzz
+	print(yyy,zzz)
 	#stage.scanY("MOVE")
         s.close()

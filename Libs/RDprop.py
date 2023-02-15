@@ -93,7 +93,7 @@ class RDprop:
 		dpd=[]
                 for i in range(0,nstep):
 			value=float(i+1)*0.1
-			print value
+			print(value)
                         vcry.append(value)
 			dpd.append(0.0)
 
@@ -102,20 +102,20 @@ class RDprop:
                 	gauss.setMu(cen)
                 	#value=gauss_rd.integrate(intstart,intend)
 			# for each beam position
-			print "##### %8.3f #####"%cen
+			print("##### %8.3f #####"%cen)
 
                 	sum=0.0
 			idx=0
                 	for cryvol in vcry:
                         	area=gauss.calc(cryvol)*0.1
-				print "AREA %12.5f"%area
+				print("AREA %12.5f"%area)
 				dpd[idx]+=area
                         	sum+=area
 				idx+=1
-                	print "SUM=:%8.5f"%sum
+                	print("SUM=:%8.5f"%sum)
 
 		for idx in arange(0,nstep):
-			print "TEST %8.5f %8.5f"%(vcry[idx],dpd[idx])
+			print("TEST %8.5f %8.5f"%(vcry[idx],dpd[idx]))
 
 
 if __name__=="__main__":
@@ -125,11 +125,11 @@ if __name__=="__main__":
 	beamsize=1.0
 	step=0.56
 	rdp1=RDprop(beamsize,step)
-	print "GET",rdp1.getARD()
+	print("GET",rdp1.getARD())
 
 	step=0.50
 	rdp2=RDprop(beamsize,step)
-	print "GET",rdp2.getARD()
+	print("GET",rdp2.getARD())
 
         #bs_list=[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0]
         #hs_list=arange(0.5,15.5,0.5)

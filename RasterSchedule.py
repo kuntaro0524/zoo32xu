@@ -8,7 +8,7 @@ beamline = "BL32XU"
 
 class RasterSchedule:
     def __init__(self):
-        print "Raster schedule class is called"
+        print("Raster schedule class is called")
         self.beamsizeIndex = 0
         self.imgdir = "/isilon/users/admin41/admin41/ZooTest/"
         self.prefix = "raster_test"
@@ -116,7 +116,7 @@ class RasterSchedule:
 
     def setMode(self, mode):
         if mode == "2D":
-            print "2D was selected"
+            print("2D was selected")
         elif mode == "Vert":
             self.h_points = 1
         elif mode == "Hori":

@@ -29,6 +29,6 @@ if args.csv3 != None:
 
 if csv_flag == True:
     for csvfile in csvlist:
-        print csvfile
+        print(csvfile)
 else:
-    print "DBFILE=", args.dbfile
+    print("DBFILE=", args.dbfile)

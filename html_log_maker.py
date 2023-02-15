@@ -74,8 +74,8 @@ root dir: %(root_dir)s<br>
     # make_header()
 
     def add_condition(self, condition):
-        samples = map(lambda x: "%s (%d pins)" % (x[0], len(x[1])), condition.pucks_and_pins)
-        totalpins = sum(map(lambda x: len(x[1]), condition.pucks_and_pins))
+        samples = ["%s (%d pins)" % (x[0], len(x[1])) for x in condition.pucks_and_pins]
+        totalpins = sum([len(x[1]) for x in condition.pucks_and_pins])
         info = dict(samples=", ".join(samples),
                     totalpins=totalpins)
         info.update(condition.__dict__)
@@ -205,7 +205,7 @@ def make_offline(module_name, root_dir, name):
         zhl.add_condition(cond)
         for trayid, pin_list in cond.pucks_and_pins:
             for pinid in pin_list:
-                print "doing", trayid, pinid
+                print("doing", trayid, pinid)
                 scan_dir = os.path.join(root_dir, "%s-%s-%.2d" % (cond.uname, trayid, pinid), "scan")
                 shika_workdir = os.path.join(scan_dir, "_spotfinder")
                 raster_log = os.path.join(scan_dir, "diffscan.log")

@@ -11,7 +11,7 @@ class something1():
         try:
             answer=self.some2.getAdd(self.something1)
         except:
-            print "REIGAI in something2"
+            print("REIGAI in something2")
             answer=0
         finally:
             return answer
@@ -26,9 +26,9 @@ class something2():
         except:
             raise MyException.MyException("HEBI.mainLoop : Vertical scan could not find crystals.")
         finally:
-            print "something2",answer
+            print("something2",answer)
             return answer
 
 if __name__ == "__main__":
     s1=something1()
-    print s1.anaana()
+    print(s1.anaana())

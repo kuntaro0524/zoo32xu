@@ -23,7 +23,7 @@ class DBinfo():
 
     def str2time(self, esa_timestr):
         if esa_timestr == None:
-            print "No information"
+            print("No information")
             raise MyException("No information")
         #print "esa_timestr=",esa_timestr
         try:
@@ -37,9 +37,9 @@ class DBinfo():
             timestr = "%s-%s-%s %s:%s:%s" % (year, month, date, hour, mins, secs)
             ttime=datetime.datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S')
             return ttime
-        except MyException,tttt:
+        except MyException as tttt:
             message = "Something wrong to read %s" % esa_timestr
-            print message
+            print(message)
             raise MyException(ttt)
 
     # Extract time information from timestr at the designated index
@@ -213,7 +213,7 @@ class DBinfo():
         if self.isRead == False: self.prepParams()
 
         conds_dict = {}
-        for key, value in zip(self.__dict__.keys(), self.__dict__.values()):
+        for key, value in zip(list(self.__dict__.keys()), list(self.__dict__.values())):
             if key == "conds_dict":
                 continue
             conds_dict[key] = value
@@ -279,7 +279,7 @@ class DBinfo():
         if self.mode == "single":
             return self.isDS
         else:
-            print "EEEEEEEEEEEEEEEEEEEEEEE"
+            print("EEEEEEEEEEEEEEEEEEEEEEE")
 
     def getPrefix(self):
         if self.isRead == False:
@@ -387,7 +387,7 @@ class DBinfo():
                 self.isGood = True
 
         if log_error == "Unidentified errors.":
-            print "EEEEEEEEEEEEEEEEEEEEEEEEEE",self.isDone
+            print("EEEEEEEEEEEEEEEEEEEEEEEEEE",self.isDone)
 
         self.isJudged = True
         self.log_comment = log_error
@@ -434,7 +434,7 @@ if __name__ == "__main__":
             nds = dbinfo.getNDS()
             #print "%s GOOD. NDS(%8s) = %3d (%4.1f mins)" %(pinstr, mode, nds, constime)
         else:
-            print "%s ERROR=%s"%(pinstr,dbinfo.getErrorMessage())
+            print("%s ERROR=%s"%(pinstr,dbinfo.getErrorMessage()))
         #dbinfo.getGoodOrNot()
         #dbinfo.getKAMOinfo()
 
@@ -445,8 +445,8 @@ if __name__ == "__main__":
         if flag == True:
             dpfile.write("%s/_kamoproc/%s/,%s,no\n" % (rootdir,prefix,sample_name))
         wavelength = dbinfo.getWavelength()
-        print p['puckid'], p['pinid'], "WAVEL=", wavelength
+        print(p['puckid'], p['pinid'], "WAVEL=", wavelength)
 
-    print "Number of crystals processed", len(conds)
-    print "Number of datasets " ,n_good
-    print "Failed crystals"
+    print("Number of crystals processed", len(conds))
+    print("Number of datasets " ,n_good)
+    print("Failed crystals")

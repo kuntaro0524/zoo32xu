@@ -28,7 +28,7 @@ class AnalyzePeak:
 		# rough FWHM calculation
                 width=pylab.sqrt(abs(sum((px-grav)**2*py)/sum(py)))
                 max=py.max()
-                print grav,width,max
+                print(grav,width,max)
 
 		# Fitting function
                 fit=lambda t:max*pylab.exp(-(t-grav)**2/(2*width**2))
@@ -63,15 +63,15 @@ class AnalyzePeak:
 
 		# Peak shape judgement 
 		if i_half_up==0 or i_half_down==0:
-			print "No peak value"
+			print("No peak value")
 			return 0
 
 		if i_half_up>1 or i_half_down>1:
-			print "Bad peak shape"
+			print("Bad peak shape")
 			return 0
 
 		# Peak FWHM analysis
-		print xup,xdown
+		print(xup,xdown)
 		fwhm=math.fabs(xup-xdown)
 		center=(xup+xdown)/2.0
 
@@ -153,11 +153,11 @@ class AnalyzePeak:
 
 		# Peak shape judgement 
 		if i_half_up==0 or i_half_down==0:
-			print "No peak value"
+			print("No peak value")
 			return 0,0
 
 		if i_half_up>1 or i_half_down>1:
-			print "Bad peak shape"
+			print("Bad peak shape")
 			return 0,0
 
 		# Peak FWHM analysis
@@ -186,7 +186,7 @@ class AnalyzePeak:
 			idx=0
 			for nx in newx:
 				if x==newx[idx]:
-					print "FIND"
+					print("FIND")
 					ave=newy[idx]
 					ylist.append(ave)
 
@@ -207,17 +207,17 @@ class AnalyzePeak:
 		minx=xdat.min()
 		maxx=xdat.max()
 		step=(maxx-minx)/50.0
-		print minx,maxx,step
+		print(minx,maxx,step)
 
 		len=interp1d(xdat,ydat)
 		
 		newx=arange(minx,maxx,step)
-		print newx
-		print len(newx)
+		print(newx)
+		print(len(newx))
 		newy=[lin(v) for v in newx]
 		
 		for i in range(0,len(newx)):
-			print newx[i],newy[i]
+			print(newx[i],newy[i])
 
 		pylab.plot(xdat,ydat,newx,newy)
 		pylab.show()
@@ -255,10 +255,10 @@ class AnalyzePeak:
     		"""
 
     		if x.ndim != 1:
-        		raise ValueError, "smooth only accepts 1 dimension arrays."
+        		raise ValueError("smooth only accepts 1 dimension arrays.")
 		
     		if x.size < window_len:
-        		raise ValueError, "Input vector needs to be bigger than window size."
+        		raise ValueError("Input vector needs to be bigger than window size.")
 		
 		
     		if window_len<3:
@@ -266,7 +266,7 @@ class AnalyzePeak:
 		
 		
     		if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        		raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+        		raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 		
 		
     		s=numpy.r_[2*x[0]-x[window_len:1:-1],x,2*x[-1]-x[-1:-window_len:-1]]
@@ -300,7 +300,7 @@ class AnalyzePeak:
 		pylab.plot(xdat,newy)
 		pylab.savefig("test.png")
 
-		print px,newy
+		print(px,newy)
 
 	def __readColumn(self):
 		self.cols=[]
@@ -402,7 +402,7 @@ class AnalyzePeak:
 		self.width=pylab.sqrt(abs(sum((self.xd-self.grav)**2*self.yd)/sum(self.yd)))
 		self.max=self.yd.max()
 
-		print "gravity=%8.5f" % self.grav
+		print("gravity=%8.5f" % self.grav)
 
 		return self.width,self.grav
 
@@ -436,7 +436,7 @@ class AnalyzePeak:
 				tmpsumx+=self.xdat[j]
 				tmpsumy+=self.ydat[j]
 
-			print tmpsumx,tmpsumy
+			print(tmpsumx,tmpsumy)
 			self.xave.append(tmpsumx/nave)
 			self.yave.append(tmpsumy/nave)
 
@@ -471,7 +471,7 @@ class AnalyzePeak:
 	def scaleY(self,ydat,scale):
 		yscale=[]
 
-		print "scale factor %8.5f"%scale
+		print("scale factor %8.5f"%scale)
 
 		for idx in range(0,len(ydat)):
 			yscale.append(ydat[idx]*scale)
@@ -576,7 +576,7 @@ class AnalyzePeak:
 		maxy=py.max()
 
 		halfvalue=(maxy-miny)/2.0
-		print "HALF:",maxy,miny,halfvalue
+		print("HALF:",maxy,miny,halfvalue)
 
 		# Initialization
 		smallx=-999.999
@@ -602,14 +602,14 @@ class AnalyzePeak:
 				break
 
 		if smallx==-999.999 or largex==-999.999:
-			print "FWHM cannot be calculated!"
+			print("FWHM cannot be calculated!")
 			return -999.999
 
 		# FWHM center
 		fcen=(smallx+largex)/2.0
 		fwhm=math.fabs(smallx-largex)
 
-		print smallx,largex,fwhm,fcen
+		print(smallx,largex,fwhm,fcen)
 
 		return  fwhm,fcen
 
@@ -624,7 +624,7 @@ class AnalyzePeak:
 		self.ddx,self.ddy=self.derivative(self.dx,self.dy)
 
 		for idx in range(0,len(self.dx)):
-			print "%12.5f %12.5f" %(self.dx[idx], self.dy[idx])
+			print("%12.5f %12.5f" %(self.dx[idx], self.dy[idx]))
 
 
         def derivative(self,xdat,ydat):
@@ -635,7 +635,7 @@ class AnalyzePeak:
 		ysize=len(ydat)
 
 		if xsize==0 or ysize==0:
-			print "Size of arrays is 0"
+			print("Size of arrays is 0")
 			return 0
 
                 for cols in range(0,xsize-1):
@@ -673,7 +673,7 @@ class AnalyzePeak:
 		max_index=0
 
 		if ndata==0:
-			print "Array is not good"
+			print("Array is not good")
 			return -1
 		for i in range(0,ndata):
 			if(maxvalue < data_array[i]):
@@ -704,25 +704,25 @@ class AnalyzePeak:
 
                 for i in range(1,len(ydat)):
                         if ydat[i-1]<half and ydat[i]>=half:
-				print ydat[i-1],ydat[i]
+				print(ydat[i-1],ydat[i])
                                 i_half_up+=1
                                 xup=xdat[i]
                         if ydat[i-1]>=half and ydat[i]<half:
-				print ydat[i-1],ydat[i]
+				print(ydat[i-1],ydat[i])
                                 i_half_down+=1
                                 xdown=xdat[i]
 
                 # Peak shape judgement
                 if i_half_up==0 or i_half_down==0:
-                        print "No peak value"
+                        print("No peak value")
                         return 0
 
                 if i_half_up>1 or i_half_down>1:
-                        print "Bad peak shape"
+                        print("Bad peak shape")
                         #return 0
 
                 # Peak FWHM analysis
-                print xup,xdown
+                print(xup,xdown)
                 fwhm=math.fabs(xup-xdown)
                 center=(xup+xdown)/2.0
 
@@ -795,11 +795,11 @@ class AnalyzePeak:
 		# Peak position 
 		maxyo=poy.max()
 		maxxo=self.getXinY(pox,poy,maxyo)
-		print maxxo
+		print(maxxo)
 
 		maxy=newdy.max()
 		maxx=self.getXinY(newx,newdy,maxy)
-		print maxx
+		print(maxx)
                 peakstr="[Peak (O:%8.3f/S:%8.3f)]"%(float(maxxo),float(maxx))
 
 		## Plotting
@@ -897,11 +897,11 @@ class AnalyzePeak:
 		# Peak position 
 		maxyo=poy.max()
 		maxxo=self.getXinY(pox,poy,maxyo)
-		print maxxo
+		print(maxxo)
 
 		maxy=newdy.max()
 		maxx=self.getXinY(newx,newdy,maxy)
-		print maxx
+		print(maxx)
                 peakstr="[Peak (O:%8.3f/S:%8.3f)]"%(float(maxxo),float(maxx))
 
 		## Plotting
@@ -962,7 +962,7 @@ class AnalyzePeak:
 		newdy=splev(newx,tck,der=1)
 
 		for i in range(0,len(newx)):
-			print newx[i],newy[i],newdy[i]
+			print(newx[i],newy[i],newdy[i])
 		
 		pylab.plot(newx,newy,xdat,ydat,newx,newdy)
 
@@ -1080,7 +1080,7 @@ class AnalyzePeak:
 
 		# prep data
 		xdat,y1dat,y2dat=self.prepData3(col1,col2,3)
-		print xdat,y1dat
+		print(xdat,y1dat)
 		px,py1,py2=self.prepPylabArray(xdat,y1dat,y2dat)
 
 		# smoothing y1 data
@@ -1229,4 +1229,4 @@ if __name__=="__main__":
 		dx,dy=ana.derivative(xdat,ydat)
 
 		for idx in range(0,len(dxx)):
-			print 1234,dxx[idx],dyy[idx],1234
+			print(1234,dxx[idx],dyy[idx],1234)

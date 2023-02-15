@@ -29,7 +29,7 @@ if __name__=="__main__":
 
     x,y,z = dev.gonio.getXYZmm()
 
-    print x,y,z
+    print(x,y,z)
     y_init = y
     
     sum_dist = 0.0 # um
@@ -43,7 +43,7 @@ if __name__=="__main__":
         filename = "%s/cap_%f.ppm"%(root_dir, d_hori_mm)
         logdir = "%s/%04d/" % (root_dir, i)
 
-        print filename
+        print(filename)
         dev.capture.capture(filename)
         cip = CryImageProc.CryImageProc(logdir = root_dir)
         cip.setImages(filename, bfile)

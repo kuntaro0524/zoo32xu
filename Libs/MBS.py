@@ -43,10 +43,10 @@ class MBS:
 		# 30 sec trials
 		for i in range(0,10):
 			if self.getStatus()=="open":
-				print "OPEN Okay"
+				print("OPEN Okay")
 				return True
 			time.sleep(3.0)
-		print "Remote control is okay?"
+		print("Remote control is okay?")
 		return False
 
 	def close(self):
@@ -58,10 +58,10 @@ class MBS:
 		# 30 sec trials
 		for i in range(0,10):
 			if self.getStatus()==0:
-				print "CLOSE Okay"
+				print("CLOSE Okay")
 				return True
 			time.sleep(3.0)
-		print "Remote control is okay?"
+		print("Remote control is okay?")
 		return False
 
 	# wait_interval [sec]
@@ -69,7 +69,7 @@ class MBS:
 		for i in range(0,ntrial):
 			if self.isLocked()==True:
 				tstr=datetime.datetime.now()
-				print "MBS %s: waiting for 'unlocked'"%tstr
+				print("MBS %s: waiting for 'unlocked'"%tstr)
 				time.sleep(wait_interval)
 			else:
 				self.open()
@@ -90,8 +90,8 @@ if __name__=="__main__":
         s.connect((host,port))
 
         mbs=MBS(s)
-	print mbs.getStatus()
-	print mbs.isLocked()
+	print(mbs.getStatus())
+	print(mbs.isLocked())
 	#mbs.openTillOpen(wait_interval=10,ntrial=30)
 	#time.sleep(10)
 	#print mbs.close()

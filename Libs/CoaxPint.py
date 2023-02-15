@@ -29,7 +29,7 @@ class CoaxPint:
         return curr_value
 
     def readCameraInf(self):
-        print "read camera inf"
+        print("read camera inf")
 
 if __name__ == "__main__":
     host = '172.24.242.41'
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     s.connect((host, port))
 
     coa = CoaxPint(s)
-    print coa.getPosition()
+    print(coa.getPosition())
     # coa.relmove(10)
     #coa.move(22819)
     #print coa.getPosition()

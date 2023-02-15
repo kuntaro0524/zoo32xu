@@ -13,8 +13,8 @@ for fd in fdlist:
 
 
 
-print """
+print("""
 cd %s
 
 
-"""%(final_path)
+"""%(final_path))

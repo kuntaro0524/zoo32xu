@@ -16,12 +16,12 @@ class Shutter:
 
 	def open(self):
 		self.s.sendall(self.openmsg)
-		print self.s.recv(8000) # dummy buffer
+		print(self.s.recv(8000)) # dummy buffer
 		#self.query()
 
 	def close(self):
 		self.s.sendall(self.clsmsg)
-		print self.s.recv(8000) # dummy buffer
+		print(self.s.recv(8000)) # dummy buffer
 		#self.query()
 
 	def query(self):

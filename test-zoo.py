@@ -10,7 +10,7 @@ import Beamsize
 class Condition:
 	def __init__(self, uname, pucks_and_pins, h_beam, v_beam, raster_exp, osc_width, total_osc, exp_henderson, exp_time, distance, att_raster, shika_minscore, shika_mindist, loop_size):
 		# adopt init args
-		for k, v in locals().items():
+		for k, v in list(locals().items()):
 			if k == "self": continue
 			setattr(self, k, v)
 
@@ -22,16 +22,16 @@ class Condition:
 		assert not prohibit_chars.intersection(self.uname)
 
 		assert type(self.pucks_and_pins) == list
-		assert all(map(lambda x: len(x)==2, self.pucks_and_pins))
+		assert all([len(x)==2 for x in self.pucks_and_pins])
 		for puck, pins in self.pucks_and_pins:
 			assert type(puck) == str
 			assert not prohibit_chars.intersection(puck)
-			assert all(map(lambda x: 1 <= x <= 16, pins))
+			assert all([1 <= x <= 16 for x in pins])
 	# _check_errors()
 
 	def customized_copy(self, **kwds):
 		c = copy.copy(self)
-		for k, v in kwds.items():
+		for k, v in list(kwds.items()):
 			assert hasattr(c, k)
 			setattr(c, k, v)
 		self._check_errors()
@@ -49,15 +49,15 @@ class Condition:
 		
 
 def check_abort(lm):
-	print "Abort check"
+	print("Abort check")
 	ret = lm.isAbort()
-	if ret: print "ABORTABORT"
+	if ret: print("ABORTABORT")
 	return ret
 # check_abort()
 
 def run(zoo, ms, root_dir, name, sx, sy, sz, sphi, conditions):
 	if os.path.exists(root_dir):
-		print "%s already exists"%root_dir
+		print("%s already exists"%root_dir)
 	else:
 		os.makedirs(root_dir)
 
@@ -75,7 +75,7 @@ def run(zoo, ms, root_dir, name, sx, sy, sz, sphi, conditions):
 		for trayid, pin_list in cond.pucks_and_pins:
 			for pinid in pin_list:
 				prefix="%s-%s-%02d"%(cond.uname,trayid,pinid)
-				print "Doing %s"%prefix
+				print("Doing %s"%prefix)
 
 				lm=LoopMeasurement.LoopMeasurement(ms,root_dir,prefix)
 
@@ -103,9 +103,9 @@ def run(zoo, ms, root_dir, name, sx, sy, sz, sphi, conditions):
 				# 2015/11/21 Loop size can be set
 				try:
 					lm.centering(cond.loop_size)
-				except MyException,ttt:
-					print "failed in centering"
-					print "Go to next sampl,e"
+				except MyException as ttt:
+					print("failed in centering")
+					print("Go to next sampl,e")
 					continue
 	
 				# Save Gonio XYZ to the previous pin
@@ -124,8 +124,8 @@ def run(zoo, ms, root_dir, name, sx, sy, sz, sphi, conditions):
 	
 				try:
 					glist,phi_mid=lm.shikaTalk()
-				except MyException, tttt:
-					print "Skipping this loop!!"
+				except MyException as tttt:
+					print("Skipping this loop!!")
 					continue
 	
 				if check_abort(lm): return # Abort check
@@ -166,7 +166,7 @@ if __name__ == "__main__":
 	
 	# Puck number
 	conditions = [Condition(uname="zoo-test2", 
-				pucks_and_pins=[["1", range(1,2)],
+				pucks_and_pins=[["1", list(range(1,2))],
 				],
 	                        h_beam=10.0, #[um square shaped]
 	                        v_beam=18.0, #[um square shaped]

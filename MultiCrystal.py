@@ -290,7 +290,7 @@ class MultiCrystal:
         i_xyz = 1
         schstr = []
 
-        print "makeAdvancedSchStrEach:", gonio_list
+        print("makeAdvancedSchStrEach:", gonio_list)
 
         schstr.append("Job ID: 0\n")
         schstr.append(

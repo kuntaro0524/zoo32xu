@@ -32,4 +32,4 @@ for zoofile, timelimit in zip(check_list, time_list):
             print("the time limit is set as 99999 minutes because input value is 'None'")
             timelimit=99999
 
-        print (zoofile, timelimit)
+        print((zoofile, timelimit))

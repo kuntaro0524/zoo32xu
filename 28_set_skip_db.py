@@ -16,10 +16,10 @@ if __name__ == "__main__":
     ppp = esa.getDict()
     for p in ppp:
         pindex = p['p_index']
-        print p['p_index'], p['isSkip']
+        print(p['p_index'], p['isSkip'])
         esa.updateValueAt(pindex,"isSkip", 1)
 
     ppp = esa.getDict()
-    print "AFTER"
+    print("AFTER")
     for p in ppp:
-        print p['p_index'], p['isSkip']
+        print(p['p_index'], p['isSkip'])

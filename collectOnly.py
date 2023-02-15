@@ -74,7 +74,7 @@ if __name__ == "__main__":
         endtime=datetime.datetime.now()
         time_sec= (endtime-starttime).seconds
 
-	print time_sec
+	print(time_sec)
 
 	################# Loop measurement
 	lm=LoopMeasurement.LoopMeasurement(s,root_dir,prefix)
@@ -116,12 +116,12 @@ if __name__ == "__main__":
                 zooprog.flush()
 		"""
 
-        except MyException, tttt:
-                print "Skipping this loop!!"
+        except MyException as tttt:
+                print("Skipping this loop!!")
                 zooprog.write("\n")
                 zooprog.flush()
                 # Disconnecting capture in this loop's 'capture' instance
-                print "Disconnecting capture"
+                print("Disconnecting capture")
                 lm.closeCapture()
 		sys.exit(1)
 	"""
@@ -138,11 +138,11 @@ if __name__ == "__main__":
 	"""
 
         if len(glist)==0:
-                print "Skipping this loop!!"
+                print("Skipping this loop!!")
                 zooprog.write("\n")
                 zooprog.flush()
                 # Disconnecting capture in this loop's 'capture' instance
-                print "Disconnecting capture"
+                print("Disconnecting capture")
                 lm.closeCapture()
 		sys.exit(1)
 
@@ -165,6 +165,6 @@ if __name__ == "__main__":
         zooprog.write("%s\n"%logstr)
         zooprog.flush()
         # Disconnecting capture in this loop's 'capture' instance
-        print "Disconnecting capture"
+        print("Disconnecting capture")
         lm.closeCapture()
 	zoo.disconnect()

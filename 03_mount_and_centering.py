@@ -46,8 +46,8 @@ if __name__ == "__main__":
     for puck, pin in puckpin_list:
         try:
             zoo.mountSample(puck, pin)
-        except MyException,ttt:
-            print "Sample mount failed!!"
+        except MyException as ttt:
+            print("Sample mount failed!!")
             zoo.skipSample()
             continue
 

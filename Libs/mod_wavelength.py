@@ -14,7 +14,7 @@ if __name__ == "__main__":
     pin_in = int(sys.argv[3])
     wave_in = float(sys.argv[4])
 
-    print "BEFORE"
+    print("BEFORE")
     ppp = esa.getDict()
     for p in ppp:
         oindex = p['o_index']
@@ -24,14 +24,14 @@ if __name__ == "__main__":
             pinid = p['pinid']
             "wavelength=",p['wavelength']
             if puckid == puck_in and pinid == pin_in:
-                print oindex,p['puckid'],p['pinid'],"wavelength=",p['wavelength']
-                print "Changing wavelength = %8.5f A"% float(wave_in)
+                print(oindex,p['puckid'],p['pinid'],"wavelength=",p['wavelength'])
+                print("Changing wavelength = %8.5f A"% float(wave_in))
                 esa.updateValueAt(oindex,"wavelength", float(wave_in))
         
     ppp = esa.getDict()
-    print "AFTER"
+    print("AFTER")
     for p in ppp:
         isDone = p['isDone']
         if isDone == 0:
             oindex = p['o_index']
-            print oindex,p['puckid'],p['pinid'],"wavelength=",p['wavelength']
+            print(oindex,p['puckid'],p['pinid'],"wavelength=",p['wavelength'])

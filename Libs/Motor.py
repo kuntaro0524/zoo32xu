@@ -78,7 +78,7 @@ class Motor(ScanAxis):
 		com="put/%s_preset/%d%s"%(self.motor,value,self.unit)
 		self.srv.sendall(com)
 		recbuf=self.srv.recv(8000)
-		print recbuf
+		print(recbuf)
 
 	def getApert(self):
 		com="get/"+self.motor+"/aperture"
@@ -102,7 +102,7 @@ class Motor(ScanAxis):
 			value=float(position.replace("um",""))
 			return(value,"um")
 		else :
-			print "Unknown value"
+			print("Unknown value")
 
 ##  position ####
 	def getPosition(self):
@@ -128,7 +128,7 @@ class Motor(ScanAxis):
 			value=float(position.replace("um",""))
 			return(value,"um")
 		else :
-			print "Unknown value"
+			print("Unknown value")
 			return(0,0)
 
 	def findMax(self,cnt_ch,cnt_time,sense=1):
@@ -145,7 +145,7 @@ class Motor(ScanAxis):
 		# Exception 
 		try :
 			self.checkScanCondition()
-        	except MyException,ttt:
+        	except MyException as ttt:
 			raise ttt
 
 		# save current position
@@ -163,7 +163,7 @@ class Motor(ScanAxis):
 			# Counter channel
     			value1,value2=counter.getCount(cnt_time)
 
-			print "%12.5f ch1: %12d, ch2:%12d"%(current_x,value1,value2)
+			print("%12.5f ch1: %12d, ch2:%12d"%(current_x,value1,value2))
 			line="12345 %12.5f %8d %8d\n" %(current_x,value1,value2)
 
 			## maximum count
@@ -192,7 +192,7 @@ class Motor(ScanAxis):
 		# Exception 
 		try :
 			self.checkScanCondition()
-        	except MyException,ttt:
+        	except MyException as ttt:
 			raise ttt
 
 		# save current position
@@ -214,7 +214,7 @@ class Motor(ScanAxis):
 			#value1=1
 			#value2=2
 
-			print "%12.5f ch1: %12d, ch2:%12d"%(current_x,value1,value2)
+			print("%12.5f ch1: %12d, ch2:%12d"%(current_x,value1,value2))
 			line="12345 %12.5f %8d %8d\n" %(current_x,value1,value2)
 
 			## maximum count
@@ -231,7 +231,7 @@ class Motor(ScanAxis):
 
 		of.close()
 		## set this axis to the initial position
-    		print "%5d%s" % (saved_position[0],saved_position[1])
+    		print("%5d%s" % (saved_position[0],saved_position[1]))
     		self.move(saved_position[0])
 		return maxval
 
@@ -274,7 +274,7 @@ class Motor(ScanAxis):
                         value=float(position.replace("kev",""))
                         return(value,"kev")
                 else :
-                        print "Unknown value"
+                        print("Unknown value")
                         return(NULL,NULL)
 
         def getRamda(self):
@@ -289,7 +289,7 @@ class Motor(ScanAxis):
                         value=float(position.replace("angstrome",""))
                         return(value,"angstrome")
                 else :
-                        print "Unknown value"
+                        print("Unknown value")
                         return(NULL,NULL)
 
         def getAngle(self):
@@ -304,7 +304,7 @@ class Motor(ScanAxis):
                         value=float(position.replace("degree",""))
                         return(value,"degree")
                 else :
-                        print "Unknown value"
+                        print("Unknown value")
                         return(NULL,NULL)
 
 if __name__=="__main__":
@@ -319,12 +319,12 @@ if __name__=="__main__":
 	test=Motor(s,axis,"pulse")
 
 	time1=datetime.datetime.now()
-	print time1
-        print test.move(-89000)
-        print test.move(-87000)
+	print(time1)
+        print(test.move(-89000))
+        print(test.move(-87000))
 	time2=datetime.datetime.now()
-	print time2
+	print(time2)
 
-	print "Time: %8.5f sec"%(time2-time1).seconds
+	print("Time: %8.5f sec"%(time2-time1).seconds)
 
-        print test.move(-89000)
+        print(test.move(-89000))

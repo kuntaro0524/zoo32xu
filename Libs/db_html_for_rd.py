@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     ofile.write(title)
 
-    print "Number of crystals processed", len(conds)
+    print("Number of crystals processed", len(conds))
     n_good = 0
     dpfile = open("automerge.csv","w")
     dpfile.write("topdir,name,anomalous\n")
@@ -115,7 +115,7 @@ if __name__ == "__main__":
             
             ofile.write("%s\n" % bad_str)
 
-    print "NDS processed = ", n_good
+    print("NDS processed = ", n_good)
         #if flag == True:
         #    dpfile.write("%s/_kamoproc/%s/,%s,no\n" % (rootdir,prefix,sample_name))
 

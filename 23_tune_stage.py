@@ -21,15 +21,15 @@ if __name__ == "__main__":
     zoo=Zoo.Zoo()
     zoo.connect()
 
-    print datetime.datetime.now()
+    print(datetime.datetime.now())
     beamsize_index = zoo.getBeamsize()
-    print datetime.datetime.now()
-    print "DISCO",datetime.datetime.now()
-    print "Beamsize index from BSS=",beamsize_index
+    print(datetime.datetime.now())
+    print("DISCO",datetime.datetime.now())
+    print("Beamsize index from BSS=",beamsize_index)
     config_dir = "/isilon/blconfig/bl32xu/"
     bsc = BeamsizeConfig.BeamsizeConfig(config_dir)
     # bsc.readConfig()
-    print bsc.getBeamsizeAtIndex(beamsize_index)
+    print(bsc.getBeamsizeAtIndex(beamsize_index))
 
     # Prep scintillator tuning
     dev.prepCapture()

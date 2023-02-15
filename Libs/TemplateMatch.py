@@ -66,4 +66,4 @@ if __name__=="__main__":
         cap=Capture()
 
 	tm=TemplateMatch(tmplowppm,"/isilon/users/target/target/image005.ppm")
-	print tm.getXY()
+	print(tm.getXY())

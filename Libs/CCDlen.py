@@ -31,7 +31,7 @@ class CCDlen:
 
 	def moveCL(self,len):
 		if len > 600.0 or len < 120.0:
-			print "Do nothing because CL should be in 110-600mm"
+			print("Do nothing because CL should be in 110-600mm")
 			return False
 		tmp=len-self.homevalue
 		pls=int(tmp*5000.0)
@@ -39,7 +39,7 @@ class CCDlen:
 		#print sense_pls
 		#print self.getPos()
 		self.move(sense_pls)
-		print "Current Camera distance %8.2fmm"% self.getLen()
+		print("Current Camera distance %8.2fmm"% self.getLen())
 
 	def move(self,pls):
 		self.ccdlen.move(pls)
@@ -66,7 +66,7 @@ if __name__=="__main__":
 	s.connect((host,port))
 
 	clen=CCDlen(s)
-	print clen.getLen()
+	print(clen.getLen())
 	#clen.moveCL(300.0)
 	#clen.evac()
 

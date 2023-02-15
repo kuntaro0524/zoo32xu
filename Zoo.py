@@ -31,8 +31,8 @@ class Zoo:
                 self.bssr.connect((bss_srv, bss_port))
                 self.isConnect=True
                 return True
-            except MyException, ttt:
-                print "connect: failed. %s"%ttt.args[0]
+            except MyException as ttt:
+                print("connect: failed. %s"%ttt.args[0])
                 time.sleep(20.0)
         return False
 
@@ -42,39 +42,41 @@ class Zoo:
             command="put/bss/disconnect"
             self.bssr.sendall(command)
             recstr=self.bssr.recv(8000)
-            print recstr
+            print(recstr)
             self.bssr.close()
         return True
 
     def disconnectServers(self):
         query_com="put/device_server/disconnect"
         if self.isConnect==False:
-            print "Connection first!"
+            print("Connection first!")
             return False
         else:
             self.bssr.sendall(query_com)
             recstr=self.bssr.recv(8000)
-            print recstr
+            print(recstr)
 
     def connectServers(self):
         query_com="put/device_server/connect"
         if self.isConnect==False:
-            print "Connection first!"
+            print("Connection first!")
             return False
         else:
             self.bssr.sendall(query_com)
             recstr=self.bssr.recv(8000)
-            print recstr
+            print(recstr)
 
     def getSampleInformation(self):
-        query_com="get/sample/information"
+        query_com=b"get/sample/information"
+        print(type(query_com))
         if self.isConnect==False:
-            print "Connection first!"
+            print("Connection first!")
             return False
         else:
             self.bssr.sendall(query_com)
             recstr=self.bssr.recv(8000)
             self.logger.info("getSampleInformation:%s" % recstr)
+        print(recstr)
         cols=recstr.split('/')[3].split('_')
         idx=0
         self.tray_list=[]
@@ -103,14 +105,14 @@ class Zoo:
             raise MyException(ttt.args[0])
 
     def exchangeSample(self,trayID,pinID):
-        print trayID,pinID
+        print(trayID,pinID)
         com="put/sample/exchange_%s_%s"%(trayID,pinID)
-        print com
+        print(com)
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
         try:
             self.waitTillReady()
-        except MyException, ttt:
+        except MyException as ttt:
             raise MyException("exchangeSample: failed. %s"%ttt.args[0])
 
     def isMounted(self):
@@ -122,7 +124,7 @@ class Zoo:
         puck_id=puck_char
         pin_id=int(pin_char)
         if pin_id==0:
-            print "Currently no pin is mounted"
+            print("Currently no pin is mounted")
             return False
         else:
             return True
@@ -131,7 +133,7 @@ class Zoo:
     def exchangePin(self, trayID, pinID):
         mount_flag = self.isMounted()
         if mount_flag == False:
-            print "Currently no pin is mounted"
+            print("Currently no pin is mounted")
             self.mountSample(trayID,pinID)
             return puck_id, pin_id
         else:
@@ -140,7 +142,7 @@ class Zoo:
     def dismountSample(self,trayID,pinID):
         self.logger.info("Dismounting %s-%s" % (trayID,pinID))
         com="put/sample/unmount_%s_%s"%(trayID,pinID)
-        self.logger.debug("Sending command: %s" % com)
+        self.logger.debug("sendall command: %s" % com)
 
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
@@ -148,7 +150,7 @@ class Zoo:
         try:
             # 210415 K.Hirata (strange answer from BSS)
             if self.wait_flag: time.sleep(0.5)
-            print "Entering waiting loop for SPACE..."
+            print("Entering waiting loop for SPACE...")
             self.waitSPACE()
         except MyException as ttt:
             raise MyException("mountSample: failed. %s"%ttt.args[0])
@@ -178,16 +180,16 @@ class Zoo:
     def exchange(self, puck_id, pin_id):
         puck_id_prev, pin_id_prev=self.getCurrentPin()
         if pin_id_prev == 0:
-            print "None is mounted"
+            print("None is mounted")
 
     def dismountCurrentPin(self):
         puck_id,pin_id=self.getCurrentPin()
         self.logger.debug("dismounting the current pin %s-%s" % (puck_id, pin_id))
 
         if pin_id==0:
-            print "Already none"
+            print("Already none")
         else:
-            self.logger.debug("Sending command to SPACE..")
+            self.logger.debug("sendall command to SPACE..")
             self.dismountSample(puck_id,pin_id)
 
     def cleaning(self):
@@ -198,13 +200,13 @@ class Zoo:
             # 210415 K.Hirata (strange answer from BSS)
             if self.wait_flag: time.sleep(0.5)
             self.waitSPACE()
-        except MyException, ttt:
-            print "TTT=", ttt
+        except MyException as ttt:
+            print("TTT=", ttt)
             raise MyException("cleaning: failed. %s"%ttt.args[0])
 
     def capture(self,filename):
         command="put/video/capture_%s"%filename
-        print "Capturing %s"%filename
+        print("Capturing %s"%filename)
         self.bssr.sendall(command)
         recstr=self.bssr.recv(8000)
 
@@ -219,17 +221,17 @@ class Zoo:
         com="put/video/zoomer_1"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print recstr
+        print(recstr)
 
     def ZoomDown(self):
         com="put/video/zoomer_-1"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print recstr
+        print(recstr)
 
     def isBusy(self):
         if self.isConnect==False:
-            print "Connection first!"
+            print("Connection first!")
             return False
         else:
             command="get/measurement/query"
@@ -238,7 +240,7 @@ class Zoo:
             #print "Received buffer in isBusy: %s"%recstr
             svoc_c=self.getSVOC_C(recstr)
             if svoc_c.rfind("ready")!=-1:
-                print "isBusy:RECBUF=",recstr
+                print("isBusy:RECBUF=",recstr)
                 return False
             elif svoc_c.rfind("fail")!=-1:
                 raise MyException("Something failed.")
@@ -257,16 +259,16 @@ class Zoo:
         while (1):
             try:
                 if self.isBusy():
-                    print "Now busy..."
+                    print("Now busy...")
                     time.sleep(2.0)
                 else:
                     break
-            except MyException, ttt:
+            except MyException as ttt:
                 raise MyException("waitTillReady: Some error occurred : %s"%ttt.args[0])
 
     def isBusy(self):
         if self.isConnect==False:
-            print "Connection first!"
+            print("Connection first!")
             return False
         else:
             command="get/measurement/query"
@@ -275,7 +277,7 @@ class Zoo:
             #print "Received buffer in isBusy: %s"%recstr
             svoc_c=self.getSVOC_C(recstr)
             if svoc_c.rfind("ready")!=-1:
-                print "isBusy:RECBUF=",recstr
+                print("isBusy:RECBUF=",recstr)
                 return False
             elif svoc_c.rfind("fail")!=-1:
                 raise MyException("Something failed.")
@@ -285,7 +287,7 @@ class Zoo:
     def waitSPACE(self):
         self.logger.debug("waiting SPACE processing...")
         if self.isConnect==False:
-            print "Connection first!"
+            print("Connection first!")
             return False
         while (1):
             query_command = "get/measurement/query"
@@ -332,46 +334,46 @@ class Zoo:
                 self.logger.error(message)
                 raise MyException(message)
             else:
-                print "waiting..."
+                print("waiting...")
                 time.sleep(5.0)
 
     def waitTillReadySeconds(self,time_thresh=1000.0):
         while (1):
             try:
                 if self.isBusy():
-                    print "Now busy..."
+                    print("Now busy...")
                     time.sleep(2.0)
                 else:
                     break
-            except MyException, ttt:
+            except MyException as ttt:
                 raise MyException("Some error occurred : %s"%ttt.args[0])
 
     def doDataCollection(self,jobfile):
         # JOB FILE NAME MUST NOT INCLUDE "_"
         com="put/measurement/start_1_3_1_schedule_%s"%jobfile
-        print "Submitting command: %s"%com
+        print("Submitting command: %s"%com)
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print recstr
+        print(recstr)
 
     def stop(self):
         # JOB FILE NAME MUST NOT INCLUDE "_"
         com="put/measurement/stop"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print recstr
+        print(recstr)
 
     def setPhi(self,phi_abs):
         com="put/gonio_spindle/abs_%fdegree"%phi_abs
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print com
+        print(com)
 
     def autoCentering(self):
         com="put/sample/autocenter"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print com
+        print(com)
 
     def skipSample(self):
         com="put/sample/clear_warning"
@@ -381,7 +383,7 @@ class Zoo:
 
     def waitTillFinish(self, query_command):
         if self.isConnect == False:
-            print "Connection first!"
+            print("Connection first!")
             return False
 
         while (1):
@@ -406,7 +408,7 @@ class Zoo:
         self.logger.info("getting beam size from BSS.")
         com = "get/beamline/beamsize"
         for i in range(0,10):
-            self.logger.info("sending command: %s" % com)
+            self.logger.info("sendall command: %s" % com)
             self.bssr.sendall(com)
             self.logger.info("waiting for a reply")
             recstr=self.bssr.recv(8000)
@@ -435,7 +437,7 @@ class Zoo:
         recstr=""
 
         while(1):
-            self.logger.info("sending command: %s" % com)
+            self.logger.info("sendall command: %s" % com)
             self.bssr.sendall(com)
             self.logger.info("waiting for a reply")
             recstr=self.bssr.recv(8000)
@@ -472,28 +474,28 @@ class Zoo:
         com = "get/beamline/query"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print recstr
+        print(recstr)
 
     def onlySampleQuery(self):
         com = "get/sample/query"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print recstr
+        print(recstr)
 
     def getBeamsizeQuery(self):
         com = "get/beamline/query"
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print "getBeamsizeQuery.command = ",com
-        print "GETBEAMSIZE=",recstr
+        print("getBeamsizeQuery.command = ",com)
+        print("GETBEAMSIZE=",recstr)
 
     def setBeamsize(self, beamsize_index):
         com = "put/beamline/beamsize_%d" % beamsize_index
         #self.getBeamsizeQuery()
-        print "changing"
+        print("changing")
         self.bssr.sendall(com)
         recstr=self.bssr.recv(8000)
-        print "setBeamsize:result=", recstr
+        print("setBeamsize:result=", recstr)
         self.waitTillReady()
 
 if __name__ == "__main__":
@@ -507,11 +509,11 @@ if __name__ == "__main__":
 
     zoo=Zoo()
     zoo.connect()
-    print zoo.getSampleInformation()
+    print(zoo.getSampleInformation())
     #print zoo.getWavelength()
     #print zoo.getBeamsize()
 
-    print zoo.getCurrentPin()
+    print(zoo.getCurrentPin())
 
     #while(1):
     zoo.skipSample()

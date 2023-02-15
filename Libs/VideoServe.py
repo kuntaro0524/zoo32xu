@@ -31,7 +31,7 @@ class VideoServe:
 		lines=open("./tmp","r").readlines()
 		for line in lines:
 			cnt+=1
-		print cnt
+		print(cnt)
 
 	def killVideosrv(self):
 		command="ssh 192.168.163.6 \"killall %s\""%(self.videosrv)
@@ -55,7 +55,7 @@ class VideoServe:
 			if idx==0:
 				self.killVideosrv()
 				self.reboot()
-				print "rebooting"
+				print("rebooting")
 			time.sleep(10.0)
 			idx+=1
 			

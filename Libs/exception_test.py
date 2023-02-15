@@ -15,7 +15,7 @@ class Hogeko:
 
 while True:
     try:
-        selection = int(input("What?"))
+        selection = int(eval(input("What?")))
         if selection ==1:
             tmp = int('foo')
     
@@ -23,11 +23,11 @@ while True:
             tmp = 'tmp'[5]
     
         elif selection == 3:
-            print ""
-            print "No exception"
+            print("")
+            print("No exception")
     
         elif selection == 4:
-            print "End!!"
+            print("End!!")
             break
 
         elif selection == 5:
@@ -46,28 +46,28 @@ while True:
             hoge = Hoge(1.0)
     
         else:
-            print undefined_var
+            print(undefined_var)
 
     except ValueError as e:
-        print "Value error"
-        print e.args
-        print ""
+        print("Value error")
+        print(e.args)
+        print("")
 
     except IndexError:
-        print "Index error"
+        print("Index error")
 
     except MyException.MyException as e:
-        print "Kuntaro defined exception"
-        print "kuntaro defined exception args=",e.args
+        print("Kuntaro defined exception")
+        print("kuntaro defined exception args=",e.args)
 
     except MyException.NandaKandaExcept as e:
-        print "nanda defined exception"
-        print "kanda defined exception args=",e.args
+        print("nanda defined exception")
+        print("kanda defined exception args=",e.args)
 
     except Exception as e:
-        print "Some exception"
-        print "args=",e.args
+        print("Some exception")
+        print("args=",e.args)
 
-    print "after trying"
+    print("after trying")
 
-print "Mugen loop out"
+print("Mugen loop out")

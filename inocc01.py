@@ -17,12 +17,12 @@ if __name__=="__main__":
     # Find top coordinate
     top_xy = cip.find_top_x(cont)
 
-    print "TOPXY=",top_xy
+    print("TOPXY=",top_xy)
     left_flag, right_flag, lower_flag, upper_flag = cip.isTouchedToEdge(cont)
-    print "LEFT = ",left_flag
-    print "RIGH = ",right_flag
-    print "LOWE = ",lower_flag
-    print "UPPE = ",upper_flag
+    print("LEFT = ",left_flag)
+    print("RIGH = ",right_flag)
+    print("LOWE = ",lower_flag)
+    print("UPPE = ",upper_flag)
 
     # ROI of the contour defined by 'horizontal' pixel range
     roi_len = 300.0 # [um]
@@ -36,7 +36,7 @@ if __name__=="__main__":
 
     # Finding centering point at X of 'half of horizontal ROI length'
     ox, oy = cip.findCenteringPoint(roi_xy, roi_len)
-    print "OX,OY=",ox,oy
+    print("OX,OY=",ox,oy)
       
     outimage = "raster_new.png"
-    print cip.getRasterArea(roi_xy)
+    print(cip.getRasterArea(roi_xy))

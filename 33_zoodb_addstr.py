@@ -20,4 +20,4 @@ if __name__ == "__main__":
         #esa.updateValueAt(o_index, 't_mount_end', "190633")
         esa.addTimeStrAt(o_index, 't_mount_end', "%s" % datetime.datetime.now())
     except:
-        print "Failed."
+        print("Failed.")

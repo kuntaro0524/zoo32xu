@@ -33,14 +33,14 @@ class Colli:
 
                 try:
                         tmpon,tmpoff=bssconf.getColli()
-                except MyException,ttt:
-                        print ttt.args[0]
+                except MyException as ttt:
+                        print(ttt.args[0])
 
                 self.on_pos=float(tmpon)*self.z_v2p
                 self.off_pos=float(tmpoff)*self.z_v2p
 
                 self.isInit=True
-                print self.on_pos,self.off_pos
+                print(self.on_pos,self.off_pos)
 
 	def getY(self):
                 tmp=int(self.coly.getPosition()[0])
@@ -91,7 +91,7 @@ class Colli:
 		ofile="%s_colliz.scn"%prefix
 		before_zp=self.colz.getPosition()[0]
 		before_zm=before_zp
-		print "Current value=%8d\n"%before_zp
+		print("Current value=%8d\n"%before_zp)
 
 		###
 		# Scan setting
@@ -135,19 +135,19 @@ class Colli:
 
 		try :
                 	fwhm,center=ana.analyzeAll("colliZ[pulse]","Intensity",outfig,strtime,"OBS","JJJJ")
-			print fwhm,center
+			print(fwhm,center)
                 	fwhm_z=fwhm/2.0 # [um]
-		except MyException,ttt:
+		except MyException as ttt:
 			self.colz.move(0)
 			err_log01="%s\n"%ttt.args[0]
 			err_log02="Collimetor Z scan failed\n"
 			err_all=err_log01+err_log02
 			raise MyException(err_all)
 
-		print "setting collimeter Z"
+		print("setting collimeter Z")
 		self.colz.move(center)
 		self.colz.preset(0)
-		print "setting collimeter Z"
+		print("setting collimeter Z")
 
 		cenz=float(center)
 
@@ -183,7 +183,7 @@ class Colli:
 		try :
                 	fwhm,center=ana.analyzeAll("colliY[pulse]","Intensity",outfig,strtime,"OBS","JJJJ")
                 	fwhm_y=fwhm*2.0 # [um]
-		except MyException,ttt:
+		except MyException as ttt:
 			self.coly.move(0)
 			err_log01="%s\n"%ttt.args[0]
 			err_log02="Collimetor Y scan failed\n"
@@ -194,7 +194,7 @@ class Colli:
 		self.coly.preset(0)
 		ceny=float(center)
 
-		print "FWHM Z:%8.2f[um] Y:%8.2f[um]"%(fwhm_z,fwhm_y)
+		print("FWHM Z:%8.2f[um] Y:%8.2f[um]"%(fwhm_z,fwhm_y))
 		return fwhm_y,fwhm_z,ceny,cenz
 
         def scanWithoutPreset(self,prefix,ch,width_mm):
@@ -202,7 +202,7 @@ class Colli:
 
                 before_zp=self.colz.getPosition()[0]
                 before_zm=before_zp
-                print "Current value=%8d\n"%before_zp
+                print("Current value=%8d\n"%before_zp)
 
                 ###
                 # Scan setting
@@ -213,7 +213,7 @@ class Colli:
 
 		before_zp=self.colz.getPosition()[0]
 		before_zm=before_zp
-		print "Current value=%8d\n"%before_zp
+		print("Current value=%8d\n"%before_zp)
 
 		###
 		# Scan setting
@@ -297,7 +297,7 @@ class Colli:
 		self.coly.preset(0)
 		ceny=float(center)
 
-		print "FWHM Z:%8.2f[um] Y:%8.2f[um]"%(fwhm_z,fwhm_y)
+		print("FWHM Z:%8.2f[um] Y:%8.2f[um]"%(fwhm_z,fwhm_y))
 		return ceny,cenz
 
         def scanWithoutPreset(self,prefix,ch,width_mm):
@@ -305,7 +305,7 @@ class Colli:
 
                 before_zp=self.colz.getPosition()[0]
                 before_zm=before_zp
-                print "Current value=%8d\n"%before_zp
+                print("Current value=%8d\n"%before_zp)
 
                 ###
                 # Scan setting
@@ -346,9 +346,9 @@ class Colli:
 		try :
                 	fwhm,center=ana.analyzeAll("colliZ[pulse]","Intensity",outfig,strtime,"OBS","JJJJ")
                 	fwhm_z=fwhm/2.0 # [um]
-		except MyException,ttt:
-			print "Collimeter scan failed"
-			print ttt.args[0]
+		except MyException as ttt:
+			print("Collimeter scan failed")
+			print(ttt.args[0])
 			return 0,0,30,30
 
                 self.colz.move(center)
@@ -392,9 +392,9 @@ class Colli:
 		try :
                 	fwhm,center=ana.analyzeAll("colliY[pulse]","Intensity",outfig,strtime,"OBS","JJJJ")
                 	fwhm_y=fwhm*2.0 # [um]
-		except MyException,ttt:
-			print "Collimeter scan failed"
-			print ttt.args[0]
+		except MyException as ttt:
+			print("Collimeter scan failed")
+			print(ttt.args[0])
 			return 0,0,30,30
 
                 return ceny,cenz,fwhm_z,fwhm_y
@@ -415,7 +415,7 @@ class Colli:
 		save_y=self.getY()
 		save_z=self.getZ()
 
-		print save_y,save_z
+		print(save_y,save_z)
 
                 for z in arange(startz,endz+stepz,stepz):
                         self.moveZ(z)
@@ -458,7 +458,7 @@ if __name__=="__main__":
 	#coli.moveZ(0)
 	#coli.scan2D()
 	#coli.scanCore("test",3)
-	print(coli.getY())
+	print((coli.getY()))
 	#coli.on()
 	#coli.off()
         #def scan2D(self,prefix,startz,endz,stepz,starty,endy,stepy):

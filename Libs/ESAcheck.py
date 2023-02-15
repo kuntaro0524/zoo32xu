@@ -27,8 +27,8 @@ class ESAcheck():
             self.puck_id_list.append(p['puckid'])
             self.pin_id_list.append(p['pinid'])
 
-        print self.puck_id_list
-        print self.pin_id_list
+        print(self.puck_id_list)
+        print(self.pin_id_list)
 
         return self.cond_dict
 

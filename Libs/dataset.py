@@ -23,7 +23,7 @@ def find_img_files(parentdir, recursive=True, skip_symlinks=False):
     matches = []
     re_including_digits = re.compile("[0-9]")
     possible_extensions = tuple([ i+c for i in IMG_EXTENSIONS for c in COMPRESS_EXTENSIONS+("",) ])
-    print possible_extensions
+    print(possible_extensions)
 
     for root, dirnames, filenames in os.walk(parentdir, followlinks=not skip_symlinks):
         if not recursive and root != parentdir:
@@ -63,7 +63,7 @@ def group_img_files_template(img_files, skip_0=False):
         numbers = first_selection[(pref,ext)]
         numbers_digit = [ len(d) for d in numbers ]
         numbers_int = [ int(d) for d in numbers ]
-        if skip_0: numbers_int = filter(lambda x: x!=0, numbers_int)
+        if skip_0: numbers_int = [x for x in numbers_int if x!=0]
         if len(set(numbers_digit)) != 1:
             pass
 
@@ -141,9 +141,9 @@ def is_dataset(img_template, min_frame, max_frame, _epsilon=1e-5, quiet=False):
         if os.path.isfile(f):
             try:
                 im = XIO.Image(f)
-            except Exception, ex:
+            except Exception as ex:
                 if not quiet:
-                    print ex
+                    print(ex)
                 return False
 
             start_angles.append( im.header["PhiStart"] )
@@ -160,24 +160,24 @@ def is_dataset(img_template, min_frame, max_frame, _epsilon=1e-5, quiet=False):
     wavelength_set = set(wavelengths)
     if len(wavelength_set) > 1:
         if not quiet:
-            print "Dataset has %d wavelengths:"%(len(wavelength_set)),
-            print wavelength_set
+            print("Dataset has %d wavelengths:"%(len(wavelength_set)), end=' ')
+            print(wavelength_set)
         ret_val = False
 
     # Check distances
     distance_set = set(distances)
     if len(distance_set) > 1:
         if not quiet:
-            print "Dataset has %d distances:"%(len(distance_set)),
-            print distance_set
+            print("Dataset has %d distances:"%(len(distance_set)), end=' ')
+            print(distance_set)
         ret_val = False
 
     # Check osc. angle widths
     width_set = set(ang_widths)
     if len(width_set) > 1:
         if not quiet:
-            print "Dataset has %d osc widths:"%(len(width_set)),
-            print width_set
+            print("Dataset has %d osc widths:"%(len(width_set)), end=' ')
+            print(width_set)
         ret_val = False
 
     # Check whether continuous images
@@ -189,8 +189,8 @@ def is_dataset(img_template, min_frame, max_frame, _epsilon=1e-5, quiet=False):
         expected_s_ang = (img_i - first_image_index) * osc_width + first_start_angle
         if abs(s_ang - expected_s_ang) >= _epsilon:
             if not quiet:
-                print os.path.basename(f),"is Non-continuous frame?",
-                print s_ang, "!=", expected_s_ang, "diff= expected+", s_ang - expected_s_ang
+                print(os.path.basename(f),"is Non-continuous frame?", end=' ')
+                print(s_ang, "!=", expected_s_ang, "diff= expected+", s_ang - expected_s_ang)
             ret_val = False
 
     return ret_val
@@ -214,8 +214,8 @@ def takeout_datasets(img_template, min_frame, max_frame, _epsilon=1e-5,
         if os.path.isfile(f):
             try:
                 im = XIO.Image(f)
-            except Exception, ex:
-                print ex
+            except Exception as ex:
+                print(ex)
                 return []
 
             start_angles.append( im.header["PhiStart"] )
@@ -228,7 +228,7 @@ def takeout_datasets(img_template, min_frame, max_frame, _epsilon=1e-5,
 
     borders = [] # e.g. if 1: [:1]+[1:]
 
-    for i in xrange(1, len(filenames)):
+    for i in range(1, len(filenames)):
         # Check wavlength
         if check_wavelength and abs(wavelengths[i] - wavelengths[i-1]) > 0.001:
             borders.append(i)
@@ -247,11 +247,11 @@ def takeout_datasets(img_template, min_frame, max_frame, _epsilon=1e-5,
     i = 0
     for b in borders:
         diffs = [0]
-        for j in xrange(i+1, b):
+        for j in range(i+1, b):
             expected_s_ang = (img_indexes[j] - img_indexes[i]) * ang_widths[i] + start_angles[i]
             diffs.append(expected_s_ang - start_angles[j])
 
-        for j in xrange(1, len(diffs)):
+        for j in range(1, len(diffs)):
             if abs(diffs[j] - diffs[j-1]) > 0.002:
                 ex_borders.append(i+j)
             
@@ -266,8 +266,8 @@ def takeout_datasets(img_template, min_frame, max_frame, _epsilon=1e-5,
         ranges.append((img_indexes[i], img_indexes[b-1]))
         i = b
 
-    print borders
-    print ranges
+    print(borders)
+    print(ranges)
     return ranges
 
 # takeout_datasets()
@@ -280,7 +280,7 @@ def find_data_sets(wdir, skip_symlinks=True, skip_0=False):
     img_files = find_img_files(wdir, skip_symlinks=skip_symlinks)
     img_files.sort()
 
-    h5files = filter(lambda x:x.endswith(".h5"), img_files)
+    h5files = [x for x in img_files if x.endswith(".h5")]
 
     ret = []
 
@@ -296,7 +296,7 @@ def find_data_sets(wdir, skip_symlinks=True, skip_0=False):
 
     for f in h5files:
         im = XIO.Image(f)
-        for i in xrange(im.header["Nimages"]//im.header["Nimages_each"]+1):
+        for i in range(im.header["Nimages"]//im.header["Nimages_each"]+1):
             nr0, nr1 = im.header["Nimages_each"]*i+1, im.header["Nimages_each"]*(i+1)
             if nr1 > im.header["Nimages"]: nr1 = im.header["Nimages"]
             ret.append([f.replace("_master.h5","_??????.h5"), nr0, nr1])
@@ -314,6 +314,6 @@ if __name__ == "__main__":
         wdir = os.getcwd()
 
     for img_template, min_frame, max_frame in find_data_sets(wdir):
-        print "NAME_TEMPLATE_OF_DATA_FRAMES= %s" % img_template
-        print "DATA_RNAGE= %d %d" % (min_frame, max_frame)
-        print
+        print("NAME_TEMPLATE_OF_DATA_FRAMES= %s" % img_template)
+        print("DATA_RNAGE= %d %d" % (min_frame, max_frame))
+        print()

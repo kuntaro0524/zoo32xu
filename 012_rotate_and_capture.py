@@ -24,5 +24,5 @@ if __name__ == "__main__":
         dev.gonio.rotatePhi(phi)
         prefix = "phi%05.2f" % phi
         filename="%s/%s.ppm"%(cappath,prefix)
-        print filename
+        print(filename)
         cap.capture(filename)

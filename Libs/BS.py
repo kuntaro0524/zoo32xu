@@ -32,14 +32,14 @@ class BS:
 
         	try:
 			tmpon,tmpoff=bssconf.getBS()
-        	except MyException,ttt:
-                	print ttt.args[0]
+        	except MyException as ttt:
+                	print(ttt.args[0])
 
 		self.on_pos=float(tmpon)*self.v2p
 		self.off_pos=float(tmpoff)*self.v2p
 
 		self.isInit=True
-		print self.on_pos,self.off_pos
+		print(self.on_pos,self.off_pos)
 
 	def getZ(self):
 		return self.sense_z*int(self.bs_z.getPosition()[0])
@@ -118,7 +118,7 @@ if __name__=="__main__":
 	#option=raw_input()
 	bs=BS(s)
 
-	print bs.getZ()
+	print(bs.getZ())
 	#y=bs.getY()
 
 	#bs.scan2D(-2000,2000,200,-500,500,50)

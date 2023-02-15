@@ -9,19 +9,19 @@ serversock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 serversock.bind((host,port)) 
 serversock.listen(10) 
 
-print 'Waiting for connections...'
+print('Waiting for connections...')
 clientsock, client_address = serversock.accept() 
 
 while True:
     rcvmsg = clientsock.recv(1024)
-    print 'Received -> %s' % (rcvmsg)
+    print('Received -> %s' % (rcvmsg))
     if rcvmsg == '':
       break
-    print 'Type message...'
-    s_msg = raw_input()
+    print('Type message...')
+    s_msg = input()
     if s_msg == '':
       break
-    print 'Wait...'
+    print('Wait...')
 
     clientsock.sendall(s_msg) 
 clientsock.close()

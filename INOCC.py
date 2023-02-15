@@ -66,7 +66,7 @@ class INOCC:
 
         # Making today's directory
         if os.path.exists(self.todaydir):
-            print "%s already exists" % self.todaydir
+            print("%s already exists" % self.todaydir)
         else:
             os.makedirs(self.todaydir)
             os.system("chmod a+rw %s" % self.todaydir)
@@ -76,17 +76,17 @@ class INOCC:
         # Get the newest number in 4 digits: like "0001","0099"
         num_prefix = dp.getRoundHeadPrefix(ndigit=4)
         self.loop_dir = "%s/%s_%s" % (self.todaydir, num_prefix, self.sample_name)
-        print "SELF=", self.loop_dir
+        print("SELF=", self.loop_dir)
 
         # Making today's directory
         if os.path.exists(self.loop_dir):
-            print "%s already exists" % self.loop_dir
+            print("%s already exists" % self.loop_dir)
         else:
             os.makedirs(self.loop_dir)
             os.system("chmod a+rw %s" % self.loop_dir)
 
         # self.raster_picpath = self.todaydir
-        print "Coax camera information will be acquired!"
+        print("Coax camera information will be acquired!")
 
         self.cip = CryImageProc.CryImageProc()
 
@@ -200,7 +200,7 @@ class INOCC:
             # print "DX, DZ = ", dx,dz
             ## self.cenx,self.ceny=self.coi.get_cross_pix()
             d_vertpix = top_xy[1] - self.ceny
-            print "DDDDDDDDDDD", d_vertpix
+            print("DDDDDDDDDDD", d_vertpix)
 
             if d_vertpix > 0:
                 move_direction = 1.0
@@ -217,7 +217,7 @@ class INOCC:
             left_flag, right_flag, lower_flag, upper_flag, n_true = cip.isTouchedToEdge(roi_cont)
             edge_flags = left_flag, right_flag, lower_flag, upper_flag, n_true
 
-            print "N_TRUE=", n_true
+            print("N_TRUE=", n_true)
 
             if n_true == 1 and right_flag == True:
                 isArea = True
@@ -263,7 +263,7 @@ class INOCC:
 
         contour = cip.getContour()
         area = cv2.contourArea(contour, prefix)
-        print "AREA = ", area
+        print("AREA = ", area)
         return area
 
     # 2019/05/08 22:30 K.Hirata coded
@@ -282,7 +282,7 @@ class INOCC:
             else:
                 ok_flag = True
 
-            print "Area (flag = %s) : %8.2f at %8.2f" % (isArea, area, phi)
+            print("Area (flag = %s) : %8.2f at %8.2f" % (isArea, area, phi))
             # when the loop was found
             if isArea == True:
                 self.area_list.append((phi, area))
@@ -292,7 +292,7 @@ class INOCC:
                 phi += 10.0
                 self.coi.rotatePhi(phi)
                 vmove, area, isFound, isArea, edge_flags = self.capture_and_center(option="roi", roi_len=roi_len)
-                print "VMOOOOOOOOOOOOOOOOVE=", vmove
+                print("VMOOOOOOOOOOOOOOOOVE=", vmove)
                 if vmove > 0.0:
                     direction = 1.0
                 else:
@@ -376,7 +376,7 @@ class INOCC:
                         found_phi_around_min = phi
                         break
                     except:
-                        print "PHI=%5.2f failed." % phi
+                        print("PHI=%5.2f failed." % phi)
                         continue
 
             phi_max = found_phi_around_min + 90.0
@@ -466,7 +466,7 @@ class INOCC:
 
                     break
                 # Case when the loop was not found in the trial section
-                except MyException, ttt:
+                except MyException as ttt:
                     # raise MyException("INOCC.coreCentering failed"
                     self.logfile.write("Go to next phi from %5.2f deg\n" % phi)
                     continue
@@ -485,7 +485,7 @@ class INOCC:
         # print self.mx,self.my,self.mz
         dista = math.sqrt(pow((gx - self.mx), 2.0) + pow((gy - self.my), 2.0) + pow(gz - self.mz, 2.0))
         if dista > self.ddist_thresh:
-            print "deltaDistance=%5.2f mm" % dista
+            print("deltaDistance=%5.2f mm" % dista)
             return False
         else:
             return True
@@ -499,13 +499,13 @@ class INOCC:
         for i in range(0, ntimes):
             try:
                 n_good, phi_area_list = self.coreCentering(phi_list, loop_size=loop_size)
-                print "NGOOD=", n_good
+                print("NGOOD=", n_good)
                 # Added 160514     
                 # A little bit dangerous modification
                 # 190514 I cannot understand this code
                 if challenge == True and n_good == len(phi_list):
                     break
-            except MyException, tttt:
+            except MyException as tttt:
                 self.logger.info("INOCC.edgeCentering moves Y 2000um")
                 gx, gy, gz, phi = self.coi.getGXYZphi()
                 move_ymm = self.cip.calcYdistAgainstGoniometer(2.0)
@@ -516,7 +516,7 @@ class INOCC:
         if n_good == 0:
             raise MyException("edgeCentering failed")
 
-        print "################### EDGE CENTERING ENDED ######################"
+        print("################### EDGE CENTERING ENDED ######################")
         return n_good, phi_area_list
 
     def facing(self, phi_list):
@@ -538,8 +538,8 @@ class INOCC:
             try:
                 grav_x, grav_y, xwidth, ywidth, area, xedge, yedge = \
                     self.cip.getCenterInfo(self.fname, debug=False)
-                print "PHI AREA=", phi, area
-            except MyException, ttt:
+                print("PHI AREA=", phi, area)
+            except MyException as ttt:
                 # print ttt.args[1]
                 continue
             if min_area > area:
@@ -565,10 +565,10 @@ class INOCC:
         # For small loop
         roi_cont = cip.getROIcontour(loop_size)
         # raster_pic = "%s/raster.png" % (self.loop_dir)
-        print "cap4width captures", self.raster_picpath
+        print("cap4width captures", self.raster_picpath)
         roi_xmin, roi_xmax, roi_ymin, roi_ymax, roi_cenx, roi_ceny = cip.getRasterArea(roi_cont, self.raster_picpath)
         log_pic = "%s/raster.png" % (self.loop_dir)
-        print log_pic
+        print(log_pic)
         roi_xmin, roi_xmax, roi_ymin, roi_ymax, roi_cenx, roi_ceny = cip.getRasterArea(roi_cont, log_pic)
 
         # Raster width
@@ -597,12 +597,12 @@ class INOCC:
             try:
                 self.logger.debug("The first edge centering..")
                 n_good, phi_area_list = self.edgeCentering(phi_list, 2, challenge=True, loop_size=loop_size)
-            except MyException, ttt:
+            except MyException as ttt:
                 self.logger.debug("The first edge centering failed..")
                 try:
                     self.logger.debug("The second edge centering..")
                     n_good, phi_area_list = self.edgeCentering(phi_list, 2, challenge=True, loop_size=loop_size)
-                except MyException, tttt:
+                except MyException as tttt:
                     self.logger.debug("The second edge centering failed. Raise exception")
                     self.logger.debug("%s" % tttt)
                     raise MyException("Loop cannot be found after edgeCentering x 2 times. %s " % tttt)
@@ -617,7 +617,7 @@ class INOCC:
             self.simpleCenter(phi_small, loop_size, option="gravity")
             area, hamidashi_flag = self.simpleCenter(phi_face, loop_size, option="gravity")
             self.logger.info("Hamidashi_flag = %s" % hamidashi_flag)
-            print("HAMIDASHI=",hamidashi_flag)
+            print(("HAMIDASHI=",hamidashi_flag))
             # Re-centering if hamidashi_flag = True
             if hamidashi_flag == True:
                 self.simpleCenter(phi_face, loop_size, option="gravity")
@@ -632,9 +632,9 @@ class INOCC:
         raster_width = pix_size_um * float(xwidth)
         raster_height = pix_size_um * float(ywidth)
 
-        print "Width  = %8.1f[um]" % raster_width
-        print "Height = %8.1f[um]" % raster_height
-        print "Centering.doAll finished."
+        print("Width  = %8.1f[um]" % raster_width)
+        print("Height = %8.1f[um]" % raster_height)
+        print("Centering.doAll finished.")
 
         return raster_width, raster_height, phi_face, gonio_info
 
@@ -646,7 +646,7 @@ if __name__ == "__main__":
     logname = "./inocc.log"
     logging.config.fileConfig('/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/logging.conf' % beamline, defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
-    os.chmod(logname, 0666)
+    os.chmod(logname, 0o666)
 
     inocc = INOCC(ms, root_dir)
     phi_face = 90
@@ -663,7 +663,7 @@ if __name__ == "__main__":
     # def doAll(self, ntimes=3, skip=False, loop_size=600.0, offset_angle=0.0):
     rwidth, rheight, phi_face, gonio_info = inocc.doAll(ntimes=2, skip=False, loop_size=300.0)
 
-    print n_good, phi_area_list
-    print("Loop width/height=",rwidth, rheigh)
+    print(n_good, phi_area_list)
+    print(("Loop width/height=",rwidth, rheigh))
 
     ms.close()

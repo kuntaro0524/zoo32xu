@@ -58,7 +58,7 @@ if __name__ == "__main__":
         # horizontal resolution -0.00684848
         # vertical resolution -0.00915152
         h_diff_um, v_diff_um, max_2d = inocc.moveToOtehon()
-        print "2D=", max_2d
+        print("2D=", max_2d)
 
     # preparation
     # dev.prepCenteringLargeHolderCam2()
@@ -73,12 +73,12 @@ if __name__ == "__main__":
     dy = y - cy
     dz = z - cz
     diff = math.sqrt(dx * dx + dy * dy + dz * dz)
-    print "Distance=%8.3f mm\n" % diff
+    print("Distance=%8.3f mm\n" % diff)
 
     endtime = datetime.datetime.now()
     time_sec = (endtime - starttime).seconds
 
-    print time_sec
+    print(time_sec)
 
 
     def collectMulti(self, trayid, pinid, prefix, cond, sphi):
@@ -120,12 +120,12 @@ if __name__ == "__main__":
             self.zooprog.write("%s " % logstr)
             self.zooprog.flush()
 
-        except MyException, tttt:
-            print "Skipping this loop!!"
+        except MyException as tttt:
+            print("Skipping this loop!!")
             self.zooprog.write("\n")
             self.zooprog.flush()
             # Disconnecting capture in this loop's 'capture' instance
-            print "Disconnecting capture"
+            print("Disconnecting capture")
             self.lm.closeCapture()
             return
         finally:
@@ -137,14 +137,14 @@ if __name__ == "__main__":
                                            prefix=self.lm.prefix, start_time=raster_start_time)
                 self.html_maker.write_html()
             except:
-                print traceback.format_exc()
+                print(traceback.format_exc())
 
         if len(glist) == 0:
-            print "Skipping this loop!!"
+            print("Skipping this loop!!")
             self.zooprog.write("\n")
             self.zooprog.flush()
             # Disconnecting capture in this loop's 'capture' instance
-            print "Disconnecting capture"
+            print("Disconnecting capture")
             self.lm.closeCapture()
             return
 
@@ -168,5 +168,5 @@ if __name__ == "__main__":
         self.zooprog.write("%s\n" % logstr)
         self.zooprog.flush()
         # Disconnecting capture in this loop's 'capture' instance
-        print "Disconnecting capture"
+        print("Disconnecting capture")
         self.lm.closeCapture()

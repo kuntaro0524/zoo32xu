@@ -18,12 +18,12 @@ if __name__=="__main__":
             cfile="%s/%s_%d-%d.ppm"%(picpath,"loop",br,ga)
             bfile="%s/%s_%d-%d.ppm"%(picpath,"back",br,ga)
 
-            print bfile, cfile
+            print(bfile, cfile)
             # set Target/Back images
             cip.setImages(cfile, bfile)
             cont = cip.getContour()
             orig_file = "./cont.png"
             mv_file = "%s/nilon3_thresh10_%s_%s.png" % (picpath, br, ga)
-            print orig_file, mv_file
+            print(orig_file, mv_file)
             os.system("mv %s %s" % (orig_file, mv_file))
             #cip.getDiffImages(outimage)

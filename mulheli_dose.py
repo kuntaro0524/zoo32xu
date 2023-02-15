@@ -128,14 +128,14 @@ if __name__ == "__main__":
 
 	## MAIN
 	def check_abort(lm):
-        	print "Abort check"
+        	print("Abort check")
         	ret = lm.isAbort()
-        	if ret: print "ABORTABORT"
+        	if ret: print("ABORTABORT")
         	return ret
 	# check_abort()
 
        	if os.path.exists(root_dir):
-               	print "%s already exists"%root_dir
+               	print("%s already exists"%root_dir)
        	else:
                	os.makedirs(root_dir)
 
@@ -156,12 +156,12 @@ if __name__ == "__main__":
                	bsc.changeBeamsizeHV(cond.h_beam,cond.v_beam)
 	
                	try: html_maker.add_condition(cond)
-               	except: print traceback.format_exc()
+               	except: print(traceback.format_exc())
 	
                	for trayid, pin_list in cond.pucks_and_pins:
                        	for pinid in pin_list:
                                	prefix="%s-%s-%02d"%(cond.uname,trayid,pinid)
-                               	print "Doing %s"%prefix
+                               	print("Doing %s"%prefix)
 
                                	lm=LoopMeasurement.LoopMeasurement(ms,root_dir,prefix)
 				
@@ -180,8 +180,8 @@ if __name__ == "__main__":
                                	time.sleep(5.0)
                                	try:
                                        	zoo.mountSample(trayid,pinid)
-                               	except MyException,ttt:
-                                       	print "Sample mount failed!!"
+                               	except MyException as ttt:
+                                       	print("Sample mount failed!!")
                                        	break
 
                                	# Move Gonio XYZ to the previous pin
@@ -193,13 +193,13 @@ if __name__ == "__main__":
                                        	# rwidth:  Horizontal scan range [um]
                                        	# rheight: Vertical   scan range [um]
                                        	rwidth,rheight=lm.centering(cond.loop_size)
-                               	except MyException,ttt:
-                                       	print "failed in centering"
-                                       	print "Go to next sampl,e"
+                               	except MyException as ttt:
+                                       	print("failed in centering")
+                                       	print("Go to next sampl,e")
                                        	continue
 
                                	# Save Gonio XYZ to the previous pins
-				print rwidth,rheight
+				print(rwidth,rheight)
                                	sx,sy,sz,sphi=lm.saveGXYZphi()
 
                                 if check_abort(lm): break # Abort check
@@ -230,7 +230,7 @@ if __name__ == "__main__":
                                         crysize=(cond.h_beam+1.000)/1000.0 # [mm]
                                 else:
                                         crysize=(cond.v_beam+1.000)/1000.0 # [mm]
-                                print "Crystal size is set to %8.2f[mm]"%crysize
+                                print("Crystal size is set to %8.2f[mm]"%crysize)
 
                                 raster_path="%s/%s/scan/%s/"%(root_dir,prefix,scan_id)
 

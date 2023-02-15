@@ -20,5 +20,5 @@ command = "cat %s | mail -s 'File Transfer info from ISILON' -r oys@spring8.or.j
 for mail_address in mail_addresses:
     command += " %s" % mail_address
 
-print command
+print(command)
 os.system(command)

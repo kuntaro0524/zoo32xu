@@ -26,14 +26,14 @@ class Cryo:
 
                 try:
                         tmpon,tmpoff=bssconf.getCryo()
-                except MyException,ttt:
-                        print ttt.args[0]
+                except MyException as ttt:
+                        print(ttt.args[0])
 
                 self.on_pos=float(tmpon)*self.v2p
                 self.off_pos=float(tmpoff)*self.v2p
 
                 self.isInit=True
-                print self.on_pos,self.off_pos
+                print(self.on_pos,self.off_pos)
 
         def getPosition(self):
 			value=self.cryoz.getPosition()[0]
@@ -79,7 +79,7 @@ class Cryo:
 			if value==pvalue:
 				break
 			index+=1
-			print index
+			print(index)
 
 	def moveTo(self,pls):
 		self.cryoz.move(pls)
@@ -105,8 +105,8 @@ if __name__=="__main__":
 
 	cry=Cryo(s)
 	pos = cry.getPosition()
-	print pos
-	print cry.getEvacuate()
+	print(pos)
+	print(cry.getEvacuate())
 	#cry.go_and_check(0)
 	#cry.moveTo(-10000)
 	#time.sleep(3)

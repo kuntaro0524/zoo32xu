@@ -102,7 +102,7 @@ class ScheduleBSS:
         gv = GonioVec()
         lvec = gv.makeLineVec(startvec, endvec)
         length = gv.calcDist(lvec) * 1000.0
-        print length
+        print(length)
         # npoints
         self.npoints = int(length / astep)
         self.isAdvanced = 1
@@ -337,7 +337,7 @@ class ScheduleBSS:
                 continue
 
         if self.beamsize_idx == 0:
-            print "Aimed beam size was not found in beamsize.config"
+            print("Aimed beam size was not found in beamsize.config")
         return self.beamsize_idx
 
 # _beam_size_begin:

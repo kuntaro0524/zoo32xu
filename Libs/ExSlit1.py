@@ -20,7 +20,7 @@ class ExSlit1:
 
 	def getVpos(self):
 		pos=self.blade_lower.getPosition()
-		print pos
+		print(pos)
 
 	def openV(self):
 		#self.blade_upper.move(18000)
@@ -63,23 +63,23 @@ class ExSlit1:
 		for vtmp in range(-18000,0,2000):
 			self.blade_lower.move(vtmp)
 			value0=int(counter.getCount(1.0)[0])
-			print  vtmp,value0
+			print(vtmp,value0)
 			if value0 < save_i/2.0:
 				roughv=vtmp
 				break
 			save_i=value0
 
-		print vtmp
+		print(vtmp)
 		save_i=0.0
 		for vtmp in range(roughv-2000,roughv+2000,400):
 			self.blade_lower.move(vtmp)
 			value0=int(counter.getCount(1.0)[0])
-			print  vtmp,value0
+			print(vtmp,value0)
 			if value0 < save_i/2.0:
 				roughv=vtmp
 				break
 			save_i=value0
-		print roughv
+		print(roughv)
 
         	self.scanV(prefix,roughv-2000,roughv+2000,100,cnt_ch1,cnt_ch2,1.0)
 
@@ -106,7 +106,7 @@ if __name__=="__main__":
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((host,port))
 
-	print "prog PREFIX CHANNEL"
+	print("prog PREFIX CHANNEL")
 	test=ExSlit1(s)
 	f=File("./")
 	test.openV()

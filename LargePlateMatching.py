@@ -76,7 +76,7 @@ class LargePlateMatching:
         cv2.rectangle(result,top_left,bottom_right,(255,0,0),2)
         cv2.imwrite("result.jpg",result)
 
-        print "MAX_LOC=",max_loc
+        print("MAX_LOC=",max_loc)
         return max_loc
 
     def getPosition2(self,target_roi,phi=0.0):
@@ -94,9 +94,9 @@ class LargePlateMatching:
         top_left=max_loc
         w,h=template.shape[::-1]
         bottom_right=(top_left[0]+w,top_left[1]+h)
-        print "MAX_LOC=",max_loc
-        print top_left,bottom_right
-        print "ROI shape",target_roi.shape
+        print("MAX_LOC=",max_loc)
+        print(top_left,bottom_right)
+        print("ROI shape",target_roi.shape)
         cv2.rectangle(target_roi,top_left,bottom_right,(255,0,0),2)
         cv2.imwrite("result.jpg",target_roi)
 
@@ -112,7 +112,7 @@ class LargePlateMatching:
         print("FILE SEIRI!")
         # lll="%s/%s*template*jpg"%(self.template_path,self.template_prefix)
         lll="%s/%s*jpg"%(self.template_path,self.template_prefix)
-        print lll
+        print(lll)
         filelist=glob.glob(lll)
         #print filelist
         self.template_list=[]
@@ -120,7 +120,7 @@ class LargePlateMatching:
             filename=f.split('/')[-1]
             ppp=filename.replace(self.template_prefix,"")
             phi=float(ppp.split('_')[0])
-            print("Extracted phi=", phi, f)
+            print(("Extracted phi=", phi, f))
             self.template_list.append((f,phi))
 
         self.template_list=sorted(self.template_list, key=lambda x: x[1],reverse=False)
@@ -147,7 +147,7 @@ class LargePlateMatching:
     def comp(self,pinimg,back,template_image):
         th=self.basicProc(pinimg,back)
         #cv2.imwrite("th.png",th)
-        print("COMP=",pinimg, back, template_image)
+        print(("COMP=",pinimg, back, template_image))
         template=cv2.imread(template_image,0)
         cv2.imwrite("cam1_comp_th.jpg",th)
 
@@ -162,7 +162,7 @@ class LargePlateMatching:
         cv2.rectangle(result,top_left,bottom_right,(255,0,0),2)
         cv2.imwrite("result1.jpg",result)
 
-        print "Max value=",max_val, "TOP_LEFT=",top_left
+        print("Max value=",max_val, "TOP_LEFT=",top_left)
         return max_val,top_left
 
 if __name__=="__main__":

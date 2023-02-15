@@ -127,7 +127,7 @@ class AttFactor:
 
     def calcThickness(self, wl, transmission, material="Al"):
         # thickness [um]
-        print "Trans=", transmission
+        print("Trans=", transmission)
         if material == "Al":
             cnfac = self.cnFactor(wl)
             mu = self.calcMu(wl, cnfac)
@@ -137,7 +137,7 @@ class AttFactor:
             return -1
 
     def getBestAtt(self, wl, transmission):
-        print transmission
+        print(transmission)
         if self.isInit == False:
             self.readAttConfig()
 
@@ -145,7 +145,7 @@ class AttFactor:
         mu = self.calcMu(wl, cnfac)
         thickness = (-1.0 * math.log(transmission) / mu) * 10000
 
-        print "IDEAL thickness: %8.3f[um]" % thickness
+        print("IDEAL thickness: %8.3f[um]" % thickness)
 
         if thickness <= 0.0:
             return 0.0
@@ -168,24 +168,24 @@ class AttFactor:
         while (1):
             # The first estimation of the transmission by the defined 'exptime'
             thickness = self.calcThickness(wl, real_transmission)
-            print thickness, exptime
+            print(thickness, exptime)
 
             if thickness < 0.0:
                 exptime += 0.01
-                print "Exptime=", exptime
+                print("Exptime=", exptime)
             else:
                 break
 
-        print "Exposure time:", exptime
+        print("Exposure time:", exptime)
         bestatt = self.getBestAtt(wl, real_transmission)
         attfac = self.calcAttFac(wl, bestatt)
-        print "BESTATT/ATTFAC=", bestatt, attfac
+        print("BESTATT/ATTFAC=", bestatt, attfac)
 
         ppp = real_transmission / attfac
         final_exptime = exptime * ppp
-        print "Final exposure time:", final_exptime
+        print("Final exposure time:", final_exptime)
 
-        print attfac * final_exptime, real_transmission
+        print(attfac * final_exptime, real_transmission)
 
     # for att in self.att_thick:
     # if thickness < att:
@@ -232,7 +232,7 @@ class AttFactor:
         for i, thick in zip(self.att_idx, self.att_thick):
             if thick == t:
                 return i
-        print "Something wrong: No attenuator at this beamline"
+        print("Something wrong: No attenuator at this beamline")
         return -9999
 
     # 2020/10/30
@@ -276,12 +276,12 @@ if __name__ == "__main__":
     att = AttFactor()
     exptime = 0.05
     transmission = 1.5
-    print("Original exposure time=", exptime)
-    print("Original transmission time=", transmission)
+    print(("Original exposure time=", exptime))
+    print(("Original transmission time=", transmission))
 
     transmission,newExptime = att.checkThinnestAtt(1.0, exptime, transmission)
-    print("New exposure time=", newExptime)
-    print("New transmission time=", transmission)
+    print(("New exposure time=", newExptime))
+    print(("New transmission time=", transmission))
 
     #print "550um=", att.calcAttFac(1.0, 550)
 # best_thick=att.getBestAtt(1.0,float(sys.argv[1]))

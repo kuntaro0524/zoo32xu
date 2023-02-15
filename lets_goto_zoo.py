@@ -23,18 +23,18 @@ import subprocess
 
 if __name__ == "__main__":
     ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print "connecting %s" % blanc_address
+    print("connecting %s" % blanc_address)
     ms.connect((blanc_address, 10101))
-    print "Success"
+    print("Success")
 
     # Logging setting
     d = Date.Date()
     time_str = d.getNowMyFormat(option="date")
     logname = "/isilon/%s/BLsoft/PPPP/10.Zoo/ZooLogs/zoo_%s.log" % (beamline, time_str)
-    print "changing mode of %s" % logname
+    print("changing mode of %s" % logname)
     logging.config.fileConfig('/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/logging.conf' % beamline, defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
-    os.chmod(logname, 0666)
+    os.chmod(logname, 0o666)
 
     zoo=Zoo.Zoo()
     zoo.connect()

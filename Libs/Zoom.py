@@ -57,12 +57,12 @@ if __name__=="__main__":
 	zoom=Zoom(s)
 
 	start=zoom.getPosition()
-	print start
+	print(start)
 
 	zoom.move(-20000)
 
 	end=zoom.getPosition()
-	print end
+	print(end)
 	#zoom.zoomIn()
 	#zoom.zoomOut()
 	#time.sleep(5)

@@ -34,7 +34,7 @@ class SummaryDat:
         self.summary_file="%s/%s"%(self.path,filename)
 
     def waitTillSummary(self):
-        print "waitTillSummary"
+        print("waitTillSummary")
 
     # 2016/06/27
     # completeness: = (n images in summary.dat / n images collected)
@@ -44,7 +44,7 @@ class SummaryDat:
         prefix="%s_"%scan_id
         # Waitinf for the generation of summary.dat file
         while(1):
-            print "Waiting for generating %s"%self.summary_file
+            print("Waiting for generating %s"%self.summary_file)
             if os.path.exists(self.summary_file)==False:
                 time.sleep(2.0)
             else:
@@ -59,14 +59,14 @@ class SummaryDat:
             self.isRead=True
             self.extractKind(kind="n_spots")
             n_read=len(self.score_lines)
-            print "Current=",self.ngrids,"All=",nimages_all
+            print("Current=",self.ngrids,"All=",nimages_all)
             completeness=float(self.ngrids)/float(nimages_all)
-            print "completeness=",completeness*100.0
+            print("completeness=",completeness*100.0)
             if completeness >= comp_thresh:
                 break
             else:
                 currtime=datetime.datetime.now()
-                print currtime
+                print(currtime)
                 if (currtime-starttime).seconds > timeout:
                     raise MyException.MyException("readSummary: summary.dat was not filled < 80%")
                 else:
@@ -90,7 +90,7 @@ class SummaryDat:
         self.score_lines.sort(key=lambda x:x.split()[5])
         self.ngrids=len(self.score_lines)
 
-        if self.DEBUG: print self.score_lines
+        if self.DEBUG: print(self.score_lines)
         self.isKind=True
 
     def process(self,kind):
@@ -101,7 +101,7 @@ class SummaryDat:
         # self.score_lines should be obtained
         if self.isKind==False:
             self.extractKind(kind)
-        if self.DEBUG: print self.score_lines
+        if self.DEBUG: print(self.score_lines)
         self.v=[]
         #print "LEN SCORE_LINES",len(self.score_lines)
         for line in self.score_lines:
@@ -112,7 +112,7 @@ class SummaryDat:
 
         #print "LEN",len(self.v)
         aaa=numpy.array(self.v)
-        print "SummaryDat.process:(V,H)=",self.nv,self.nh,"LEN(AAA)=",len(aaa)
+        print("SummaryDat.process:(V,H)=",self.nv,self.nh,"LEN(AAA)=",len(aaa))
         #self.heatmap=numpy.reshape(aaa,(self.nh,self.nv))
         self.heatmap=numpy.reshape(aaa,(self.nv,self.nh))
 
@@ -150,9 +150,9 @@ if __name__=="__main__":
     sumdat.readSummary(prefix,nimages_all,completeness,timeout=120)
     heatmap=sumdat.process("n_spots")
 
-    print heatmap.shape
+    print(heatmap.shape)
 
     for v in range(0,45):
         for h in range(0,83):
-            print v,h,heatmap[v,h]
-        print ""
+            print(v,h,heatmap[v,h])
+        print("")

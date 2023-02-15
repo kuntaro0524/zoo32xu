@@ -25,7 +25,7 @@ if __name__ == "__main__":
     ahm.setMinMax(min_score, max_score)
     hm = ahm.prep(prefix)
 
-    print(hm.shape)
+    print((hm.shape))
 
     # ahm.searchPixelBunch(prefix, True)
     #

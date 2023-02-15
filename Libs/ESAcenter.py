@@ -43,7 +43,7 @@ class PuckPin:
 			pin=self.pins[i]
 			colflag=self.colflag[i]
 			if colflag==True:
-				print i,colflag,pin.esadic
+				print(i,colflag,pin.esadic)
 
 class ExpSetting:
 	def __init__(self):
@@ -76,14 +76,14 @@ class ExpSetting:
 		}
 
 	def convertDic2Param(self):
-		for key in  self.esadic.keys():
-			print key,self.esadic[key]
+		for key in  list(self.esadic.keys()):
+			print(key,self.esadic[key])
                         setattr(self, key, self.esadic[key])
 		
 	def checkCondition(self):
 		# For multi crystal strategies
 		if self.esadic["mode"]=="multi":
-			print "MULTI"
+			print("MULTI")
 
 	def setShikaParam(self,shika_minscore,shika_mindist,shika_maxhits):
 		self.esadic["shika_minscore"]=shika_minscore
@@ -100,16 +100,16 @@ class ExpSetting:
 		self.esadic["exp_henderson"]=exp_limit
 
 	def setParam(self,key,value):
-		print "SONOMAMA",key,value
+		print("SONOMAMA",key,value)
 		if value.replace(".","").isdigit()==True:
 			fvalue=float(value)
 			self.esadic[key]=fvalue
-			print "FLOAT VALUE:",key,fvalue
+			print("FLOAT VALUE:",key,fvalue)
 		else:
 			self.esadic[key]=value
 
 	def showParam(self):
-		print self.esadic
+		print(self.esadic)
 
 class ESA:
 	def __init__(self,esafile):

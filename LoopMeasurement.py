@@ -516,16 +516,16 @@ class LoopMeasurement:
     # beam_h, beam_v : raster beamsize 
     def prepVrasterIn(self, scan_id, beam_h, beam_v, range_mm, step_mm, gxyz, phi, att_idx=10, distance=300.0,
                       exptime=0.02):
-        print "DEBUG"
+        print("DEBUG")
         sx, sy, sz = gxyz
         self.moveGXYZphi(sx, sy, sz, phi)
         tx, ty, tz, tphi = self.saveGXYZphi()
 
-        print "DEBUG2"
-        print "Target position:", sx, sy, sz, phi
-        print "Current position:", tx, ty, tz, tphi
+        print("DEBUG2")
+        print("Target position:", sx, sy, sz, phi)
+        print("Current position:", tx, ty, tz, tphi)
 
-        print "DEBUG3"
+        print("DEBUG3")
         rss = RasterSchedule.RasterSchedule()
         # Raster beam size (temporal code 151204)
         self.setBeamsize(beam_h, beam_v)  # [um]
@@ -585,8 +585,8 @@ class LoopMeasurement:
         self.prepDirectory(this_directory)
         this_schedule = "%s/vraster.sch" % (this_directory)
 
-        print "Raster for this crystal in %s" % this_schedule
-        print "Schedule file is %s.sch" % scan_id
+        print("Raster for this crystal in %s" % this_schedule)
+        print("Schedule file is %s.sch" % scan_id)
 
         rss.setPrefix("vraster")
         rss.setCL(distance)
@@ -613,7 +613,7 @@ class LoopMeasurement:
         sshika.waitingForSummary()
         try:
             glist = sshika.readSummary()
-        except MyException, tttt:
+        except MyException as tttt:
             raise MyException("SHIKA could not get any good crystasl")
 
         left_xyz = [99.999, 99.999, 99.999]
@@ -643,10 +643,10 @@ class LoopMeasurement:
         ymax = ymax - margin
 
         if xmin == 99.9999 or ymin == 99.9999 or zmin == 99.9999:
-            print "shikaEdges:XMIN"
+            print("shikaEdges:XMIN")
             raise MyException("Left edge of the crystal: Wrong")
         elif xmax == 99.9999 or ymax == 99.9999 or zmax == 99.9999:
-            print "shikaEdges:XMAX"
+            print("shikaEdges:XMAX")
             raise MyException("Right edge of the crystal: Wrong")
         else:
             left_code = xmin, ymin, zmin
@@ -661,8 +661,8 @@ class LoopMeasurement:
         ashika.setSummaryFile("summary.dat")
         # scan_id & prefix are different each other
         prefix = "%s_" % scan_id
-        print "PREFIX=", prefix
-        print "SCAN_ID=", scan_id
+        print("PREFIX=", prefix)
+        print("SCAN_ID=", scan_id)
         # KUNIO setDiffscanLog(self,path):
 
         # N grids on the 2D raster scan
@@ -673,9 +673,9 @@ class LoopMeasurement:
         # 5 minutes
         try:
             ashika.readSummary(prefix, ngrids, comp_thresh=comp_thresh, timeout=600)
-            print "LoopMeasurement.readSummaryDat succeeded."
+            print("LoopMeasurement.readSummaryDat succeeded.")
 
-        except MyException, tttt:
+        except MyException as tttt:
             raise MyException("shikaSumSkipStrong failed to wait summary.dat")
 
         return ashika
@@ -695,7 +695,7 @@ class LoopMeasurement:
             if a == b: return 0
             if a < b: return 1
             return -1
-            print thresh_nspots, crysize
+            print(thresh_nspots, crysize)
 
         # Center of this scan
         cx, cy, cz = cxyz
@@ -706,10 +706,10 @@ class LoopMeasurement:
         ashika.setMinMax(min_score, max_score)
 
         # Crystal finding
-        print "Crystal size = %8.5f" % crysize
+        print("Crystal size = %8.5f" % crysize)
         crystals = ashika.findCrystals(scan_id, dist_thresh=crysize)
         n_cry = len(crystals)
-        print "Crystals %5d\n" % n_cry
+        print("Crystals %5d\n" % n_cry)
 
         # Sorting better crystals
         # The top of crystal is the best one
@@ -725,7 +725,7 @@ class LoopMeasurement:
                 crystal.setDiffscanLog(raster_path)
                 gx, gy, gz = crystal.getGrav()
                 gxyz_list.append((gx, gy, gz))
-                print n_cry, gx, gy, gz
+                print(n_cry, gx, gy, gz)
                 if n_cry >= max_ncry:
                     break
         elif mode == "peak":
@@ -734,7 +734,7 @@ class LoopMeasurement:
                 crystal.setDiffscanLog(raster_path)
                 gx, gy, gz = crystal.getPeakCode()
                 gxyz_list.append((gx, gy, gz))
-                print n_cry, gx, gy, gz
+                print(n_cry, gx, gy, gz)
                 if n_cry >= max_ncry:
                     break
 
@@ -748,11 +748,11 @@ class LoopMeasurement:
         ring_current = float(strs[len(strs) - 2].replace("mA", ""))
 
         if ring_current > 50.0:
-            print "Ring current %5.1f" % ring_current
+            print("Ring current %5.1f" % ring_current)
             return False
         else:
-            print "Ring aborted."
-            print "Ring current %5.1f" % ring_current
+            print("Ring aborted.")
+            print("Ring current %5.1f" % ring_current)
         return True
 
     # 2019/05/21 test coding
@@ -772,7 +772,7 @@ class LoopMeasurement:
 
         # Beam size setting
         beamsize_index = self.beamsizeconf.getBeamIndexHV(cond['ds_hbeam'], cond['ds_vbeam'])
-        print "Beamsize index in rasterMaster is %5d" % beamsize_index
+        print("Beamsize index in rasterMaster is %5d" % beamsize_index)
 
         # Estimating dose and set suitable exposure condition
         # Exposure time will sometimes be modified when
@@ -832,7 +832,7 @@ class LoopMeasurement:
 
         # Beam size setting
         beamsize_index = self.beamsizeconf.getBeamIndexHV(cond['ds_hbeam'], cond['ds_vbeam'])
-        print "Beamsize index in rasterMaster is %5d" % beamsize_index
+        print("Beamsize index in rasterMaster is %5d" % beamsize_index)
 
         # Estimating dose and set suitable exposure condition
         # Exposure time will sometimes be modified when
@@ -896,21 +896,21 @@ class LoopMeasurement:
 
         # Multi conditions
         n_frames = int(total_osc / osc_width)
-        print "Frame=", n_frames
+        print("Frame=", n_frames)
 
         # Total photons/frame
         phs_per_frame = total_photons / float(n_frames)
-        print "Aimed flux(%5.2e)/frame: %5.2e" % (total_photons, phs_per_frame)
+        print("Aimed flux(%5.2e)/frame: %5.2e" % (total_photons, phs_per_frame))
 
         # Exposure time for full flux
         ff_exptime = phs_per_frame / flux_beam
-        print "Full flux exposure time for aimed photons per frame=%13.8f sec/frame" % ff_exptime
+        print("Full flux exposure time for aimed photons per frame=%13.8f sec/frame" % ff_exptime)
 
         # Suitable exposure time range
         # 5 deg/frame FIXED
         exp_time = osc_width / rot_speed
-        print "Exposure time = ", exp_time, "secs"
-        print "Attenuation factor for this exposure time/frame=", ff_exptime / exp_time
+        print("Exposure time = ", exp_time, "secs")
+        print("Attenuation factor for this exposure time/frame=", ff_exptime / exp_time)
 
         trans_ideal = ff_exptime / exp_time
 
@@ -918,17 +918,17 @@ class LoopMeasurement:
         att_thick = attfac.getBestAtt(wavelength, trans_ideal)
         trans_real = attfac.calcAttFac(wavelength, att_thick)
 
-        print "%8.1f[um] trans=%12.8f (Aimed trans=%12.8f)" \
-              % (att_thick, trans_real, trans_ideal)
+        print("%8.1f[um] trans=%12.8f (Aimed trans=%12.8f)" \
+              % (att_thick, trans_real, trans_ideal))
 
         # Final calculation
         exptime_final = ff_exptime / trans_real
         att_idx = attfac.getAttIndexConfig(att_thick)
-        print "Initial exposure time = ", exp_time
-        print "Final   exposure time = ", exptime_final
-        print "round %8.5f sec" % (round(exptime_final, 3))
+        print("Initial exposure time = ", exp_time)
+        print("Final   exposure time = ", exptime_final)
+        print("round %8.5f sec" % (round(exptime_final, 3)))
         photons_real = exptime_final * trans_real * flux_beam * float(n_frames)
-        print "Photons/data=%8.3e" % photons_real
+        print("Photons/data=%8.3e" % photons_real)
 
         return att_idx, exptime_final
 
@@ -946,21 +946,21 @@ class LoopMeasurement:
 
         # Multi conditions
         n_frames = int(total_osc / osc_width)
-        print "Frame=", n_frames
+        print("Frame=", n_frames)
 
         # Total photons/frame
         phs_per_frame = total_photons / float(n_frames)
-        print "Aimed flux(%5.2e)/frame: %5.2e" % (total_photons, phs_per_frame)
+        print("Aimed flux(%5.2e)/frame: %5.2e" % (total_photons, phs_per_frame))
 
         # Exposure time for full flux
         ff_exptime = phs_per_frame / flux_beam
-        print "Full flux exposure time for aimed photons per frame=%13.8f sec/frame" % ff_exptime
+        print("Full flux exposure time for aimed photons per frame=%13.8f sec/frame" % ff_exptime)
 
         # Suitable exposure time range
         # 5 deg/frame FIXED
         exp_time = osc_width / rot_speed
-        print "Exposure time = ", exp_time, "secs"
-        print "Attenuation factor for this exposure time/frame=", ff_exptime / exp_time
+        print("Exposure time = ", exp_time, "secs")
+        print("Attenuation factor for this exposure time/frame=", ff_exptime / exp_time)
 
         trans_ideal = ff_exptime / exp_time
 
@@ -968,17 +968,17 @@ class LoopMeasurement:
         att_thick = attfac.getBestAtt(wavelength, trans_ideal)
         trans_real = attfac.getAttFacObs(wavelength, att_thick)
 
-        print "%8.1f[um] trans=%12.8f (Aimed trans=%12.8f)" \
-              % (att_thick, trans_real, trans_ideal)
+        print("%8.1f[um] trans=%12.8f (Aimed trans=%12.8f)" \
+              % (att_thick, trans_real, trans_ideal))
 
         # Final calculation
         exptime_final = ff_exptime / trans_real
         att_idx = attfac.getAttIndexConfig(att_thick)
-        print "Initial exposure time = ", exp_time
-        print "Final   exposure time = ", exptime_final
-        print "round %8.5f sec" % (round(exptime_final, 3))
+        print("Initial exposure time = ", exp_time)
+        print("Final   exposure time = ", exptime_final)
+        print("round %8.5f sec" % (round(exptime_final, 3)))
         photons_real = exptime_final * trans_real * flux_beam * float(n_frames)
-        print "Photons/data=%8.3e" % photons_real
+        print("Photons/data=%8.3e" % photons_real)
 
         return att_idx, exptime_final
 
@@ -990,27 +990,27 @@ class LoopMeasurement:
 
         # Multi conditions
         n_frames = int(total_osc / osc_width)
-        print "Frame=", n_frames
+        print("Frame=", n_frames)
 
         # Total photons/frame
         phs_per_frame = total_photons / float(n_frames)
-        print "Aimed flux/frame: %5.2e" % (phs_per_frame)
+        print("Aimed flux/frame: %5.2e" % (phs_per_frame))
 
         # Exposure time for full flux
         ff_exptime = phs_per_frame / flux_beam
-        print "Full flux exposure time for aimed flux=%13.8f sec/frame" % ff_exptime
+        print("Full flux exposure time for aimed flux=%13.8f sec/frame" % ff_exptime)
 
         # Suitable exposure time range
         # 5 deg/frame FIXED
         # exptime=osc_width/5.0
-        print "Attenuation factor for 1sec exposure/frame", ff_exptime / exp_time
+        print("Attenuation factor for 1sec exposure/frame", ff_exptime / exp_time)
         transmission = ff_exptime / exp_time
 
         # Suitable attenuation factor
         att_thick = attfac.getBestAtt(wavelength, transmission)
         trans = attfac.calcAttFac(wavelength, att_thick)
 
-        print "%8.1f[um] Transmission=%12.8f" % (att_thick, trans)
+        print("%8.1f[um] Transmission=%12.8f" % (att_thick, trans))
 
         # Final calculation
         exptime = ff_exptime / trans
@@ -1063,14 +1063,14 @@ class LoopMeasurement:
 
         # Total photons/frame
         phs_per_frame = total_photons / float(n_frames)
-        print "Aimed flux/frame: %5.2e" % (phs_per_frame)
+        print("Aimed flux/frame: %5.2e" % (phs_per_frame))
 
         # Exposure time for full flux
         ff_exptime = phs_per_frame / flux_beam
-        print "Full flux exposure time for aimed flux=%13.8f sec/frame" % ff_exptime
+        print("Full flux exposure time for aimed flux=%13.8f sec/frame" % ff_exptime)
 
         # Suitable exposure time range
-        print "Attenuation factor for 1sec exposure/frame", ff_exptime / exp_time
+        print("Attenuation factor for 1sec exposure/frame", ff_exptime / exp_time)
         transmission = ff_exptime / exp_time
 
         # Suitable attenuation factor
@@ -1094,7 +1094,7 @@ class LoopMeasurement:
         exp_time = osc_width / rot_speed
         # EIGER readout time 
         if 1.0 / exp_time > self.max_framerate:
-            print "genRotSpeed. Frame rate exceeds the maximum frame rate!!"
+            print("genRotSpeed. Frame rate exceeds the maximum frame rate!!")
             sys.exit(1)
 
         # total oscillation range
@@ -1154,7 +1154,7 @@ class LoopMeasurement:
             attfac = AttFactor.AttFactor()
             best_transmission = exp_limit / float(n_frames) / exp_time
             best_thick = attfac.getBestAtt(self.wavelength, best_transmission)
-            print "Suggested Al thickness = %8.1f[um]" % best_thick
+            print("Suggested Al thickness = %8.1f[um]" % best_thick)
             att_idx = attfac.getAttIndexConfig(best_thick)
             # 160618 Added by K. Hirata
             this_prefix = "%s-%02d" % (prefix, data_index)
@@ -1175,7 +1175,7 @@ class LoopMeasurement:
         mf = open(multi_sch, "w")
         for cstr in comstr:
             for line in cstr:
-                print line
+                print(line)
                 mf.write("%s" % line)
         return multi_sch
 
@@ -1283,7 +1283,7 @@ class LoopMeasurement:
         else:
             schbss.makeMulti(schedule_file, ntimes)
 
-        print "OK"
+        print("OK")
         return schedule_file
 
     # 2015/11/26 AM5:15 K.Hirata wrote
@@ -1349,7 +1349,7 @@ if __name__ == "__main__":
 
     left_xyz = [0.0, 0.0, 0.1]
     right_xyz = [0.0, 0.1, 0.0]
-    print left_xyz, right_xyz
+    print(left_xyz, right_xyz)
     prefix = "TEST"
 
     logfile = open("logfile.log", "w")

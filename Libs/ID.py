@@ -22,8 +22,8 @@ class ID:
 	def moveE(self,energy):
 		gap=IDparam().getGap(energy)
 		if gap < 7.4:
-			print "Gap should be set more than 7.4mm"
-			print "In this time, 7.4mm is set to ID"
+			print("Gap should be set more than 7.4mm")
+			print("In this time, 7.4mm is set to ID")
 			gap=7.4
 		#print gap
 		self.move(gap)
@@ -32,7 +32,7 @@ class ID:
         	qcommand="get/bl_32in_id_gap/query"
         	self.srv.sendall(qcommand)
         	recbuf=self.srv.recv(8000)
-		print recbuf
+		print(recbuf)
 		bufs=recbuf.split('/')
 		buf=bufs[len(bufs)-2]
 		cols=buf.split('_')
@@ -57,7 +57,7 @@ class ID:
 
         		if current_value==gap:
 				return 1
-        		print "current value=%8.3f"%current_value
+        		print("current value=%8.3f"%current_value)
 
 	def tune(self,start,end,width,channel,time,ofile):
 		maxvalue=-99999
@@ -68,7 +68,7 @@ class ID:
 		ndata=int((end-start)/width)+1
 		
 		if ndata < 1:
-			print "Abort!!!"
+			print("Abort!!!")
 			sys.exit()
 
 		for n in range(0,ndata):
@@ -76,10 +76,10 @@ class ID:
 			current=float(str("%8.4f"%current))
 
 			if current < 7.4 or current > 45.0 :
-				print "Abort!!"
+				print("Abort!!")
 				sys.exit()
 
-			print "moving %8.3f \n" % current
+			print("moving %8.3f \n" % current)
 			self.move(current)
         		count=self.id.getCount(channel,time)
 			if count > maxvalue:
@@ -101,9 +101,9 @@ class ID:
     		center=self.getE(energy)
     		start=float(center)-0.5
     		end=float(center)+0.5
-		print "ID scan range %8.5f - %8.5f\n"%(start,end)
+		print("ID scan range %8.5f - %8.5f\n"%(start,end))
     		max=self.tune(start,end,0.1,cnt_ch,0.2,file1)
-    		print "MAX:%12.5f\n" % max
+    		print("MAX:%12.5f\n" % max)
 
 		# fine tune
     		center=max
@@ -111,14 +111,14 @@ class ID:
     		end=float(center)+0.1
 
     		max=self.tune(start,end,0.005,cnt_ch,0.2,file2)
-    		print "MAX:%12.5f\n" % max
+    		print("MAX:%12.5f\n" % max)
 
 		# ultra fine tune
 		center=max
 		start=float(center)-0.01
 		end=float(center)+0.01
     		max=self.tune(start,end,0.001,cnt_ch,0.2,file3)
-    		print "MAX:%12.5f\n" % max
+    		print("MAX:%12.5f\n" % max)
 
 		self.move(max)
 
@@ -136,9 +136,9 @@ class ID:
 			start=7.4
 
     		end=float(center)+0.5
-		print "ID scan range %8.5f - %8.5f\n"%(start,end)
+		print("ID scan range %8.5f - %8.5f\n"%(start,end))
     		max=self.tune(start,end,0.1,cnt_ch,0.2,file1)
-    		print "MAX:%12.5f\n" % max
+    		print("MAX:%12.5f\n" % max)
 
 		# fine tune
     		center=max
@@ -150,7 +150,7 @@ class ID:
     		end=float(center)+0.1
 
     		max=self.tune(start,end,0.005,cnt_ch,0.2,file2)
-    		print "MAX:%12.5f\n" % max
+    		print("MAX:%12.5f\n" % max)
 
 		# ultra fine tune
 		center=max
@@ -160,7 +160,7 @@ class ID:
 
 		end=float(center)+0.01
     		max=self.tune(start,end,0.001,cnt_ch,0.2,file3)
-    		print "MAX:%12.5f\n" % max
+    		print("MAX:%12.5f\n" % max)
 
 		self.move(max)
 
@@ -181,7 +181,7 @@ class ID:
                 for i in range(0,ntrial):
                         if self.isLocked()==1 or self.isLocked()==2:
                                 tstr=datetime.datetime.now()
-                                print "ID %s: waiting for 'unlocked'"%tstr
+                                print("ID %s: waiting for 'unlocked'"%tstr)
                                 time.sleep(wait_interval)
                         else:
                                 self.move(gap)

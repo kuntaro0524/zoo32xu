@@ -26,4 +26,4 @@ if __name__=="__main__":
         backimage = "/isilon/users/target/target/PPPP/10.Zoo//back_190518.ppm"
         cip = CryImageProc.CryImageProc()
         cip.setImages(picpath, backimage)
-        print cip.getCenterInfo()
+        print(cip.getCenterInfo())

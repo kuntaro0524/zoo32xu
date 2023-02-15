@@ -17,5 +17,5 @@ bss_port=5555
 if __name__ == "__main__":
     zoo=Zoo.Zoo()
     zoo.connect()
-    print zoo.stop()
+    print(zoo.stop())
     zoo.disconnect()

@@ -20,4 +20,4 @@ if __name__ == "__main__":
         esa.updateValueAt(o_index, "p_index", new_index)
 
     except:
-        print "Failed."
+        print("Failed.")

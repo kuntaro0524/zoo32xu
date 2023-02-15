@@ -31,8 +31,8 @@ if __name__ == "__main__":
                 pin = i + 1
                 try:
                     zoo.mountSample(puck, pin)
-                except MyException,ttt:
-                    print "Sample mount failed!!"
+                except MyException as ttt:
+                    print("Sample mount failed!!")
                     zoo.skipSample()
                     continue
     

@@ -35,7 +35,7 @@ cry_size_mm=30/1000.0 #[mm]
 # Analyze heatmap and get crystal list
 crystal_array=ahm.searchMulti(scan_id,cry_size_mm)
 
-print "FIST=",len(crystal_array)
+print("FIST=",len(crystal_array))
 crystals=CrystalList.CrystalList(crystal_array)
 
 glist=crystals.getSortedPeakCodeList()
@@ -43,4 +43,4 @@ glist=crystals.getSortedPeakCodeList()
 #for cry in crystals:
     #cry.printAll()
 
-print len(glist)
+print(len(glist))

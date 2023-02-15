@@ -63,7 +63,7 @@ class Hebi:
                 # sorting the crystal by 'crystal size' in CrystalSpot class
                 # will be very important in near future.
 		if crystal.getSize()==1:
-			print "This crystal size is very small! >> SKIPPED"
+			print("This crystal size is very small! >> SKIPPED")
 			raise MyException.MyException("findRoughEdges: No good grids.")
 		else:
 			crystal.setDiffscanLog(raster2d_path)
@@ -85,7 +85,7 @@ class Hebi:
                 att_thick=self.attfactor.getBestAtt(self.wavelength,self.trans)
                 att_idx=self.attfactor.getAttIndexConfig(att_thick)
 
-                print "Face scan at XYZ=",center
+                print("Face scan at XYZ=",center)
 
 		# Limited to 50 Hz
                 schfile,raspath=self.lm.rasterMaster(scan_id,scan_mode,self.scan_vbeam,self.scan_hbeam,
@@ -93,7 +93,7 @@ class Hebi:
 			distance=self.scan_dist,exptime=0.02)
                 self.zoo.doRaster(schfile)
                 self.zoo.waitTillReady()
-		print "faceScan finished!"
+		print("faceScan finished!")
 		return raspath
 
 	# Final centering for both edges
@@ -177,7 +177,7 @@ class Hebi:
                 	ashika=self.readSummaryDat(raspath1,prefix,gxyz,self.phi_face,
                         	thresh_nspots=thresh_nspots,comp_thresh=self.comp_thresh)
         		score_face=ashika.getTotalScore(prefix,kind="total_integrated_signal")
-			print "FACE score=",score_face
+			print("FACE score=",score_face)
 
 			# At +90 deg
 			phi90=self.phi_face+90.0
@@ -192,17 +192,17 @@ class Hebi:
                 	ashika=self.readSummaryDat(raspath2,prefix,gxyz,phi90,
                         	thresh_nspots=thresh_nspots,comp_thresh=self.comp_thresh)
         		score_90=ashika.getTotalScore(prefix,kind="total_integrated_signal")
-			print "FACE+90 score=",score_90
+			print("FACE+90 score=",score_90)
 			total_score=score_face+score_90
 			score_array.append((gxyz,total_score))
-			print "###### TOTAL SCORE:",total_score
+			print("###### TOTAL SCORE:",total_score)
 			data_idx+=1
 
 		# Sorting score
 		# Higher score -> lower index: option "reverse=True"
-		print "BEFORE SORT",score_array
+		print("BEFORE SORT",score_array)
 		sorted_crystal_list=sorted(score_array,key=lambda x:x[1],reverse=True)
-		print "AFTER  SORT",sorted_crystal_list
+		print("AFTER  SORT",sorted_crystal_list)
 
 		return sorted_crystal_list
 
@@ -243,7 +243,7 @@ class Hebi:
                         ashika=self.readSummaryDat(raspath1,prefix,gxyz,self.phi_face,
                                 thresh_nspots=thresh_nspots,comp_thresh=self.comp_thresh)
                         score_face=ashika.getTotalScore(prefix,kind="total_integrated_signal")
-                        print "FACE score=",score_face
+                        print("FACE score=",score_face)
 
 			# Center coordinate at the face
                 	#grav_xyz_face00=ashika.getGravCenter(prefix)
@@ -262,7 +262,7 @@ class Hebi:
                         ashika=self.readSummaryDat(raspath2,prefix,gxyz,phi90,
                                 thresh_nspots=thresh_nspots,comp_thresh=self.comp_thresh)
                         score_90=ashika.getTotalScore(prefix,kind="total_integrated_signal")
-                        print "FACE+90 score=",score_90
+                        print("FACE+90 score=",score_90)
                         total_score=score_face+score_90
 
 			# Center coordinate at the face
@@ -275,14 +275,14 @@ class Hebi:
 			xyzfin=xfin,yfin,zfin
 
                         score_array.append((xyzfin,total_score))
-                        print "###### TOTAL SCORE:",total_score
+                        print("###### TOTAL SCORE:",total_score)
                         data_idx+=1
 
                 # Sorting score
                 # Higher score -> lower index: option "reverse=True"
-                print "BEFORE SORT",score_array
+                print("BEFORE SORT",score_array)
                 sorted_crystal_list=sorted(score_array,key=lambda x:x[1],reverse=True)
-                print "AFTER  SORT",sorted_crystal_list
+                print("AFTER  SORT",sorted_crystal_list)
 
                 return sorted_crystal_list
 
@@ -320,15 +320,15 @@ class Hebi:
 		# all of grids are assumed to be good.
 		lu,ld,ru,rd=ashika.getCorners(prefix)
 	 	grav_xy=ashika.getGravCenter(prefix)
-		print "Grav xy=",grav_xy
+		print("Grav xy=",grav_xy)
 		target_corner=ashika.getTargetCorner(lu,ld,ru,rd,grav_xy)
-		print "Target corner=",target_corner
+		print("Target corner=",target_corner)
 		max_score=ashika.getMaxScore(prefix)
 		threshold_score=int(max_score*0.8)
-		print "Score threshold=",threshold_score
+		print("Score threshold=",threshold_score)
 
 		gx,gy,gz=ashika.findNearestGrid(threshold_score,prefix,target_corner,raster_path)
-		print "final xyz=",gx,gy,gz
+		print("final xyz=",gx,gy,gz)
 		ret_gxyz=(gx,gy,gz)
 
 		return ret_gxyz
@@ -338,13 +338,13 @@ class Hebi:
                 	v_grav=self.lm.shikaGravXYZ(cxyz,vphi,raster_path,scan_id,
                         	thresh_nspots=thresh_nspots,crysize=crysize,comp_thresh=comp_thresh)
 		except:
-			print "anaVscan: No good grids were not found on this scan."
+			print("anaVscan: No good grids were not found on this scan.")
 			raise MyException.MyException("anaVscan: No good grids!!!!!")
 		
 		return v_grav
 
 	def getGoodTrans(self):
-		print "faceScan"
+		print("faceScan")
 		return 1.0
 
         # Relating to the summary.dat
@@ -356,7 +356,7 @@ class Hebi:
                 ashika.setSummaryFile("summary.dat")
                 # scan_id & prefix are different each other
                 prefix="%s"%scan_id
-		print "Searching prefix is %s"%prefix
+		print("Searching prefix is %s"%prefix)
 
                 # N grids on the 2D raster scan
                 ngrids=self.lm.raster_n_height*self.lm.raster_n_width
@@ -380,11 +380,11 @@ class Hebi:
                 def compCryScore(x,y):
                         a=x.score_total
                         b=y.score_total
-                        print "SCORE COMPARE",a,b
+                        print("SCORE COMPARE",a,b)
                         if a==b: return 0
                         if a<b: return 1
                         return -1
-                        print thresh_nspots,crysize
+                        print(thresh_nspots,crysize)
 
                 # SHIKA analysis
                 ashika=self.readSummaryDat(raster_path,scan_id,self.cxyz_2d,self.phi_face)
@@ -392,10 +392,10 @@ class Hebi:
                 ashika.setThresh(thresh_nspots)
 
                 # Crystal finding
-                print "Crystal size = %8.5f"%crysize
+                print("Crystal size = %8.5f"%crysize)
                 crystals=ashika.findCrystals(scan_id,dist_thresh=crysize)
                 n_cry=len(crystals)
-                print "Crystals %5d\n"%n_cry
+                print("Crystals %5d\n"%n_cry)
 
                 # Sorting better crystals by total number of spots
                 # The top of crystal is the best one
@@ -421,7 +421,7 @@ class Hebi:
 		return distance
 
 	def setPhotonDensityLimit(self,photon_density_limit):
-		print "photon density limit =%e"%self.photon_density_limit
+		print("photon density limit =%e"%self.photon_density_limit)
 		self.photon_density_limit=photon_density_limit
 
 	# 2016/12/10 added for detecting crystal size
@@ -436,11 +436,11 @@ class Hebi:
                 def compCryScore(x,y):
                         a=x.score_total
                         b=y.score_total
-                        print "SCORE COMPARE",a,b
+                        print("SCORE COMPARE",a,b)
                         if a==b: return 0
                         if a<b: return 1
                         return -1
-                        print thresh_nspots,crysize
+                        print(thresh_nspots,crysize)
 
                 size_thresh=0.100
                 dist_cry_thresh=0.04 # tate houkou 
@@ -454,13 +454,13 @@ class Hebi:
 		diffscan_path=raster_path
 
                 # Crystal finding
-                print "Crystal size = %8.5f"%crysize
+                print("Crystal size = %8.5f"%crysize)
                 crystals=ashika.findCrystals(scan_id,dist_thresh=0.0151,score_thresh=thresh_nspots)
                 n_cry=len(crystals)
-                print "Crystals %5d\n"%n_cry
+                print("Crystals %5d\n"%n_cry)
 	
 		# Check overlap
-		print "#########################"
+		print("#########################")
 		perfect_crystals=[]
 		kabutteru_index_list=[]
 		check_list=[0]*len(crystals)
@@ -488,13 +488,13 @@ class Hebi:
 					kabutteru_index_list.append((index1,index2))
 					check_list[index1]=1
 					check_list[index2]=1
-		print "KABUTTERU=",kabutteru_index_list
+		print("KABUTTERU=",kabutteru_index_list)
 	
 		# Kabutteiru crystals no nearest distance calculation (x,z only)
 		kaburidat=open("%s/kabutteru.dat"%raster_path,"w")
 		hontouni_kabutteru_index_list=[]
 		for c1,c2 in kabutteru_index_list:
-			print "INDEX=",c1,c2
+			print("INDEX=",c1,c2)
 			cry1=crystals[c1]
 			cry2=crystals[c2]
 			x1a,y1a=cry1.getXYlist()
@@ -521,7 +521,7 @@ class Hebi:
 	
 			else:
 				hsize,vsize=crystal.getDimensions(hbeam,vbeam)
-				print "hsize,vsize=",hsize,vsize
+				print("hsize,vsize=",hsize,vsize)
 				if hsize > size_thresh or vsize > size_thresh:
 					check_list[index]=-2
 			index+=1
@@ -559,7 +559,7 @@ class Hebi:
 		good_crystals=[]
 		index=0
 		for c in check_list:
-			print "CHECKLIST=",c
+			print("CHECKLIST=",c)
 			# check_list: c=10 -> single crystal (grid consists of 1)
 			if c>0 and c!=10:
 				cry=crystals[index]
@@ -584,7 +584,7 @@ class Hebi:
 			index+=1
 		singlefile.close()
 	
-		print "Initial single crystals",len(single_crystals)
+		print("Initial single crystals",len(single_crystals))
 	
 		# make crycodes
 		def makeCryCode(x,y,score,imgnum):
@@ -599,11 +599,11 @@ class Hebi:
 		# then "small wedge data collection" was applied 
 		bad_index=[]
 		# each crystal
-		print "ZUTAZUTA=",len(zutazuta)
+		print("ZUTAZUTA=",len(zutazuta))
 		for cryindex in range(0,len(zutazuta)):
 			x1a,y1a,scorea,imgna=zutazuta[cryindex].getInfo()
 			bad_index=[0]*len(x1a)
-			print "NUMBER OF GRIDS",cryindex,len(x1a)
+			print("NUMBER OF GRIDS",cryindex,len(x1a))
 			# each grid
 			for index1 in range(0,len(x1a)):
                         	if bad_index[index1]==1:
@@ -613,8 +613,8 @@ class Hebi:
 				score1=scorea[index1]
 				imgnum1=imgna[index1]
 				for index2 in range(index1+1,len(x1a)):
-                                	print "comparison cry1,cry2=",index1,index2
-                                	print "bad_index=",bad_index
+                                	print("comparison cry1,cry2=",index1,index2)
+                                	print("bad_index=",bad_index)
                                 	if bad_index[index2]==1:
                                         	continue
 					x2=x1a[index2]
@@ -625,11 +625,11 @@ class Hebi:
 					dy=y1-y2
 					#print x1,y1,x2,y2,dx,dy
 					dist=math.sqrt(dx*dx+dy*dy)
-                                	print "distance(%d,%d)=%8.5f mm"%(index1,index2,dist)
+                                	print("distance(%d,%d)=%8.5f mm"%(index1,index2,dist))
 					if dist <= vbeam:
 						bad_index[index2]=1
-				print "BAD",len(bad_index)
-			print "Final bad index=",bad_index
+				print("BAD",len(bad_index))
+			print("Final bad index=",bad_index)
 			ncount=0
 			for i in range(0,len(bad_index)):
 				if bad_index[i]==0:
@@ -641,11 +641,11 @@ class Hebi:
 					crycode=makeCryCode(x,y,score,imgnum)
 					single_crystals.append(crycode)
 					ncount+=1
-			print "GOOD points=",ncount
+			print("GOOD points=",ncount)
 	
-		print "SINGLE :",len(single_crystals)
-		print "GOOD   :",len(good_crystals)
-		print "PERFECT:",len(perfect_crystals)
+		print("SINGLE :",len(single_crystals))
+		print("GOOD   :",len(good_crystals))
+		print("PERFECT:",len(perfect_crystals))
 
 		# Single crystal
 		sss=open("%s/single_new.dat"%raster_path,"w")
@@ -695,18 +695,18 @@ class Hebi:
 			lv_phi=self.phi_face-90.0
 			rv_phi=self.phi_face+90.0
 
-		print "CRYSTAL LIST=%5d"%len(crystal_list)
+		print("CRYSTAL LIST=%5d"%len(crystal_list))
 
 		for crystal in crystal_list:
 			if cry_index >= self.nCry:
-				print "Number of dataset required has been done!"
+				print("Number of dataset required has been done!")
 				break
 			try:
 				l_pos,r_pos=self.findRoughEdges(crystal,raster2d_path)
 			except:
 				cry_index+=1
 				logfile.write("ERR: crystal size is too small.\n")
-				print "Skipping this crystal"
+				print("Skipping this crystal")
 				continue
 			start_time=datetime.datetime.now()
 			sw.setTime("start")
@@ -719,16 +719,16 @@ class Hebi:
 
 			if l_pos==-999:
 				cry_index+=1
-				print "Skipping this crystal because grid is one!"
+				print("Skipping this crystal because grid is one!")
 				continue
 		
 			# L edge scan 2D at face angle
                 	scan_id_L="lface-%02d"%cry_index
-                        print "L edge horizontal : XYZ=",self.logXYZ(l_pos)
+                        print("L edge horizontal : XYZ=",self.logXYZ(l_pos))
 			lras_d=self.faceScan(scan_id_L,l_pos,self.phi_face)
 			# R edge scan 2D at face angle
                 	scan_id_R="rface-%02d"%cry_index
-                        print "R edge horizontal : XYZ=",r_pos
+                        print("R edge horizontal : XYZ=",r_pos)
 			rras_d=self.faceScan(scan_id_R,r_pos,self.phi_face)
 
 			# Analyze 2D face scan : score threshold is set to 5.0!!
@@ -739,7 +739,7 @@ class Hebi:
 			except:
 				cry_index+=1
 				logfile.write("ERR: Failed to find good face points(2D).\n")
-				print "Failed to find good 2D face points"
+				print("Failed to find good 2D face points")
 				continue
 
 			lx,ly,lz=Lface
@@ -769,7 +769,7 @@ class Hebi:
                 		R_fin=self.anaVscan(Rface,rv_phi,Rv_d,scan_id_Rv)
 			except:
 				cry_index+=1
-				print "Vertical scan: failed to find good points."
+				print("Vertical scan: failed to find good points.")
 				logfile.write("ERR: Failed to find good vertical points.\n")
 				continue
 
@@ -844,14 +844,14 @@ class Hebi:
 
                 for crystal in crystal_list:
                         if cry_index >= self.nCry:
-                                print "Number of dataset required has been done!"
+                                print("Number of dataset required has been done!")
                                 break
                         try:
                                 l_pos,r_pos=self.findRoughEdges(crystal,raster2d_path)
                         except:
                                 cry_index+=1
                                 logfile.write("ERR: crystal size is too small.\n")
-                                print "Skipping this crystal"
+                                print("Skipping this crystal")
                                 continue
                         start_time=datetime.datetime.now()
                         sw.setTime("start")
@@ -864,7 +864,7 @@ class Hebi:
 
                         if l_pos==-999:
                                 cry_index+=1
-                                print "Skipping this crystal because grid is one!"
+                                print("Skipping this crystal because grid is one!")
                                 continue
 
                         # Vertical scan Left edge
@@ -884,7 +884,7 @@ class Hebi:
                                 R_fin=self.anaVscan(r_pos,rv_phi,Rv_d,scan_id_Rv)
                         except:
                                 cry_index+=1
-                                print "Vertical scan: failed to find good points."
+                                print("Vertical scan: failed to find good points.")
                                 logfile.write("ERR: Failed to find good vertical points.\n")
                                 continue
 
@@ -957,11 +957,11 @@ class Hebi:
 	
 		# L edge scan 2D at face angle
                	scan_id_L="lface-%02d"%cry_index
-                print "L edge horizontal : XYZ=",self.logXYZ(l_pos)
+                print("L edge horizontal : XYZ=",self.logXYZ(l_pos))
 		lras_d=self.faceScan(scan_id_L,l_pos,self.phi_face)
 		# R edge scan 2D at face angle
                	scan_id_R="rface-%02d"%cry_index
-                print "R edge horizontal : XYZ=",r_pos
+                print("R edge horizontal : XYZ=",r_pos)
 		rras_d=self.faceScan(scan_id_R,r_pos,self.phi_face)
 
 		# Analyze 2D face scan : score threshold is set to 5.0!!

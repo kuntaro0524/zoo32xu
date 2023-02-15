@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
         root_dir = "%s/%s" % (dbinfo.root_dir, pinstr)
 
-        print dbinfo.n_mount
+        print(dbinfo.n_mount)
 
         if good_flag == True:
             mode = each_db['mode']
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
             data_abs = os.path.join(root_dir, data_dir)
             log_files = glob.glob("%s/*.log" % data_abs)
-            print log_files
+            print(log_files)
 
             if mode == "multi":
                 for log_file in log_files:
@@ -42,7 +42,7 @@ if __name__ == "__main__":
                     hbeam, vbeam = bmml.getBeamsize()
                     nframe = (endphi - startphi) / osc_width
                     if wavelength < 0.0:
-                        print "%s: skipping" % log_file
+                        print("%s: skipping" % log_file)
                     else:
                         #print "DDDDDDDDDD=",wavelength, startphi, endphi, osc_width, exp_time, dbinfo.flux
                         rad = Raddose.Raddose()
@@ -51,7 +51,7 @@ if __name__ == "__main__":
                         att_flux = dbinfo.flux * att_factor
                         dose = rad.getDose(hbeam, vbeam, att_flux, exp_time, en)
                         total_dose = dose * nframe
-                        print "DOSE %8.2f MGy" % total_dose
+                        print("DOSE %8.2f MGy" % total_dose)
     
                     #getDose(self,h_beam_um,v_beam_um,phosec,exp_time,energy=12.3984,salcon=1500,remote=False):
 

@@ -36,7 +36,7 @@ class Gonio:
         mounty = bssconf.getValue("Cmount_Gonio_Y")
         mountz = bssconf.getValue("Cmount_Gonio_Z")
 
-        print mountx, mounty, mountz
+        print(mountx, mounty, mountz)
 
         self.rotatePhi(0.0)
         self.moveXYZmm(mountx, mounty, mountz)
@@ -50,7 +50,7 @@ class Gonio:
         curr_gx = self.getX()[0]
         curr_gy = self.getY()[0]
         curr_gz = self.getZ()[0]
-        print "Current gonio[pulse]:%5d %5d %5d\n" % (curr_gx, curr_gy, curr_gz)
+        print("Current gonio[pulse]:%5d %5d %5d\n" % (curr_gx, curr_gy, curr_gz))
 
         ##	Encoder reset
         self.enc.resetEnc(curr_gx, curr_gy, curr_gz)
@@ -127,7 +127,7 @@ class Gonio:
 
     def moveUpDown(self, height):
         curr_phi = self.getPhi()
-        print "PHI:%12.5f" % curr_phi
+        print("PHI:%12.5f" % curr_phi)
 
         curr_phi = math.radians(curr_phi)
 
@@ -164,7 +164,7 @@ class Gonio:
         while (curr_phi > 360.0):
             curr_phi = curr_phi - 360.0
 
-        print "PHI:%12.5f" % curr_phi
+        print("PHI:%12.5f" % curr_phi)
         curr_rad = math.radians(curr_phi)
 
         height = height_um
@@ -188,7 +188,7 @@ class Gonio:
         # marume[um]
         move_x = -round(dx, 5)
         move_z = -round(dz, 5)
-        print "Moving %8.4f um %8.4f um\n"%(move_x,move_z)
+        print("Moving %8.4f um %8.4f um\n"%(move_x,move_z))
 
         # [um] to [pulse]
         move_x = int(move_x * 10)
@@ -414,17 +414,17 @@ class Gonio:
         # note wire default position should be left/lower compared to the X-ray center
         x1, y1, z1 = self.findZhalf(0, 500, 10, 3)
 
-        print "Found Z=%10.5f" % z1
-        print "Found X=%10.5f" % x1
+        print("Found Z=%10.5f" % z1)
+        print("Found X=%10.5f" % x1)
 
         vdiff = math.sqrt(math.pow((x - x1), 2) + math.pow((y - y1), 2) + math.pow((z - z1), 2))
-        print "Distance between found and initial position:%8.3f\n" % (vdiff)
+        print("Distance between found and initial position:%8.3f\n" % (vdiff))
 
         ## Next scan range
         # Rough edge of Z=z1
         # Start point: 50um before the edge
         newz = z1 - 0.05
-        print "Next scan start Z=%10.5f " % newz
+        print("Next scan start Z=%10.5f " % newz)
 
         # note wire default position should be left/lower compared to the X-ray center
         self.moveXYZmm(x, y, newz)
@@ -451,7 +451,7 @@ class Gonio:
         x1, y1, z1 = self.findYhalf(0, 500, 10, 3)
 
         hdiff = y1 - y
-        print "hdiff:%8.3f\n" % (hdiff)
+        print("hdiff:%8.3f\n" % (hdiff))
 
         ## Movement to half position
         newy = y1 - 0.05
@@ -479,7 +479,7 @@ class Gonio:
 
         vdiff = math.sqrt(math.pow((x - x1), 2) + math.pow((y - y1), 2) + math.pow((z - z1), 2))
         hdiff = y2 - y
-        print "Vdiff:%8.3f Hdiff:%8.3f\n" % (vdiff, hdiff)
+        print("Vdiff:%8.3f Hdiff:%8.3f\n" % (vdiff, hdiff))
 
         ## Movement to half position
         newx = (x + x1) / 2.0
@@ -509,15 +509,15 @@ class Gonio:
             self.moveUpDown(step)
             x2, y2, z2 = self.getXYZmm()
             pincnt = float(counter.getCount(0.1)[0])
-            print x2, y2, z2, pincnt, save
+            print(x2, y2, z2, pincnt, save)
 
             if pincnt < (save / 2.0):
-                print "FIND!!: %8.5f\n" % pincnt
+                print("FIND!!: %8.5f\n" % pincnt)
                 isFound = True
                 break
 
         if isFound == False:
-            print "No found"
+            print("No found")
             return 0, 0, 0
 
         # move to the initial position
@@ -541,15 +541,15 @@ class Gonio:
             self.moveTrans(step)
             x2, y2, z2 = self.getXYZmm()
             pincnt = float(counter.getCount(0.1)[0])
-            print x2, y2, z2, pincnt, save
+            print(x2, y2, z2, pincnt, save)
 
             if pincnt < (save / 2.0):
-                print "FIND!!: %8.5f\n" % pincnt
+                print("FIND!!: %8.5f\n" % pincnt)
                 isFound = True
                 break
 
         if isFound == False:
-            print "No found"
+            print("No found")
             return 0, 0, 0
 
         # move to the initial position
@@ -571,7 +571,7 @@ class Gonio:
         ndata = int(range / step) + 1
 
         if ndata < 0:
-            print "range trouble"
+            print("range trouble")
             return -1
 
         # plot preparation
@@ -675,7 +675,7 @@ class Gonio:
         ndata = int(range / step) + 1
 
         if ndata < 0:
-            print "range trouble"
+            print("range trouble")
             return -1
 
         # plot preparation
@@ -732,7 +732,7 @@ class Gonio:
         ndata = int(range / step) + 1
 
         if ndata < 0:
-            print "range trouble"
+            print("range trouble")
             return -1
 
         # plot preparation
@@ -783,7 +783,7 @@ class Gonio:
         ndata = int(range / step) + 1
 
         if ndata < 0:
-            print "range trouble"
+            print("range trouble")
             return -1
 
         # plot preparation
@@ -836,7 +836,7 @@ class Gonio:
         ndata = int(range / step) + 1
 
         if ndata < 0:
-            print "range trouble"
+            print("range trouble")
             return -1
 
         # plot preparation
@@ -888,7 +888,7 @@ class Gonio:
         # Set step
         # maxvalue=self.gonioz.axisScan(ofile,start,end,step,self.cnt_ch,self.cnt_ch-1,time,unit)
         # return(maxvalue)
-        print "find center"
+        print("find center")
 
     def getEnc(self):
         # Unit of return value is [um]
@@ -995,6 +995,6 @@ if __name__ == "__main__":
     # gonio.scanY("gy",172640,173040,10,0.2,"pulse")
     #gonio.presetPhi()
 
-    print(gonio.getXYZmm())
+    print((gonio.getXYZmm()))
 
     s.close()

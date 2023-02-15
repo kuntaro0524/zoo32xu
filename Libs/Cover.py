@@ -23,7 +23,7 @@ class Cover:
 
 	def isCover(self):
 		pos=self.getPos()
-		print pos
+		print(pos)
 		if pos==0:
 			return True
 		else:
@@ -62,6 +62,6 @@ if __name__=="__main__":
 	#covz.move(-245000)
 	#covz.on()
 	#covz.off()
-	print covz.getPos()
+	print(covz.getPos())
 
 	s.close()

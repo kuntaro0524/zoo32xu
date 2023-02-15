@@ -41,4 +41,4 @@ if __name__=="__main__":
 	pinvalue=float(sys.argv[2])
 
 	ff=Flux(energy)
-	print "%e"%ff.calcFluxFromPIN(pinvalue)
+	print("%e"%ff.calcFluxFromPIN(pinvalue))

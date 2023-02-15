@@ -7,7 +7,7 @@ class Condition:
                         exp_henderson, exp_time, distance, att_raster, shika_minscore, shika_mindist, shika_maxhits, loop_size, 
 			helical_hbeam, helical_vbeam, hebi_att, photon_density_limit, ntimes, reduced_fac, offset_angle):
                 # adopt init args
-                for k, v in locals().items():
+                for k, v in list(locals().items()):
                         if k == "self": continue
                         setattr(self, k, v)
                 self._check_errors()
@@ -20,21 +20,21 @@ class Condition:
                 #assert not prohibit_chars.intersection(self.uname)
 
                 assert type(self.pucks_and_pins) == list
-                assert all(map(lambda x: len(x)==2, self.pucks_and_pins))
+                assert all([len(x)==2 for x in self.pucks_and_pins])
                 for puck, pins in self.pucks_and_pins:
                         assert type(puck) == str
                         #assert not prohibit_chars.intersection(puck)
-                        assert all(map(lambda x: 1 <= x <= 16, pins))
+                        assert all([1 <= x <= 16 for x in pins])
         # _check_errors()
 
         def show(self):
-                print self.uname
+                print(self.uname)
                 for pp in self.pucks_and_pins:
-                        print "", pp
+                        print("", pp)
 
         def customized_copy(self, **kwds):
                 c = copy.copy(self)
-                for k, v in kwds.items():
+                for k, v in list(kwds.items()):
                         assert hasattr(c, k)
                         setattr(c, k, v)
                 self._check_errors()
@@ -55,7 +55,7 @@ class Condition:
 	# ystep in [um]
 	def setYstep(self,ystep):
 		if ystep > 1000.0:
-			print "Something wrong in setYstep in Condition"
+			print("Something wrong in setYstep in Condition")
 			system.exit(1)
 		self.y_step=ystep
 
@@ -106,6 +106,6 @@ if __name__=="__main__":
                 reduced_fac=1.00,
                 offset_angle=0.0,
       )
-      print cond.reduced_fac
+      print(cond.reduced_fac)
       cond.setFlux(1E13)
-      print cond.flux
+      print(cond.flux)

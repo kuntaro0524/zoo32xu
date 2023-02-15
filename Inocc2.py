@@ -10,17 +10,17 @@ def read_camera_inf(infin):
 	origin_shift_x, origin_shift_y = None, None
 	for l in open(infin):
 		if "ZoomOptions1:" in l:
-			ret["zoom_opts"] = map(float, l[l.index(":")+1:].split())
+			ret["zoom_opts"] = list(map(float, l[l.index(":")+1:].split()))
 		elif "OriginShiftXOptions1:" in l:
-			origin_shift_x = map(float, l[l.index(":")+1:].split())
+			origin_shift_x = list(map(float, l[l.index(":")+1:].split()))
 		elif "OriginShiftYOptions1:" in l:
-			origin_shift_y = map(float, l[l.index(":")+1:].split())
+			origin_shift_y = list(map(float, l[l.index(":")+1:].split()))
 
 	# TODO read tvextender
 
 	if None not in (origin_shift_x, origin_shift_y):
 		assert len(origin_shift_x) == len(origin_shift_y)
-		ret["origin_shift"] = zip(origin_shift_x, origin_shift_y)
+		ret["origin_shift"] = list(zip(origin_shift_x, origin_shift_y))
 
 	return ret
 # read_camera_inf()
@@ -30,7 +30,7 @@ def read_bss_config(cfgin):
 	for l in open(cfgin):
 		if "#" in l: l = l[:l.index("#")]
 		if "Microscope_Zoom_Options:" in l:
-			ret["zoom_pulses"] = map(int, l[l.index(":")+1:].split())
+			ret["zoom_pulses"] = list(map(int, l[l.index(":")+1:].split()))
 	return ret
 
 class crycen:
@@ -44,9 +44,9 @@ class crycen:
 
 		self.camera_inf = read_camera_inf(os.path.join(os.environ["BLCONFIG"], "video", "camera.inf"))
 		self.bss_config = read_bss_config(os.path.join(os.environ["BLCONFIG"], "bss", "bss.config"))
-		self.coax_pulse2zoom = dict(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"]))
-		self.coax_zoom2pulse = dict(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"]))
-		self.coax_zoom2oshift = dict(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"]))
+		self.coax_pulse2zoom = dict(list(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"])))
+		self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
+		self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
 		self.coax_zpulse2pint = {0:19985, -16000:19980, -32000:19974, -48000:20024} # zoom pulse to pint pulse
 	# __init__()
 
@@ -124,7 +124,7 @@ class crycen:
 	def get_zoom(self):
 		self.ms.sendall("get/bl_32in_st2_coax_1_zoom/query")
 		recbuf = self.ms.recv(8000)
-		print "debug::", recbuf
+		print("debug::", recbuf)
 
 		sp = recbuf.split("/")
 		if len(sp) == 5:
@@ -137,7 +137,7 @@ class crycen:
 
 	def set_zoom(self, zoom):
 		if zoom not in self.coax_zoom2pulse:
-			print "Possible zoom:", self.coax_zoom2pulse.keys()
+			print("Possible zoom:", list(self.coax_zoom2pulse.keys()))
 			return
 
 		zoomaxis = Zoom(self.ms)
@@ -145,7 +145,7 @@ class crycen:
 		zoomaxis.move(zoom_pulse)
 		
 		if zoom_pulse not in self.coax_zpulse2pint:
-			print "Error. Unknown zoom pulse for pint adjustment:", zoom_pulse
+			print("Error. Unknown zoom pulse for pint adjustment:", zoom_pulse)
 			return
 
 		pintaxis = CoaxPint(self.ms)
@@ -154,7 +154,7 @@ class crycen:
 	# set_zoom()
 
 	def set_axes(self):
-		print "set axes"
+		print("set axes")
 		
 		# left (-), right (+)
 		self.gonio.moveTrans(dist)
@@ -191,7 +191,7 @@ class crycen:
 		elif bin==2: setbin = 1
 		elif bin==4: setbin = 3
 		else:
-			print "Invalid binning size"
+			print("Invalid binning size")
 			return None
 
 		self.capture.setBinning(setbin)
@@ -201,7 +201,7 @@ class crycen:
 		self.capture.capture(imgout, speed=50) # 50 seems good..
 
 		if convert:
-			print "Converting.."
+			print("Converting..")
 			subprocess.call(["convert", imgout, "-compress", "none", imgout])
 	# get_coax_image()
 
@@ -210,14 +210,14 @@ class crycen:
 		sx,sy: x,y on videosrv's coordinate system. origin is left top.
 		"""
 		if sx < 0 or sy < 0:
-			print "Invalid sx or sy:", sx, sy
+			print("Invalid sx or sy:", sx, sy)
 
 		um_per_px = self.get_pixel_size()
 		origin_shift = self.get_coax_center()
-		origin_shift = map(lambda x: x/um_per_px*1.e3, origin_shift)
+		origin_shift = [x/um_per_px*1.e3 for x in origin_shift]
 		w, h = 640, 480
 		cen_x, cen_y = w/2+origin_shift[0], h/2-origin_shift[1]
-		print "Center: ", cen_x, cen_y
+		print("Center: ", cen_x, cen_y)
 
 		#dx, dy = (deltax-cen_x)*um_per_px, (deltay-cen_y)*um_per_px
 		dx, dy = -(sx-cen_x), (sy-cen_y)
@@ -246,10 +246,10 @@ class crycen:
 		sx,sy: x,y on shinoda's coordinate system. origin is right top.
 		"""
 		if sx < 0 or sy < 0:
-			print "Invalid sx or sy:", sx, sy
+			print("Invalid sx or sy:", sx, sy)
 			return
 		dx, dy = self.calc_shift_by_img_px(sx, sy)
-		print "move=", dx, dy
+		print("move=", dx, dy)
 		self.move(dx, dy)
 	# move_by_img_px()
 
@@ -259,14 +259,14 @@ class crycen:
 	# pv: pixel coordinate of vertical axis
 	def calc_gxyz_of_pix_at(self, ph, pv, gcenx, gceny, gcenz, phi):
 		if ph < 0 or pv < 0:
-			print "Invalid ph or ph:", ph, pv
+			print("Invalid ph or ph:", ph, pv)
 			return 
 		# distance from center cross [um]
 		dh, dv = self.calc_shift_by_img_px(ph, pv)
 		# distance from center cross [mm]
 		dh_mm = dh/1000.0
 		dv_mm = dv/1000.0
-		print "%12.4f %12.4f %12.4f"%(gcenx,gceny,gcenz)
+		print("%12.4f %12.4f %12.4f"%(gcenx,gceny,gcenz))
 	
 		# Horizontal direction -> Gonio Y axis
 		gy=gceny+dh_mm # unit [mm]
@@ -276,7 +276,7 @@ class crycen:
 		gx=gcenx+mm_dx # unit [mm]
 		gz=gcenz+mm_dz # unit [mm]
 
-		print "(Xpix,Ypix,GX,GY,GZ)=%5d %5d %12.5f %12.5f %12.5f"%(ph,pv,gx,gy,gz)
+		print("(Xpix,Ypix,GX,GY,GZ)=%5d %5d %12.5f %12.5f %12.5f"%(ph,pv,gx,gy,gz))
 		#print "GX,GY,GZ=",gx,gy,gz
 		return gx,gy,gz
 	# calc_gxyz_of_pix_at()
@@ -284,12 +284,12 @@ class crycen:
 	def move_to_pix_at(self,ph,pv,gcenx,gceny,gcenz,phi):
 		# Calculation of gonio xyz first
 		tx,ty,tz=self.calc_gxyz_of_pix_at(ph,pv,gcenx,gceny,gcenz,phi)
-		print "move to %10.4f %10.4f %10.4f"%(tx,ty,tz)
+		print("move to %10.4f %10.4f %10.4f"%(tx,ty,tz))
 		self.gonio.moveXYZmm(tx,ty,tz)
 
 	def let_bss_move(self, sx, sy):
 		if sx < 0 or sy < 0:
-			print "Invalid sx or sy:", sx, sy
+			print("Invalid sx or sy:", sx, sy)
 			return
 		
 		w, h = 640, 480
@@ -297,13 +297,13 @@ class crycen:
 		assert 0 <= sx <= w
 		assert 0 <= sy <= h
 		self.capture.s.sendall("put/video_vdclickemu/%d_%d"%(sx,sy))
-		print "let_bss_move::", self.capture.s.recv(8000)
+		print("let_bss_move::", self.capture.s.recv(8000))
 
 		time.sleep(0.5)
 		while True:
 			if self.gonio.goniox.isMoved() and self.gonio.gonioy.isMoved() and self.gonio.gonioz.isMoved():
 				return
-			print "Waiting to stop.."
+			print("Waiting to stop..")
 			time.sleep(0.1)
 	# let_bss_move()
 
@@ -343,9 +343,9 @@ class crycen:
 
 			if len(lines) == 2:
 				sx, sy, decision = self.running.before.splitlines()[1].split()
-				sx, sy = map(int, (sx, sy))
+				sx, sy = list(map(int, (sx, sy)))
 				shift = self.calc_shift_by_img_px(sx,sy, units=("um", "rel"))
-		print sx,sy
+		print(sx,sy)
 	# do_centering()
 
 if __name__ == "__main__":
@@ -359,7 +359,7 @@ if __name__ == "__main__":
 	# cross center Gonio xyz values
 
 	phi,cenx,ceny,cenz=crycen.get_axes_info_float()
-	print phi,cenx,ceny,cenz
+	print(phi,cenx,ceny,cenz)
 	filename="/isilon/BL32XU/BLsoft/PPPP/03.GUI/04.SACLA-KUMA/test.ppm"
 	crycen.get_coax_image(filename, convert=False)
 	#crycen.move_by_img_px(157,167)
@@ -369,13 +369,13 @@ if __name__ == "__main__":
 	gxyz=[]
 	for xy in xylist:
 		x,y=xy
-		print "PIXPLOT ",x,y
+		print("PIXPLOT ",x,y)
 		tx,ty,tz=crycen.calc_gxyz_of_pix_at(x,y,cenx,ceny,cenz,phi)
-		print "GONIOPLOT ",tx,ty,tz
+		print("GONIOPLOT ",tx,ty,tz)
 		gxyz.append((tx,ty,tz))
 
-	print xylist
-	print gxyz
+	print(xylist)
+	print(gxyz)
 
 	"""
 	for xyz in gxyz:

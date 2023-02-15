@@ -23,7 +23,7 @@ if __name__=="__main__":
 
         # Making today's directory
         if os.path.exists(logdir):
-            print "%s already exists"%logdir
+            print("%s already exists"%logdir)
         else:
             os.makedirs(logdir)
             os.system("chmod a+rw %s" % logdir)

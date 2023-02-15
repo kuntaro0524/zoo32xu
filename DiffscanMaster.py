@@ -501,7 +501,7 @@ class NOU():
                 isFoundGoodPoint = True
                 break
             except Exception as e:
-                print "Vertical scan analysis failed.\n"
+                print("Vertical scan analysis failed.\n")
                 self.logger.info("%s scan analysis failed." % option)
                 self.commentException(e.args)
                 raise Exception("vertCentering: analysis failed.")
@@ -522,10 +522,10 @@ class NOU():
             return -1
 
         if self.debug == True:
-            print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
             for c in dc_blocks:
-                print c
-            print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+                print(c)
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
 
         # Sorting data collection blocks
         # The top of crystal is the best one
@@ -533,10 +533,10 @@ class NOU():
         dc_blocks.sort(cmp=compOscRange)
 
         if self.debug == True:
-            print "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
             for c in dc_blocks:
-                print c
-            print "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+                print(c)
+            print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
 
         self.isSorted = True
 
@@ -557,7 +557,7 @@ class NOU():
             self.logger.info("Minimum score = %s" % self.min_score_smallbeam)
             self.logger.info("Maximum score = %s" % self.max_score)
             ahm.setMinMax(self.min_score_smallbeam, self.max_score)
-        print "HEBI.getSortedCryList: AnaHeatmap.searchPixelBunch starts"
+        print("HEBI.getSortedCryList: AnaHeatmap.searchPixelBunch starts")
         crystal_array = ahm.searchPixelBunch(scan_prefix, self.naname_include)
         crystals = CrystalList.CrystalList(crystal_array)
         sorted_crystals = crystals.getSortedCrystalList()

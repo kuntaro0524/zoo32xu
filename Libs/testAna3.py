@@ -44,7 +44,7 @@ if __name__=="__main__":
 		cry_index=0
 	
 	# Check overlap
-	print "#########################"
+	print("#########################")
 	perfect=[]
 	kabutteru_index_list=[]
 	check_list=[0]*len(crystals)
@@ -55,7 +55,7 @@ if __name__=="__main__":
 		for index2 in range(index1+1,len(crystals)):
 			crystal2=crystals[index2]
        			crystal2.setDiffscanLog(diffscan_path)
-			print "Crystal1 %5d Crystal2 %5d\n"%(index1,index2)
+			print("Crystal1 %5d Crystal2 %5d\n"%(index1,index2))
 			# Left no houga ookii suuchi
 			l1xyz,r1xyz=crystal1.findHoriEdges()
 			l2xyz,r2xyz=crystal2.findHoriEdges()
@@ -90,7 +90,7 @@ if __name__=="__main__":
 	logfile=open("kabutteru.dat","w")
 	hontouni_kabutteru_index_list=[]
 	for c1,c2 in kabutteru_index_list:
-		print "INDEX=",c1,c2
+		print("INDEX=",c1,c2)
 		cry1=crystals[c1]
 		cry2=crystals[c2]
 		x1a,y1a=cry1.getXYlist()
@@ -151,7 +151,7 @@ if __name__=="__main__":
 	good_cry=[]
 	index=0
 	for c in check_list:
-		print "CHECKLIST=",c
+		print("CHECKLIST=",c)
 		if c>0 and c!=10:
 			cry=crystals[index]
 			x1a,y1a=cry.getXYlist()
@@ -175,7 +175,7 @@ if __name__=="__main__":
 		index+=1
 	singlefile.close()
 
-	print "Initial single crystals",len(single_crystals)
+	print("Initial single crystals",len(single_crystals))
 
 	# make crycodes
 	def makeCryCode(x,y,score,imgnum):
@@ -188,13 +188,13 @@ if __name__=="__main__":
 	# for ZUTAZUTA list
 	bad_index=[]
 	# each crystal
-	print "ZUTAZUTA=",len(zutazuta)
+	print("ZUTAZUTA=",len(zutazuta))
 	for cryindex in range(0,len(zutazuta)):
 		x1a,y1a,scorea,imgna=zutazuta[cryindex].getInfo()
 		bad_index=[0]*len(x1a)
-		print "Crysal index",cryindex," NUMBER OF GRIDS",len(x1a)
+		print("Crysal index",cryindex," NUMBER OF GRIDS",len(x1a))
 		# each grid
-		print "*******Comparison loop started*****"
+		print("*******Comparison loop started*****")
 		for index1 in range(0,len(x1a)):
 			if bad_index[index1]==1:
 				continue
@@ -203,8 +203,8 @@ if __name__=="__main__":
 			score1=scorea[index1]
 			imgnum1=imgna[index1]
 			for index2 in range(index1+1,len(x1a)):
-				print "comparison cry1,cry2=",index1,index2
-				print "bad_index=",bad_index
+				print("comparison cry1,cry2=",index1,index2)
+				print("bad_index=",bad_index)
 				if bad_index[index2]==1:
 					continue
 
@@ -215,13 +215,13 @@ if __name__=="__main__":
 				dx=x1-x2
 				dy=y1-y2
 				dist=math.sqrt(dx*dx+dy*dy)
-				print "distance(%d,%d)=",index1,index2,dist
+				print("distance(%d,%d)=",index1,index2,dist)
 				if dist <= vbeam:
-					print "distance is shorter than vbeam"
-					print "bad_index.append ",index2
+					print("distance is shorter than vbeam")
+					print("bad_index.append ",index2)
 					bad_index[index2]=1
-			print "BAD",len(bad_index)
-		print "Final bad index=",bad_index
+			print("BAD",len(bad_index))
+		print("Final bad index=",bad_index)
 		ncount=0
 		for i in range(0,len(bad_index)):
 			if bad_index[i]==0:
@@ -233,10 +233,10 @@ if __name__=="__main__":
 				crycode=makeCryCode(x,y,score,imgnum)
 				single_crystals.append(crycode)
 				ncount+=1
-		print "GOOD points=",ncount
+		print("GOOD points=",ncount)
 
-	print "SINGLE:",len(single_crystals)
-	print "GOOD: ", len(good_cry)
+	print("SINGLE:",len(single_crystals))
+	print("GOOD: ", len(good_cry))
 	#print "ZUTAZUTA:",len(zutazuta)
 	# Single crystal
 	sss=open("single_new.dat","w")

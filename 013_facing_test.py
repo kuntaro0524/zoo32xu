@@ -50,7 +50,7 @@ if __name__=="__main__":
         phis.append(phi)
         areas.append(area)
 
-        print "Area = %5.2f"% area
+        print("Area = %5.2f"% area)
         idx += 1
 
 phis.append(180)
