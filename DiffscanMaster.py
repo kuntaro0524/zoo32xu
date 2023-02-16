@@ -7,6 +7,8 @@ import CrystalList
 import logging
 import logging.config
 import LoopCrystals
+# python 3 sorted function
+from functools import cmp_to_key
 
 beamline = "BL32XU"
 
@@ -529,7 +531,9 @@ class NOU():
         # Sorting data collection blocks
         # The top of crystal is the best one
         # The bottom is the worst one
-        dc_blocks.sort(cmp=compOscRange)
+        # dc_blocks.sort(cmp=compOscRange)
+        dc_blocks=sorted(dc_blocks, key=cmp_to_key(compOscRange()))
+
 
         if self.debug == True:
             print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
