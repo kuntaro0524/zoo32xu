@@ -8,17 +8,30 @@ import os
 import numpy
 from socket import error as socket_error
 from MyException import *
-
-beamline = "BL32XU"
-# Copy from BL41XU ZOO 190419 K. Hirata
+import configparser
 
 class Capture:
     def __init__(self):
-        self.host = '127.0.0.1' 
+        self.host = '127.0.0.1'
         self.port = 10101
         self.open_sig = False  # network connection to videoserv
         self.isPrep = False
         self.user = os.environ["USER"]
+        self.isDark = False
+
+        # Read configure file
+        # Get information from beamline.ini file.
+        config = configparser.ConfigParser()
+        config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        config.read(config_path)
+
+        self.contrast_default=config.getint("capture", "contrast_default")
+        self.bright_default=config.getint("capture", "bright_default")
+        self.gain_default=config.getint("capture", "gain_default")
+
+        if self.isDark == True:
+            self.bright_default = config.get("capture","bright_default_dark")
+            self.gain_default = config.get("capture", "gain_default_dark")
 
         # Command for BL45XU
         # VIDEOSRV name for searching process via 'ps'
@@ -29,38 +42,17 @@ class Capture:
         self.kill_com = "killall videosrv"
         # Start command
         # BL32XU previous
-        #self.start_com = "videosrv --v4l2 &"
+        # self.start_com = "videosrv --v4l2 &"
         # BL32XU 2020.09.25 CCD camera of coax-camera is replaced.
-        self.start_com="/usr/local/bss/videosrv3 --load_json=/blconfig/video/vg51/vg51.json --grab_mode opencv &"
+        self.start_com = "/usr/local/bss/videosrv3 --load_json=/blconfig/video/vg51/vg51.json --grab_mode opencv &"
 
-        self.isDark = False
-
-        if beamline == "BL45XU":
-            # BL45XU setting
-            # These values are not good for a transparent cryo-protectant
-            # self.bright_default = 27000 #self.contrast_default = 36000
-            # 2019/05/15 capture bright, contrast = 27000, 40000
-            # Auto contrast was switched off
-            # Back light was replaced by a darker one.
-            # Baba-san guaged up the light power today (The values were not suitable for nylon loops)
-            # self.bright_default = 27000
-            # self.contrast_default = 40000
-            # After tuning on 2019/05/19
-            # After tuning on 2019/05/29 (Nakamura-san switched off the auto white balance
-            self.bright_default = 30000
-            self.contrast_default = 27000
-        if beamline == "BL32XU":
-            # obsoleted parameters
-            # self.bright_default = 4000
-            self.contrast_default = 18000
-            #self.bright_default = 4500 #4500
-            #self.gain_default = 1400 #1400
-            self.bright_default = 4300 #45000 YK@210302
-            self.gain_default = 1200 #45000 YK@210302
-            if self.isDark == True:
-                self.bright_default = 5000
-                self.gain_default = 5000
-                self.contrast_default = 18000
+    # String to bytes
+    def communicate(self, comstr):
+        sending_command = comstr.encode()
+        print(sending_command)
+        self.s.sendall(sending_command)
+        recstr = self.s.recv(8000)
+        return repr(recstr)
 
     def setDark(self):
         self.isDark = True
@@ -143,37 +135,30 @@ class Capture:
     def setBright(self, bright=40000):
         # set brightness
         com_bright = "put/video_brightness/%d" % bright
-        self.s.sendall(com_bright)
-        recbuf = self.s.recv(8000)
-        print("setBright:",recbuf)
+        recbuf = self.communicate(com_bright)
+        print("setBright:", recbuf)
 
     def setCross(self):
         com1 = "put/video_cross/on"
-        self.s.sendall(com1)
-        recbuf = self.s.recv(8000)
-
-    # print recbuf
+        recbuf = self.communicate(com1)
 
     def unsetCross(self):
         com1 = "put/video_cross/off"
-        self.s.sendall(com1)
-        recbuf = self.s.recv(8000)
+        recbuf = self.communicate(com1)
         print(recbuf)
 
     def setContrast(self, contrast):
         com1 = "put/video_contrast/%d" % contrast
-        self.s.sendall(com1)
-        recbuf = self.s.recv(8000)
-        print("setContrast:",recbuf)
+        recbuf = self.communicate(com1)
+        print("setContrast:", recbuf)
 
     def setGain(self, gain):
         com1 = "put/video_color/%d" % gain
-        self.s.sendall(com1)
-        recbuf = self.s.recv(8000)
-        print("setGain:",recbuf)
+        recbuf = self.communicate(com1)
+        print("setGain:", recbuf)
 
     # Quick capture : 190419
-    #def capture(self, filename, speed=150, cross=False):
+    # def capture(self, filename, speed=150, cross=False):
     # speed is not required except for BL32XU, probablly. K. Hirata 190419
     def capture(self, filename, speed=150, cross=False):
         if self.isPrep == False:
@@ -188,9 +173,7 @@ class Capture:
         com1 = "get/video_grab/%s" % filename
         print(com1)
         try:
-            self.s.sendall(com1)
-            recbuf = self.s.recv(8000)
-            print(recbuf)
+            recbuf = self.communicate(com1)
         except socket.error as e:
             raise MyException("capture failed!")
 
@@ -236,8 +219,7 @@ class Capture:
                     time.sleep(5)
 
         com1 = "get/video_binning/"
-        self.s.sendall(com1)
-        recbuf = self.s.recv(8000)
+        recbuf = self.communicate(com1)
         print("debug::", recbuf)
         sp = recbuf.split("/")
         if len(sp) == 5:
@@ -246,14 +228,14 @@ class Capture:
 
 if __name__ == "__main__":
     cap = Capture()
-    #cappath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/"
+    # cappath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/"
     cappath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages"
-    #cappath = "/isilon/users/target/target/"
+    # cappath = "/isilon/users/target/target/"
 
     print("START-connect from main")
     # print cap.checkRunning()
 
     # cap.setGain(1500)
     # print "END  -connect from main"
-    filename = os.path.join(cappath,"%s.ppm" % (sys.argv[1]))
+    filename = os.path.join(cappath, "%s.ppm" % (sys.argv[1]))
     cap.capture(filename)

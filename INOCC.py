@@ -15,19 +15,24 @@ import DirectoryProc
 import FittingForFacing
 import logging
 import logging.config
-
+import configparser
 
 class INOCC:
     def __init__(self, ms, root_dir, sample_name="sample"):
         self.coi = CoaxImage.CoaxImage(ms)
-        self.fname = "/isilon/%s/BLsoft/PPPP/10.Zoo/test.ppm" % beamline
         self.isInit = False
         self.debug = True
-        self.logdir = "/isilon/%s/BLsoft/PPPP/10.Zoo/Log/" % beamline
-        # self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-2010031833.ppm" % beamline
-        # self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210302.ppm" % beamline
         self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210324.ppm" % beamline
-        self.bssconfig_file = "/isilon/blconfig/%s/bss/bss.config" % beamline.lower()
+
+        # Get information from beamline.ini file.
+        config = configparser.ConfigParser()
+        config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        config.read(config_path)
+
+        self.logdir=config.get("dirs", "logdir")
+        self.bssconfig_file=config.get("files", "bssconfig_file")
+        self.fname = config.get("files", "inocc_image")
+        print(self.logdir)
 
         # Directory for saving the INOCC result for each data
         self.sample_name = sample_name
@@ -642,11 +647,10 @@ class INOCC:
 if __name__ == "__main__":
     ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ms.connect(("172.24.242.41", 10101))
-    root_dir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Test/"
+    root_dir = "/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/"
 
     logname = "./inocc.log"
-    logging.config.fileConfig('/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/logging.conf' % beamline,
-                              defaults={'logfile_name': logname})
+    logging.config.fileConfig('%s/Libs/logging.conf' % (root_dir), defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
     os.chmod(logname, 0o666)
 
@@ -654,12 +658,10 @@ if __name__ == "__main__":
     phi_face = 90
 
     start_time = datetime.datetime.now()
-    backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages/back-2105291008.ppm"
-    # backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/back.ppm"
-    # backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages/back_210121.ppm"
+    backimg = "/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm"
     inocc.setBack(backimg)
     # For each sample raster.png
-    raster_picpath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/raster.png"
+    raster_picpath = "%s/raster.png" % root_dir
     inocc.setRasterPicture(raster_picpath)
 
     # def doAll(self, ntimes=3, skip=False, loop_size=600.0, offset_angle=0.0):
