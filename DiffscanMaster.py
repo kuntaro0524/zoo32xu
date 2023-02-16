@@ -532,7 +532,7 @@ class NOU():
         # The top of crystal is the best one
         # The bottom is the worst one
         # dc_blocks.sort(cmp=compOscRange)
-        dc_blocks=sorted(dc_blocks, key=cmp_to_key(compOscRange()))
+        dc_blocks=sorted(dc_blocks, key=cmp_to_key(compOscRange))
 
 
         if self.debug == True:
