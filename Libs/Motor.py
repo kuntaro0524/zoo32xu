@@ -138,20 +138,21 @@ class Motor(ScanAxis):
         maxcnt=[0]*2
         maxval=[0]*2
 
-            diff=self.scan_end-self.scan_start
-            ndata=int(round(diff/self.scan_step)+1)
+        diff=self.scan_end-self.scan_start
+        ndata=int(round(diff/self.scan_step)+1)
 
         # Exception 
         try :
             self.checkScanCondition()
-            except MyException as ttt:
+        except MyException as ttt:
+            print(ttt)
             raise ttt
 
         # save current position
-            saved_position=list()
-            saved_position=self.getPosition()
+        saved_position=list()
+        saved_position=self.getPosition()
 
-            for x in range(0,ndata):
+        for x in range(0,ndata):
             current_x=self.scan_start+x*self.scan_step
 
             if(self.unit=="pulse"):
@@ -197,7 +198,7 @@ class Motor(ScanAxis):
         saved_position=self.getPosition()
 
         for x in range(0,ndata):
-        current_x=self.scan_start+x*self.scan_step
+            current_x=self.scan_start+x*self.scan_step
 
             if(self.unit=="pulse"):
                 current_x=int(current_x)
@@ -226,20 +227,20 @@ class Motor(ScanAxis):
 
         of.close()
         ## set this axis to the initial position
-            print("%5d%s" % (saved_position[0],saved_position[1]))
-            self.move(saved_position[0])
+        print("%5d%s" % (saved_position[0],saved_position[1]))
+        self.move(saved_position[0])
         return maxval
 
     def query(self):
         self.srv.sendall(self.qcommand)
         recbuf=self.srv.recv(8000)
-            rrrr=Received(recbuf)
+        rrrr=Received(recbuf)
         return rrrr.readQuery()
 
     def isMoved(self):
         self.srv.sendall(self.qcommand)
         recbuf=self.srv.recv(8000)
-            rrrr=Received(recbuf)
+        rrrr=Received(recbuf)
         return rrrr.checkQuery()
 
     def moveGravity(self,outfile):
@@ -257,69 +258,69 @@ class Motor(ScanAxis):
 
     ### For Monochromator only
 
-        def getEnergy(self):
-                com="get/"+self.motor+"/energy"
-                self.srv.sendall(com)
-                recbuf=self.srv.recv(8000)
+    def getEnergy(self):
+        com="get/"+self.motor+"/energy"
+        self.srv.sendall(com)
+        recbuf=self.srv.recv(8000)
 
-                tmpf=Received(recbuf)
-                position=tmpf.readQuery()
+        tmpf=Received(recbuf)
+        position=tmpf.readQuery()
 
-                if position.find("kev")!=-1:
-                        value=float(position.replace("kev",""))
-                        return(value,"kev")
-                else :
-                        print("Unknown value")
-                        return(NULL,NULL)
+        if position.find("kev")!=-1:
+                value=float(position.replace("kev",""))
+                return(value,"kev")
+        else :
+            print("Unknown value")
+            return(NULL,NULL)
 
-        def getRamda(self):
-                com="get/"+self.motor+"/wavelength"
-                self.srv.sendall(com)
-                recbuf=self.srv.recv(8000)
+    def getRamda(self):
+        com="get/"+self.motor+"/wavelength"
+        self.srv.sendall(com)
+        recbuf=self.srv.recv(8000)
 
-                tmpf=Received(recbuf)
-                position=tmpf.readQuery()
+        tmpf=Received(recbuf)
+        position=tmpf.readQuery()
 
-                if position.find("angstrome")!=-1:
-                        value=float(position.replace("angstrome",""))
-                        return(value,"angstrome")
-                else :
-                        print("Unknown value")
-                        return(NULL,NULL)
+        if position.find("angstrome")!=-1:
+            value=float(position.replace("angstrome",""))
+            return(value,"angstrome")
+        else :
+            print("Unknown value")
+            return(NULL,NULL)
 
-        def getAngle(self):
-                com="get/"+self.motor+"/angle"
-                self.srv.sendall(com)
-                recbuf=self.srv.recv(8000)
+    def getAngle(self):
+        com="get/"+self.motor+"/angle"
+        self.srv.sendall(com)
+        recbuf=self.srv.recv(8000)
 
-                tmpf=Received(recbuf)
-                position=tmpf.readQuery()
+        tmpf=Received(recbuf)
+        position=tmpf.readQuery()
 
-                if position.find("degree")!=-1:
-                        value=float(position.replace("degree",""))
-                        return(value,"degree")
-                else :
-                        print("Unknown value")
-                        return(NULL,NULL)
+        if position.find("degree")!=-1:
+            value=float(position.replace("degree",""))
+            return(value,"degree")
+        else :
+            print("Unknown value")
+            return(NULL,NULL)
 
 if __name__=="__main__":
-        host = '172.24.242.41'
-        port = 10101
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    host = '172.24.242.41'
+    port = 10101
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        axis="bl_32in_tc1_stmono_1_dtheta1"
+    axis="bl_32in_tc1_stmono_1_dtheta1"
 
-        s.connect((host,port))
+    s.connect((host,port))
 
     test=Motor(s,axis,"pulse")
 
     time1=datetime.datetime.now()
     print(time1)
-        print(test.move(-89000))
-        print(test.move(-87000))
+    print(test.move(-89000))
+    print(test.move(-87000))
     time2=datetime.datetime.now()
     print(time2)
 
     print("Time: %8.5f sec"%(time2-time1).seconds)
 
-        print(test.move(-89000))
+    print(test.move(-89000))
