@@ -527,7 +527,7 @@ class ESA:
         process_index = 0
         # index of pin ID = 3
         condition_list = []
-        with open(csvfile, 'rb') as f:
+        with open(csvfile, 'r') as f:
             b = csv.reader(f)
             header = next(b)
             for t in b:

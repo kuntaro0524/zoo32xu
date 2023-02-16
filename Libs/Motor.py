@@ -251,16 +251,20 @@ class Motor(ScanAxis):
     ### For Monochromator only
 
     def getEnergy(self):
+        # recbuf = self.communicate(self.qcommand)
         com = "get/" + self.motor + "/energy"
-        recbuf = self.communicate(self.qcommand)
+        recbuf = self.communicate(com)
+
+        print("########################### %s"%recbuf)
         rrrr = Received(recbuf)
-        position = tmpf.readQuery()
+        position = rrrr.readQuery()
 
         if position.find("kev") != -1:
             value = float(position.replace("kev", ""))
             return (value, "kev")
         else:
             print("Unknown value")
+            print(position)
             return (NULL, NULL)
 
     def getRamda(self):

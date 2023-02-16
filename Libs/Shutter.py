@@ -16,21 +16,24 @@ class Shutter:
         self.clsmsg = "put/bl_32in_st2_shutter_1/off"
         self.qmsg = "get/bl_32in_st2_shutter_1/status"
 
-    def open(self):
-        self.s.sendall(self.openmsg)
-        print(self.s.recv(8000))  # dummy buffer
+    # String/Bytes communication via a socket
+    def communicate(self, comstr):
+        sending_command = comstr.encode()
+        self.s.sendall(sending_command)
+        recstr = self.s.recv(8000)
+        return repr(recstr)
 
-    # self.query()
+    def open(self):
+        recbuf=self.communicate(self.openmsg)
 
     def close(self):
-        self.s.sendall(self.clsmsg)
-        print(self.s.recv(8000))  # dummy buffer
+        # self.s.sendall(self.clsmsg)
+        recbuf=self.communicate(self.clsmsg)
 
     # self.query()
-
     def query(self):
-        self.s.sendall(self.qmsg)
-        return self.s.recv(8000)  # dummy buffer
+        # self.s.sendall(self.qmsg)
+        recbuf=self.communicate(self.qmsg)
 
     def isOpen(self):
         strstr = self.query()

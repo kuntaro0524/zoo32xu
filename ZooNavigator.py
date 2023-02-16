@@ -28,11 +28,14 @@ from html_log_maker import ZooHtmlLog
 import logging
 import logging.config
 
+
 def check_abort(lm):
     print("Abort check")
     ret = lm.isAbort()
     if ret: print("ABORTABORT")
     return ret
+
+
 # check_abort()
 
 # Version 2.1.0 modified on 2019/07/04 K.Hirata
@@ -115,14 +118,14 @@ class ZooNavigator():
         # For cleaning information
         self.num_pins = 0
         self.n_pins_for_cleaning = 16
-        self.cleaning_interval_hours = 1.0 #[hour]
-        self.time_for_elongation = 0.0 #[sec]
+        self.cleaning_interval_hours = 1.0  # [hour]
+        self.time_for_elongation = 0.0  # [sec]
 
         # Bukkake & capture
         self.isZoomCapture = True
 
         # Time limit
-        self.time_limit_ds = 9999 #[hours]
+        self.time_limit_ds = 9999  # [hours]
 
         # Flag for 10um raster scan at BL45XU
         self.flag10um_raster = False
@@ -142,10 +145,10 @@ class ZooNavigator():
         self.min_beamsize_10um_raster = beamsize_thresh
         self.flag10um_raster = True
 
-    def prepESA(self, doesExist = False):
+    def prepESA(self, doesExist=False):
         self.logger.info("Preparation of ZOO database file from input CSV file. %s" % self.esa_csv)
         # Root directory from CSV file
-        root_dir = open(self.esa_csv, "r").readlines()[1].replace("\"","").split(",")[0]
+        root_dir = open(self.esa_csv, "r").readlines()[1].replace("\"", "").split(",")[0]
         if os.path.exists(root_dir) == False:
             os.makedirs(root_dir)
         # zoo.db file check and remake and save
@@ -211,7 +214,7 @@ class ZooNavigator():
         if self.phosec_meas < 1E10:
             self.logger.info("Illegally weak X-ray... but test will continue (test mode w/o X-ray beam)")
             sys.exit()
-            
+
         # Adding measured flux & beam size to the list
         self.meas_beamh_list.append(beamh)
         self.meas_beamv_list.append(beamv)
@@ -242,7 +245,7 @@ class ZooNavigator():
         backdir = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/" % beamline.upper()
         self.backimg = "%s/%s" % (backdir, datetime.datetime.now().strftime("back-%y%m%d%H%M.ppm"))
         self.logger.debug("Before while loop for capturing.")
-        while(True):
+        while (True):
             try:
                 self.dev.prepCentering(zoom_out=True)
                 self.logger.debug("Dummy capture for the first image")
@@ -258,8 +261,8 @@ class ZooNavigator():
             mean_value = timg.mean()
             self.logger.debug("Checking the file size and background level.")
             if beamline.upper() == "BL32XU":
-                #mean_thresh = 230
-                mean_thresh = 240 # 2021/01/21 HM temporary setting
+                # mean_thresh = 230
+                mean_thresh = 240  # 2021/01/21 HM temporary setting
             elif beamline.upper() == "BL45XU":
                 mean_thresh = 200
 
@@ -322,7 +325,7 @@ class ZooNavigator():
         self.stopwatch.setTime("start_data_collection")
         # set the initial time for cleaning
         self.stopwatch.setTime("last_cleaning")
-        while(1):
+        while (1):
             # Get a condition of the most important pin stored in a current zoo.db
             try:
                 self.logger.info("Trying to get the prior pin")
@@ -342,10 +345,11 @@ class ZooNavigator():
                 return self.num_pins
             finally:
                 # Check for total consumed time
-                lap_time = self.stopwatch.calcTimeFrom("start_data_collection") / 3600.0 # hours
+                lap_time = self.stopwatch.calcTimeFrom("start_data_collection") / 3600.0  # hours
                 residual_time_for_ds = self.time_limit_ds - lap_time
 
-                self.logger.info("Lap time for data collection: %5.2f hours (residual= %5.2f hours)" % (lap_time, residual_time_for_ds))
+                self.logger.info("Lap time for data collection: %5.2f hours (residual= %5.2f hours)" % (
+                    lap_time, residual_time_for_ds))
 
                 if residual_time_for_ds < 0.0:
                     self.logger.info("Data collection has been finished due to the booked time finish.")
@@ -439,7 +443,8 @@ class ZooNavigator():
             # Beamsize setting
             current_beam_index = self.zoo.getBeamsize()
             beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
-            self.logger.debug("Raster beam size = %5.2f(H) x %5.2f(V) [um]" % (cond['raster_hbeam'], cond['raster_vbeam']))
+            self.logger.debug(
+                "Raster beam size = %5.2f(H) x %5.2f(V) [um]" % (cond['raster_hbeam'], cond['raster_vbeam']))
             beamsize_index = beamsizeconf.getBeamIndexHV(cond['raster_hbeam'], cond['raster_vbeam'])
             self.logger.info("Current beamsize index= %5d" % current_beam_index)
             if current_beam_index != beamsize_index:
@@ -450,7 +455,8 @@ class ZooNavigator():
                     self.zoo.runScriptOnBSS("BLTune")
                     self.dev.zoom.zoomOut()
 
-        self.logger.info("Beam size for raster scan= %5.2f(H) x %5.2f(V) [um^2]"% (cond['raster_hbeam'], cond['raster_vbeam']))
+        self.logger.info(
+            "Beam size for raster scan= %5.2f(H) x %5.2f(V) [um^2]" % (cond['raster_hbeam'], cond['raster_vbeam']))
 
         # Making
         # try: self.html_maker.add_condition(cond)
@@ -610,8 +616,8 @@ class ZooNavigator():
             self.logger.info("ZOO starts warming up the loop.")
             # Recording start time
             self.stopwatch.setTime("start_warming")
-            time_from_start = 1.0 # sec
-            while(1):
+            time_from_start = 1.0  # sec
+            while (1):
                 if time_from_start <= cond['warm_time']:
                     self.dev.gonio.rotatePhi(0.0)
                     time.sleep(0.5)
@@ -856,10 +862,11 @@ class ZooNavigator():
         if self.phosec_meas == 0.0:
             beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
             flux = beamsizeconf.getFluxAtWavelength(cond['ds_hbeam'], cond['ds_vbeam'], cond['wavelength'])
-            self.zooprog.write("Flux value is read from beamsize.conf: %5.2e\n"% flux)
+            self.zooprog.write("Flux value is read from beamsize.conf: %5.2e\n" % flux)
         else:
             flux = self.phosec_meas
-            self.zooprog.write("Multi: Beam size = %5.2f %5.2f um Measured flux : %5.2e\n" % (cond['ds_hbeam'], cond['ds_vbeam'], flux))
+            self.zooprog.write("Multi: Beam size = %5.2f %5.2f um Measured flux : %5.2e\n" % (
+                cond['ds_hbeam'], cond['ds_vbeam'], flux))
 
         # For dose estimation
         print("Beam size = ", cond['ds_hbeam'], cond['ds_vbeam'], " [um]")
@@ -995,11 +1002,12 @@ class ZooNavigator():
                 if factor_increase_exp != 1.0:
                     # DB information should be overwritten
                     cond['exp_raster'] = exp_mod
-                    self.logger.info("Exposure time is changed from %8.3f [sec] to %8.3f [sec]\n" % (exp_origin, exp_mod))
+                    self.logger.info(
+                        "Exposure time is changed from %8.3f [sec] to %8.3f [sec]\n" % (exp_origin, exp_mod))
                     # Attenuation factor in [%]
                     att_raster = att_origin / factor_increase_exp
                     self.logger.info(
-                    "Attenuation %8.3f [percent] is replaced by %8.3f [percent]\n" % (att_origin, att_raster))
+                        "Attenuation %8.3f [percent] is replaced by %8.3f [percent]\n" % (att_origin, att_raster))
                     cond['att_raster'] = att_raster
                 # Now preparation of raster scan
                 schfile, raspath = self.lm.rasterMaster(v_prefix, "Vert", mod_xyz,
@@ -1048,7 +1056,7 @@ class ZooNavigator():
 
         # Raster scan failed
         except MyException as message:
-            self.logger.info("Caught error: %s "% message)
+            self.logger.info("Caught error: %s " % message)
             self.logger.info("Skipping this loop: diffraction based centering loop.")
             self.esa.updateValueAt(o_index, "isDone", 4002)
             # Disconnecting capture in this loop's 'capture' instance
@@ -1069,11 +1077,12 @@ class ZooNavigator():
         if self.phosec_meas == 0.0:
             beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
             flux = beamsizeconf.getFluxAtWavelength(cond['ds_hbeam'], cond['ds_vbeam'], cond['wavelength'])
-            self.logger.info("Flux value is read from beamsize.conf: %5.2e."% flux)
-            #self.logger.info()
+            self.logger.info("Flux value is read from beamsize.conf: %5.2e." % flux)
+            # self.logger.info()
         else:
             flux = self.phosec_meas
-            self.logger.info("Single: Beam size = %5.2f %5.2f um Measured flux : %5.2e" % (cond['ds_hbeam'], cond['ds_vbeam'], flux))
+            self.logger.info(
+                "Single: Beam size = %5.2f %5.2f um Measured flux : %5.2e" % (cond['ds_hbeam'], cond['ds_vbeam'], flux))
 
         # Generate Schedule file
         self.logger.info("Preparing the schedule file for a single data collection.")
@@ -1145,7 +1154,8 @@ class ZooNavigator():
             self.logger.info("Flux value is read from beamsize.conf: %5.2e" % flux)
         else:
             flux = self.phosec_meas
-            self.logger.info("Helical: Beam size = %5.2f %5.2f um Measured flux : %5.2e" % (cond['ds_hbeam'], cond['ds_vbeam'], flux))
+            self.logger.info("Helical: Beam size = %5.2f %5.2f um Measured flux : %5.2e" % (
+                cond['ds_hbeam'], cond['ds_vbeam'], flux))
 
         # HEBI instance
         hebi = HEBI.HEBI(self.zoo, self.lm, self.stopwatch, flux)
@@ -1185,7 +1195,7 @@ class ZooNavigator():
         # Beamsize
         print("now moving to the beam size to raster scan...")
         # Specific code for BL41XU and obsoleted temporally on 2019/06/03
-        #self.bsc.changeBeamsizeHV(cond['raster_hbeam'], cond['raster_vbeam'])
+        # self.bsc.changeBeamsizeHV(cond['raster_hbeam'], cond['raster_vbeam'])
 
         # Initial 2D scan 
         scan_id = "2d"
@@ -1285,7 +1295,7 @@ class ZooNavigator():
                                                             cond['raster_hbeam'], scanv_um,
                                                             scanh_um, vstep_um, hstep_um, self.center_xyz, sphi,
                                                             att_idx=self.att_idx, distance=cond['dist_raster'],
-                                                            exptime=cond['exp_raster'], roi_index = 0)
+                                                            exptime=cond['exp_raster'], roi_index=0)
 
         self.esa.addEventTimeAt(o_index, "raster_start")
         self.zoo.doRaster(raster_schedule)

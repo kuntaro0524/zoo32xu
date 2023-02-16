@@ -73,7 +73,8 @@ class File:
         return int(max) + 1
 
     def getNewIdx3(self):
-        flist = glob.glob("%s/*" % self.dire)        max = 0
+        flist = glob.glob("%s/*" % self.dire)
+        max = 0
         if len(flist) == 0:
             return 0
         for file in flist:

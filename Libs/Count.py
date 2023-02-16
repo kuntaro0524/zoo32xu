@@ -16,6 +16,13 @@ class Count:
         self.ch2=ch2+1
         self.is_count=0
 
+    # String/Bytes communication via a socket
+    def communicate(self, comstr):
+        sending_command = comstr.encode()
+        self.s.sendall(sending_command)
+        recstr = self.s.recv(8000)
+        return repr(recstr)
+
     def testing(self,cnttime):
         strtime=str(cnttime)+"sec"
         #print strtime
@@ -25,21 +32,16 @@ class Count:
         com3="get/bl_32in_st2_counter_1/query"
 
         # counter set
-        self.s.sendall(com0)
-        recbuf=self.s.recv(8000)
+        recbuf=self.communicate(com0)
 
         # counter clear
-        self.s.sendall(com1)
-        recbuf=self.s.recv(8000)
-        #print "CLEAR: "+recbuf
+        recbuf=self.communicate(com1)
 
         # set integration time 
-        self.s.sendall(com2)
-        self.s.recv(8000)
+        recbuf=self.communicate(com2)
 
         while(1):
-            self.s.sendall(com3)
-            recbuf=self.s.recv(8000)
+            recbuf = self.communicate(com3)
             cnt_buf=Received(recbuf).get(3)
             info_list=cnt_buf.split('_')
             value=int(info_list[2].replace("count",""))
@@ -55,13 +57,9 @@ class Count:
         com2="put/bl_32in_st2_counter_1/"+strtime
 
         # counter clear
-        self.s.sendall(com1)
-        recbuf=self.s.recv(8000)
-        #print "CLEAR: "+recbuf
-
+        recbuf=self.s.communicate(com1)
         # set integration time 
-        self.s.sendall(com2)
-        self.s.recv(8000)
+        recbuf=self.communicate(com2)
 
         return True
 
@@ -72,13 +70,10 @@ class Count:
         com2="put/bl_32in_st2_counter_1/"+strtime
 
         # counter clear
-        self.s.sendall(com1)
-        recbuf=self.s.recv(8000)
-        #print "CLEAR: "+recbuf
+        recbuf=self.communicate(com1)
 
         # set integration time 
-        self.s.sendall(com2)
-        self.s.recv(8000)
+        recbuf = self.communicate(com2)
 
         self.time_msec=cnttime/1000.0
 
@@ -87,8 +82,7 @@ class Count:
     def getStoredCount(self,time_msec):
         com3="get/bl_32in_st2_counter_1/query"
         time.sleep(time_msec) # wait
-        self.s.sendall(com3)
-        recbuf=self.s.recv(8000)
+        recbuf=self.communicate(com3)
 
         # obtain the 3rd column in the returned buffer
         cnt_buf=Received(recbuf).get(3)
@@ -105,19 +99,14 @@ class Count:
         com3="get/bl_32in_st2_counter_1/query"
 
         # counter clear
-        self.s.sendall(com1)
-        recbuf=self.s.recv(8000)
-        #print "CLEAR: "+recbuf
+        recbuf=self.communicate(com1)
 
         # get counter value
-        self.s.sendall(com2)
-        self.s.recv(8000)
+        recbuf=self.communicate(com2)
         time_msec=cnttime/1000.0
         time.sleep(time_msec) # wait
-        self.s.sendall(com3)
 
-        recbuf=self.s.recv(8000)
-        #print "COUNT:"+recbuf
+        recbuf=self.communicate(com3)
 
         # obtain the 3rd column in the returned buffer
         cnt_buf=Received(recbuf).get(3)
@@ -131,18 +120,12 @@ class Count:
         com3="get/bl_32in_st2_counter_1/query"
 
         # counter clear
-        self.s.sendall(com1)
-        recbuf=self.s.recv(8000)
-        #print "CLEAR: "+recbuf
+        recbuf=self.communicate(com1)
 
         # get counter value
-        self.s.sendall(com2)
-        self.s.recv(8000)
+        recbuf=self.communicate(com2)
         time.sleep(cnttime) # wait
-        self.s.sendall(com3)
-
-        recbuf=self.s.recv(8000)
-        #print "COUNT:"+recbuf
+        recbuf=self.communicate(com3)
 
         # obtain the 3rd column in the returned buffer
         cnt_buf=Received(recbuf).get(3)
