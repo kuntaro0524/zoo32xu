@@ -3,20 +3,24 @@ import time, datetime
 import numpy as np
 import socket
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 from MyException import *
 import logging
 import logging.config
+import configparser
 
 # 150722 AM4:00
 # Debug: when SPACE has some troubles Zoo stops immediately
 
-bss_srv = "192.168.163.2"
-bss_port = 5555
-
-
 class Zoo:
     def __init__(self, emulator=True):
+        # Get information from beamline.ini file.
+        config = configparser.ConfigParser()
+        config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        config.read(config_path)
+
+        self.bss_srv=config.get("server", "bss_server")
+        self.bss_port=config.getint("server", "bss_port")
+
         self.isConnect = False
         # self.SPACE=SPACE.SPACE()
         self.isEmu = emulator
@@ -43,7 +47,7 @@ class Zoo:
         self.bssr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         for i in range(0, 20):
             try:
-                self.bssr.connect((bss_srv, bss_port))
+                self.bssr.connect((self.bss_srv, self.bss_port))
                 self.isConnect = True
                 return True
             except MyException as ttt:

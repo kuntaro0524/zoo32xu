@@ -3,7 +3,6 @@ import datetime
 import numpy as np
 
 beamline = "BL32XU"
-sys.path.append("/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/" % beamline)
 
 from File import *
 import matplotlib
@@ -17,6 +16,7 @@ import FittingForFacing
 import logging
 import logging.config
 
+
 class INOCC:
     def __init__(self, ms, root_dir, sample_name="sample"):
         self.coi = CoaxImage.CoaxImage(ms)
@@ -24,8 +24,8 @@ class INOCC:
         self.isInit = False
         self.debug = True
         self.logdir = "/isilon/%s/BLsoft/PPPP/10.Zoo/Log/" % beamline
-        #self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-2010031833.ppm" % beamline
-        #self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210302.ppm" % beamline
+        # self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-2010031833.ppm" % beamline
+        # self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210302.ppm" % beamline
         self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210324.ppm" % beamline
         self.bssconfig_file = "/isilon/blconfig/%s/bss/bss.config" % beamline.lower()
 
@@ -44,7 +44,7 @@ class INOCC:
         self.area_list = []
 
         # ROI counter
-        self.roi_counter=100
+        self.roi_counter = 100
 
         # My logger
         self.logger = logging.getLogger('ZOO').getChild("INOCC")
@@ -336,13 +336,13 @@ class INOCC:
         # This instance is for this centering process only
         cip = CryImageProc.CryImageProc(logdir=self.loop_dir)
         cip.setImages(self.fname, self.backimg)
-        roi_image = os.path.join(self.loop_dir, "%03d_roi.png"%self.roi_counter)
+        roi_image = os.path.join(self.loop_dir, "%03d_roi.png" % self.roi_counter)
         cip.setROIpic(roi_image)
-        self.roi_counter+=1
+        self.roi_counter += 1
         # This generates exception if it could not find any centering information
         xtarget, ytarget, area, hamidashi_flag = cip.getCenterInfo(loop_size=loop_size, option=option)
         self.logger.info("PHI: %5.2f deg Option=%s Centering: (Xtarget, Ytarget) = (%5d, %5d) HAMIDASHI = %s\n"
-                           % (phi, option, xtarget, ytarget, hamidashi_flag))
+                         % (phi, option, xtarget, ytarget, hamidashi_flag))
         x, y, z = self.coi.calc_gxyz_of_pix_at(xtarget, ytarget, cx, cy, cz, phi)
         self.coi.moveGXYZphi(x, y, z, phi)
 
@@ -617,7 +617,7 @@ class INOCC:
             self.simpleCenter(phi_small, loop_size, option="gravity")
             area, hamidashi_flag = self.simpleCenter(phi_face, loop_size, option="gravity")
             self.logger.info("Hamidashi_flag = %s" % hamidashi_flag)
-            print(("HAMIDASHI=",hamidashi_flag))
+            print(("HAMIDASHI=", hamidashi_flag))
             # Re-centering if hamidashi_flag = True
             if hamidashi_flag == True:
                 self.simpleCenter(phi_face, loop_size, option="gravity")
@@ -638,13 +638,15 @@ class INOCC:
 
         return raster_width, raster_height, phi_face, gonio_info
 
+
 if __name__ == "__main__":
     ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ms.connect(("172.24.242.41", 10101))
     root_dir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Test/"
 
     logname = "./inocc.log"
-    logging.config.fileConfig('/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/logging.conf' % beamline, defaults={'logfile_name': logname})
+    logging.config.fileConfig('/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/logging.conf' % beamline,
+                              defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
     os.chmod(logname, 0o666)
 
@@ -653,8 +655,8 @@ if __name__ == "__main__":
 
     start_time = datetime.datetime.now()
     backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages/back-2105291008.ppm"
-    #backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/back.ppm"
-    #backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages/back_210121.ppm"
+    # backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/back.ppm"
+    # backimg = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages/back_210121.ppm"
     inocc.setBack(backimg)
     # For each sample raster.png
     raster_picpath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/raster.png"
@@ -664,6 +666,6 @@ if __name__ == "__main__":
     rwidth, rheight, phi_face, gonio_info = inocc.doAll(ntimes=2, skip=False, loop_size=300.0)
 
     print(n_good, phi_area_list)
-    print(("Loop width/height=",rwidth, rheigh))
+    print(("Loop width/height=", rwidth, rheigh))
 
     ms.close()
