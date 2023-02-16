@@ -4,8 +4,6 @@ import os
 import socket
 import time
 import datetime
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs")
-
 from numpy import *
 
 # My library
@@ -39,16 +37,7 @@ import BeamsizeConfig
 import Flux
 
 class Device(Singleton.Singleton):
-    """
-    def __init__(self,server_address):
-        self.isInit=False
-            host = server_address
-            port = 10101
-            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.s.connect((host,port))
-    """
     def __init__(self,server):
-        print(server)
         self.s=server
 
     def readConfig(self):
