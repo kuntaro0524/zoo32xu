@@ -255,7 +255,6 @@ class Motor(ScanAxis):
         com = "get/" + self.motor + "/energy"
         recbuf = self.communicate(com)
 
-        print("########################### %s"%recbuf)
         rrrr = Received(recbuf)
         position = rrrr.readQuery()
 

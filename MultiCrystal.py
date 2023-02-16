@@ -2,7 +2,6 @@
 import sys, os
 import logging
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 from AttFactor import *
 
 # 2014/05/28 K.Hirata

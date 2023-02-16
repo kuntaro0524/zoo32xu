@@ -11,6 +11,7 @@ import copy
 import logging
 import LogString
 
+
 class AnaHeatmap:
     def __init__(self, scan_path):
         self.scan_path = scan_path
@@ -103,15 +104,15 @@ class AnaHeatmap:
         end_v = self.nv
 
         print("Vstart, Hstart", self.heatmap[start_v, start_h])
-        print("Vend, Hstart", self.heatmap[end_v-1, start_h])
-        print("Vstart, Hend", self.heatmap[start_v, end_h-1])
-        print("Vend, Hend", self.heatmap[end_v-1, end_h-1])
+        print("Vend, Hstart", self.heatmap[end_v - 1, start_h])
+        print("Vstart, Hend", self.heatmap[start_v, end_h - 1])
+        print("Vend, Hend", self.heatmap[end_v - 1, end_h - 1])
 
         # Making a binarized heat map of crystals
         for v in range(0, self.nv):
             for h in range(0, self.nh):
                 scanindex, imgnum, x, y, z, score = self.heatmap[v, h]
-                self.logger.debug("loaded pixel information=%8.3f %8.3f %8.3f %8.3f %8.3f"% (x,y,z,v,h))
+                self.logger.debug("loaded pixel information=%8.3f %8.3f %8.3f %8.3f %8.3f" % (x, y, z, v, h))
                 if score >= self.min_score:
                     score = 200
                 else:
@@ -126,8 +127,8 @@ class AnaHeatmap:
         # 1um / 1pix calculation
         bin_image = cv2.imread(outimg_name)
         self.logger.info("Vertical step=%8.5f mm Horizontal step=%8.5f mm" % (self.v_step, self.h_step))
-        v_pix_ratio = self.v_step * 1000.0  #[pix/um]
-        h_pix_ratio = self.h_step * 1000.0  #[pix/um]
+        v_pix_ratio = self.v_step * 1000.0  # [pix/um]
+        h_pix_ratio = self.h_step * 1000.0  # [pix/um]
 
         # Number of pixels of a new map
         v_new_pix = int(float(self.nv) * float(v_pix_ratio))
@@ -158,8 +159,8 @@ class AnaHeatmap:
 
         # Calculate the origin of new map
         # horizontal direction
-        hori_o_dash = vec0 - (h_pix_ratio-1)/(2.0 * h_pix_ratio) * h_vec
-        vert_o_dash = vec0 - (v_pix_ratio-1)/(2.0 * v_pix_ratio) * v_vec
+        hori_o_dash = vec0 - (h_pix_ratio - 1) / (2.0 * h_pix_ratio) * h_vec
+        vert_o_dash = vec0 - (v_pix_ratio - 1) / (2.0 * v_pix_ratio) * v_vec
         self.logger.debug(lgs.floatArray2str(hori_o_dash, "hori_o_dash=", isReturn=False))
         self.logger.debug(lgs.floatArray2str(vert_o_dash, "vert_o_dash=", isReturn=False))
         origin_new = numpy.array((vert_o_dash[0], hori_o_dash[1], vert_o_dash[2]))
@@ -393,7 +394,7 @@ class AnaHeatmap:
 
     def getGonioXYZat(self, nv, nh):
         junk0, junk1, x0, y0, z0, score = self.heatmap[nv, nh, :]
-        return (x0,y0,z0)
+        return (x0, y0, z0)
 
     def vectorTest(self):
         # original vector
@@ -408,33 +409,33 @@ class AnaHeatmap:
         junk0, junk1, xh, yh, zh, score = self.heatmap[0, 1, :]
         h_vec = numpy.array((xh, yh, zh)) - vec0
 
-        final_1_1_vec = vec0 + 25*v_vec + 25*h_vec
+        final_1_1_vec = vec0 + 25 * v_vec + 25 * h_vec
 
         print(final_1_1_vec)
 
-        junk0, junk1, x,y,z, score = self.heatmap[25,25,:]
-        vec_orig = numpy.array((x,y,z))
+        junk0, junk1, x, y, z, score = self.heatmap[25, 25, :]
+        vec_orig = numpy.array((x, y, z))
 
-        dist = numpy.linalg.norm((final_1_1_vec-vec_orig))
+        dist = numpy.linalg.norm((final_1_1_vec - vec_orig))
         print("DIFF=", dist)
 
     def getNewMapVectors(self, npix_new_h, npix_new_v):
-        xyz_orig = self.getGonioXYZat(0,0)
-        xyz_vert_edge = self.getGonioXYZat(self.nv-1,0)
-        xyz_hori_edge = self.getGonioXYZat(0, self.nh-1)
+        xyz_orig = self.getGonioXYZat(0, 0)
+        xyz_vert_edge = self.getGonioXYZat(self.nv - 1, 0)
+        xyz_hori_edge = self.getGonioXYZat(0, self.nh - 1)
 
     def vectorTest2(self):
         import EnlargedHeatmap
-        xyz_orig = self.getGonioXYZat(0,0)
-        xyz_vert_edge = self.getGonioXYZat(self.nv-1,0)
-        xyz_hori_edge = self.getGonioXYZat(0, self.nh-1)
+        xyz_orig = self.getGonioXYZat(0, 0)
+        xyz_vert_edge = self.getGonioXYZat(self.nv - 1, 0)
+        xyz_hori_edge = self.getGonioXYZat(0, self.nh - 1)
 
         print(xyz_orig)
         print(xyz_vert_edge)
         print(xyz_hori_edge)
 
         em = EnlargedHeatmap.EnlargedHeatmap(xyz_orig, xyz_vert_edge, xyz_hori_edge)
-   
+
         v_um = 150.0
         h_um = 100.0
 
@@ -442,7 +443,7 @@ class AnaHeatmap:
         nv = int(v_um / 15.0)
         nh = int(h_um / 10.0)
 
-        print("HEATMAP", self.heatmap[nv,nh,:])
+        print("HEATMAP", self.heatmap[nv, nh, :])
 
     def process_cycle(self, check_map, kdtree_map, kdtree, target_indices):
         cycle_list = []

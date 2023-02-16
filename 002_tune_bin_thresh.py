@@ -2,7 +2,6 @@ import cv2,sys,os
 import matplotlib.pyplot as plt
 import numpy as np
 import copy, glob
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import CryImageProc
 
 if __name__=="__main__":

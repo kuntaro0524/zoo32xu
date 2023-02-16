@@ -2,7 +2,6 @@ import cv2,sys, time
 import matplotlib.pyplot as plt
 import numpy as np
 import copy, glob
-sys.path.append("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/Libs/")
 import CryImageProc
 import Capture
 

@@ -1,7 +1,6 @@
 import sys,os,math,cv2,socket
 import datetime
 import numpy as np
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 from MyException import * 
 import CryImageProc 
 import CoaxImage

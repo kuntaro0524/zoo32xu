@@ -4,8 +4,6 @@ import logging
 import numpy as np
 
 beamline = "BL32XU"
-sys.path.append("/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/" % beamline)
-sys.path.append("/isilon/%s/BLsoft/PPPP/10.Zoo/" % beamline)
 
 from MyException import *
 import Zoo
@@ -15,7 +13,7 @@ import BeamsizeConfig
 import datetime
 import StopWatch
 import Device
-import HEBI, HITO
+import HEBI
 import DumpRecover
 import AnaHeatmap
 import ESA

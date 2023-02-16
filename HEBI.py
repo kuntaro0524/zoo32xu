@@ -1,6 +1,5 @@
 import sys, math, numpy, os
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import datetime
 import LoopMeasurement
 import AttFactor

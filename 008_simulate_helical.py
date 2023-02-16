@@ -1,5 +1,4 @@
 import sys
-sys.path.append("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/Libs")
 import KUMA
 
 if __name__ == "__main__":

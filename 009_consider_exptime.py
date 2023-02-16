@@ -1,5 +1,4 @@
 import sys, os, math
-sys.path.append("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/Libs")
 
 import BeamsizeConfig
 import AttFactor

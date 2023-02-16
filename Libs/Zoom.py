@@ -17,7 +17,7 @@ class Zoom:
         self.in_lim = "0"  # pulse
         # self.out_lim="-48000" # pulse
         # self.out_lim="-45000" # pulse  YK@210302
-        self.out_lim = "-42000"  # pulse  YK@210302
+        self.out_lim = "-38000"  # pulse  230217 Image was deteriorated by the contamination
 
     def go(self, pvalue):
         self.zoom.nageppa(pvalue)

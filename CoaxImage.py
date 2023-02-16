@@ -1,7 +1,6 @@
 import sys, os, math, numpy, socket, time, cv2
 import re
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import MyException
 from Capture import *
 import Gonio
@@ -89,8 +88,7 @@ class CoaxImage:
         # updated 200124 CentOS6 USB camera connected to BSS machine
         # self.coax_zpulse2pint = {0:20367, -16000:20367, -32000:20367, -48000:20367} # zoom pulse to pint pulse
         # self.coax_zpulse2pint = {0:20367, -16000:20367, -32000:20367, -45000:20367} # zoom pulse to pint pulse   YK@210302
-        self.coax_zpulse2pint = {0: 20367, -16000: 20367, -32000: 20367,
-                                 -42000: 20367}  # zoom pulse to pint pulse   YK@210302
+        self.coax_zpulse2pint = {0: 20367, -16000: 20367, -32000: 20367, -38000: 20367}  # zoom pulse to pint pulse   YK@210302
         self.gonio = Gonio.Gonio(ms)
         self.capture = Capture()
 
@@ -216,8 +214,9 @@ class CoaxImage:
     # get_coax_center()
 
     def get_zoom(self):
-        command="get/bl_32in_st2_coax_1_zoom/query"
+        command = "get/bl_32in_st2_coax_1_zoom/query"
         recbuf = self.communicate(command)
+        print("RRRRRRRRRRRRRRRR%s"%recbuf)
 
         sp = recbuf.split("/")
         if len(sp) == 5:

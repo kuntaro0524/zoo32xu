@@ -2,7 +2,6 @@ import sys, os, math, socket, time
 import numpy as np
 import datetime
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 from MyException import *
 import INOCC
 import RasterSchedule

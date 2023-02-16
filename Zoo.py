@@ -22,7 +22,6 @@ class Zoo:
         self.bss_port=config.getint("server", "bss_port")
 
         self.isConnect = False
-        # self.SPACE=SPACE.SPACE()
         self.isEmu = emulator
         # Kuntaro Log file
         self.logger = logging.getLogger('ZOO').getChild("Zoo")
@@ -33,7 +32,7 @@ class Zoo:
     # String to bytes
     def communicate(self, comstr):
         sending_command = comstr.encode()
-        print(sending_command)
+        # print(sending_command)
         if self.isConnect == False:
             print("Connection first!")
             return False
@@ -60,7 +59,7 @@ class Zoo:
         if self.isConnect:
             command = "put/bss/disconnect"
             recstr = self.communicate(command)
-            print(recstr)
+            # print(recstr)
             self.bssr.close()
         return True
 
@@ -107,13 +106,10 @@ class Zoo:
         except MyException as ttt:
             self.logger.info("Received message=%s" % ttt)
             message = ttt.args[0]
-            # error_log = ttt.args[0].split(':')
-            # print error_log
-            # print type(ttt.args[0]), ttt.args[0]
             raise MyException(ttt.args[0])
 
     def exchangeSample(self, trayID, pinID):
-        print(trayID, pinID)
+        # print(trayID, pinID)
         com = "put/sample/exchange_%s_%s" % (trayID, pinID)
         recstr = self.communicate(com)
         try:
@@ -450,12 +446,12 @@ class Zoo:
         com = "get/beamline/query"
         self.bssr.sendall(com)
         recstr = self.communicate(com)
-        print(recstr)
+        # print(recstr)
 
     def onlySampleQuery(self):
         com = "get/sample/query"
         recstr = self.communicate(com)
-        print(recstr)
+        # print(recstr)
 
     def getBeamsizeQuery(self):
         com = "get/beamline/query"

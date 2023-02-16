@@ -1,6 +1,5 @@
 import sys, os, math, numpy
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import Raddose
 import logging
 import BSSconfig

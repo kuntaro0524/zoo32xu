@@ -39,7 +39,7 @@ class File:
         simple_name = name[last_idx + 1:]
 
         header = simple_name[:nchar]
-        print("!!!!!!!!!!!!!!! %s !!!!!!!!!!!!!!!!"%header)
+        # print("!!!!!!!!!!!!!!! %s !!!!!!!!!!!!!!!!"%header)
         if header.isdigit():
             return (header)
         else:
