@@ -1,15 +1,15 @@
 import sys,math,numpy,os
+import configparser
 
-beamline = "BL32XU"
-if beamline == "BL32XU":
-    sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/")
-    sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
-    blanc_address = '172.24.242.41'
+# Get information from beamline.ini file.
+config = configparser.ConfigParser()
+config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+config.read(config_path)
 
-elif beamline == "BL45XU":
-    sys.path.append("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/")
-    sys.path.append("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/Libs/")
-    blanc_address = '172.24.242.59'
+zoologdir = config.get("dirs", "zoologdir")
+beamline = config.get("beamline", "beamline")
+blanc_address = config.get("server", "blanc_address")
+logging_conf = config.get("files", "logging_conf")
 
 import Zoo
 import datetime
@@ -30,9 +30,9 @@ if __name__ == "__main__":
     # Logging setting
     d = Date.Date()
     time_str = d.getNowMyFormat(option="date")
-    logname = "/isilon/%s/BLsoft/PPPP/10.Zoo/ZooLogs/zoo_%s.log" % (beamline, time_str)
+    logname = "%s/zoo_%s.log" % (zoologdir, time_str)
     print("changing mode of %s" % logname)
-    logging.config.fileConfig('/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/logging.conf' % beamline, defaults={'logfile_name': logname})
+    logging.config.fileConfig(logging_conf, defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
     os.chmod(logname, 0o666)
 
