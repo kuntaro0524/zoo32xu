@@ -1,6 +1,4 @@
 import os, sys, math, numpy, scipy, glob
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs")
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/Libs")
 import DBinfo, ESA 
 import BSSmeasurementLog
 import Raddose

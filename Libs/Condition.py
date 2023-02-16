@@ -1,8 +1,5 @@
 import sys, os, math, cv2, socket, time, copy
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/")
-
 
 class Condition:
     def __init__(self, uname, pucks_and_pins, mode, sample_name, wavelength, h_beam, v_beam, raster_exp, osc_width,

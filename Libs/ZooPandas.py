@@ -1,6 +1,4 @@
 import sys
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/Libs")
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import pandas as pd
 import numpy as np
 import ESA

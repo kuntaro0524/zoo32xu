@@ -1,6 +1,5 @@
 import os
 import sys
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/")
 from pylab import *
 from scipy import *
 from Gauss import *
