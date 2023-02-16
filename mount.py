@@ -22,6 +22,8 @@ if __name__ == "__main__":
     logging.config.fileConfig('/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/logging.conf', defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
 
+    print(len(sys.argv))
+
     zoo.mountSample(sys.argv[1],sys.argv[2])
     zoo.waitTillReady()
     zoo.disconnect()

@@ -24,6 +24,19 @@ class Zoo:
         # Wait option
         self.wait_flag = True
 
+    # String to bytes
+    def communicate(self, comstr):
+        sending_command = comstr.encode()
+        print(sending_command)
+        if self.isConnect==False:
+            print("Connection first!")
+            return False
+        else:
+            self.bssr.sendall(sending_command)
+            recstr=self.bssr.recv(8000)
+
+            return repr(recstr)
+
     def connect(self):
         self.bssr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         for i in range(0,20):
@@ -40,8 +53,7 @@ class Zoo:
         time.sleep(3.0)
         if self.isConnect:
             command="put/bss/disconnect"
-            self.bssr.sendall(command)
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(command)
             print(recstr)
             self.bssr.close()
         return True
@@ -52,8 +64,7 @@ class Zoo:
             print("Connection first!")
             return False
         else:
-            self.bssr.sendall(query_com)
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(query_com)
             print(recstr)
 
     def connectServers(self):
@@ -62,21 +73,13 @@ class Zoo:
             print("Connection first!")
             return False
         else:
-            self.bssr.sendall(query_com)
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(query_com)
             print(recstr)
 
     def getSampleInformation(self):
-        query_com=b"get/sample/information"
-        print(type(query_com))
-        if self.isConnect==False:
-            print("Connection first!")
-            return False
-        else:
-            self.bssr.sendall(query_com)
-            recstr=self.bssr.recv(8000)
-            self.logger.info("getSampleInformation:%s" % recstr)
-        print(recstr)
+        query_com="get/sample/information"
+        recstr = self.communicate(query_com)
+        self.logger.info("getSampleInformation:%s" % recstr)
         cols=recstr.split('/')[3].split('_')
         idx=0
         self.tray_list=[]
@@ -84,14 +87,13 @@ class Zoo:
             if idx%2==0:
                 self.tray_list.append(col)
             idx+=1
-        #print self.tray_list
+
         return self.tray_list
 
     def mountSample(self,trayID,pinID):
         self.logger.debug("--Starting--")
         com="put/sample/mount_%s_%s"%(trayID,pinID)
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         try:
             # 210415 K.Hirata (strange answer from BSS)
             if self.wait_flag: time.sleep(0.5)
@@ -107,9 +109,7 @@ class Zoo:
     def exchangeSample(self,trayID,pinID):
         print(trayID,pinID)
         com="put/sample/exchange_%s_%s"%(trayID,pinID)
-        print(com)
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         try:
             self.waitTillReady()
         except MyException as ttt:
@@ -117,8 +117,7 @@ class Zoo:
 
     def isMounted(self):
         com="get/sample/on_gonio"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         puck_pin=self.getSVOC_C(recstr)
         puck_char,pin_char=puck_pin.split('_')
         puck_id=puck_char
@@ -142,10 +141,7 @@ class Zoo:
     def dismountSample(self,trayID,pinID):
         self.logger.info("Dismounting %s-%s" % (trayID,pinID))
         com="put/sample/unmount_%s_%s"%(trayID,pinID)
-        self.logger.debug("sendall command: %s" % com)
-
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         self.logger.info("The 1st received string from BSS RECSTR=%s" % recstr)
         try:
             # 210415 K.Hirata (strange answer from BSS)
@@ -157,8 +153,7 @@ class Zoo:
 
     def getCurrentPin(self):
         com="get/sample/on_gonio"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         self.logger.info("getCurrentPin.RECSTR=%s" % recstr)
         if recstr.rfind("fail") != -1:
             self.logger.info("Something failed to get current pin")
@@ -194,8 +189,7 @@ class Zoo:
 
     def cleaning(self):
         com="put/sample/cleaning"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         try:
             # 210415 K.Hirata (strange answer from BSS)
             if self.wait_flag: time.sleep(0.5)
@@ -207,8 +201,7 @@ class Zoo:
     def capture(self,filename):
         command="put/video/capture_%s"%filename
         print("Capturing %s"%filename)
-        self.bssr.sendall(command)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(command)
 
     def getSVOC_C(self,recmes):
         ## ['measurement', 'get', '17475_pxbl_server', 'ready', '0']
@@ -219,14 +212,11 @@ class Zoo:
 
     def ZoomUp(self):
         com="put/video/zoomer_1"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
-        print(recstr)
+        recstr=self.communicate(com)
 
     def ZoomDown(self):
         com="put/video/zoomer_-1"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         print(recstr)
 
     def isBusy(self):
@@ -235,9 +225,7 @@ class Zoo:
             return False
         else:
             command="get/measurement/query"
-            self.bssr.sendall(command)
-            recstr=self.bssr.recv(8000)
-            #print "Received buffer in isBusy: %s"%recstr
+            recstr=self.communicate(command)
             svoc_c=self.getSVOC_C(recstr)
             if svoc_c.rfind("ready")!=-1:
                 print("isBusy:RECBUF=",recstr)
@@ -250,9 +238,7 @@ class Zoo:
     def doRaster(self,jobfile):
         # JOB FILE NAME MUST NOT INCLUDE "_"
         com="put/measurement/start_1_3_1_schedule_%s"%jobfile
-        self.bssr.sendall(com)
-        self.logger.debug("put a message: %s" % com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         self.logger.debug("a received message: %s" % recstr)
 
     def waitTillReady(self):
@@ -272,9 +258,7 @@ class Zoo:
             return False
         else:
             command="get/measurement/query"
-            self.bssr.sendall(command)
-            recstr=self.bssr.recv(8000)
-            #print "Received buffer in isBusy: %s"%recstr
+            recstr=self.communicate(command)
             svoc_c=self.getSVOC_C(recstr)
             if svoc_c.rfind("ready")!=-1:
                 print("isBusy:RECBUF=",recstr)
@@ -291,8 +275,7 @@ class Zoo:
             return False
         while (1):
             query_command = "get/measurement/query"
-            self.bssr.sendall(query_command)
-            recstr = self.bssr.recv(8000)
+            recstr = self.communicate(query_command)
             self.logger.debug("Sent command= %s" % query_command)
             self.logger.debug("Received buffer = %s" % recstr)
             # print "Received buffer in isBusy: %s"%recstr
@@ -352,33 +335,25 @@ class Zoo:
         # JOB FILE NAME MUST NOT INCLUDE "_"
         com="put/measurement/start_1_3_1_schedule_%s"%jobfile
         print("Submitting command: %s"%com)
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         print(recstr)
 
     def stop(self):
         # JOB FILE NAME MUST NOT INCLUDE "_"
         com="put/measurement/stop"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
-        print(recstr)
+        recstr=self.communicate(com)
 
     def setPhi(self,phi_abs):
         com="put/gonio_spindle/abs_%fdegree"%phi_abs
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
-        print(com)
+        recstr=self.communicate(com)
 
     def autoCentering(self):
         com="put/sample/autocenter"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
-        print(com)
+        recstr=self.communicate(com)
 
     def skipSample(self):
         com="put/sample/clear_warning"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         self.logger.debug("recstr = %s" % recstr)
 
     def waitTillFinish(self, query_command):
@@ -387,8 +362,7 @@ class Zoo:
             return False
 
         while (1):
-            self.bssr.sendall(query_command)
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(query_command)
             # print "Received buffer in isBusy: %s"%recstr
             svoc_c=self.getSVOC_C(recstr)
             if svoc_c.rfind("ready")!=-1:
@@ -409,9 +383,8 @@ class Zoo:
         com = "get/beamline/beamsize"
         for i in range(0,10):
             self.logger.info("sendall command: %s" % com)
-            self.bssr.sendall(com)
             self.logger.info("waiting for a reply")
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(com)
             self.logger.info("received log: %s"%recstr)
 
             cols = recstr.split('/')
@@ -438,9 +411,7 @@ class Zoo:
 
         while(1):
             self.logger.info("sendall command: %s" % com)
-            self.bssr.sendall(com)
-            self.logger.info("waiting for a reply")
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(com)
             self.logger.info("received message: %s"%recstr)
             cols = recstr.split('/')
             #print cols
@@ -464,8 +435,7 @@ class Zoo:
         query_command = "get/beamline/query"
 
         try:
-            self.bssr.sendall(com)
-            recstr=self.bssr.recv(8000)
+            recstr=self.communicate(com)
             self.waitTillFinish(query_command)
         except:
             raise MyException("getWavelength: failed. Check beamsize.config")
@@ -473,28 +443,23 @@ class Zoo:
     def onlyQuery(self):
         com = "get/beamline/query"
         self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         print(recstr)
 
     def onlySampleQuery(self):
         com = "get/sample/query"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         print(recstr)
 
     def getBeamsizeQuery(self):
         com = "get/beamline/query"
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         print("getBeamsizeQuery.command = ",com)
         print("GETBEAMSIZE=",recstr)
 
     def setBeamsize(self, beamsize_index):
         com = "put/beamline/beamsize_%d" % beamsize_index
-        #self.getBeamsizeQuery()
-        print("changing")
-        self.bssr.sendall(com)
-        recstr=self.bssr.recv(8000)
+        recstr=self.communicate(com)
         print("setBeamsize:result=", recstr)
         self.waitTillReady()
 
