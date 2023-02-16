@@ -2,7 +2,6 @@ import sys, os, math, numpy
 
 import Raddose
 import logging
-import BSSconfig
 
 # Version 2.0.0 2019/07/04 K.Hirata
 class KUMA:
