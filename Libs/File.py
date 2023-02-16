@@ -39,6 +39,7 @@ class File:
         simple_name = name[last_idx + 1:]
 
         header = simple_name[:nchar]
+        print("!!!!!!!!!!!!!!! %s !!!!!!!!!!!!!!!!"%header)
         if header.isdigit():
             return (header)
         else:
@@ -72,18 +73,15 @@ class File:
         return int(max) + 1
 
     def getNewIdx3(self):
-        flist = glob.glob("%s/*" % self.dire)
-
-        max = 0
+        flist = glob.glob("%s/*" % self.dire)        max = 0
         if len(flist) == 0:
             return 0
-
         for file in flist:
             curr = self.getHeadNum(file, 3)
             if max < int(curr):
-                # print "FIND!!"+curr
-                max = curr
-        return int(max) + 1
+                max = int(curr)
+        returnvalue=int(max)+1
+        return returnvalue
 
     def getNewIdx4(self):
         flist = glob.glob("%s/*" % self.dire)
@@ -203,15 +201,15 @@ class File:
 
 
 if __name__ == "__main__":
-    # i2= f.getNewIdx2()
-    # i3= f.getNewIdx3()
+    root_dir = "/isilon/BL32XU/BLsoft/PPPP/93.ZooSandBox/Log/230216/0027_sample/"
+    root_dir = "/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log/230216/0027_sample/"
+    f = File(root_dir)
+    i3= f.getNewIdx3()
 
-    # print i2,i3
+    print(i3)
 
     # p="/isilon/users/target/target/AutoUsers/180411/test/test-path"
     # f.getNewestDir2("scan")
-    root_dir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/Test/"
-    f = File(root_dir)
-    newpath = "%s/%04d" % (root_dir, f.getNewIdx4())
+    # newpath = "%s/%04d" % (root_dir, f.getNewIdx4())
 
-    os.makedirs(newpath)
+    # os.makedirs(newpath)

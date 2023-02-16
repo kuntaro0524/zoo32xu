@@ -49,7 +49,7 @@ class INOCC:
         self.area_list = []
 
         # ROI counter
-        self.roi_counter = 100
+        self.roi_counter = 1
 
         # My logger
         self.logger = logging.getLogger('ZOO').getChild("INOCC")
@@ -330,8 +330,8 @@ class INOCC:
             ofile.write("%5.2f deg %9.4f %9.4f %9.4f\n" % (phi, gx, gy, gz))
 
     def simpleCenter(self, phi, loop_size=600.0, option='top'):
-        # print("####################################################################################")
         new_idx = self.ff.getNewIdx3()
+        print("DDDDDDDDDDDDDDDDDDDDD %d"% new_idx)
         self.fname = "%s/%03d_center.ppm" % (self.loop_dir, new_idx)
         self.logger.info("##################### TOP CENTERING %5.2f deg.\n" % phi)
         self.logger.info("INOCC.coreCentering captures %s\n" % self.fname)
@@ -341,7 +341,7 @@ class INOCC:
         # This instance is for this centering process only
         cip = CryImageProc.CryImageProc(logdir=self.loop_dir)
         cip.setImages(self.fname, self.backimg)
-        roi_image = os.path.join(self.loop_dir, "%03d_roi.png" % self.roi_counter)
+        roi_image = os.path.join(self.loop_dir, "%03d_roi.png" % self.ff.getNewIdx3())
         cip.setROIpic(roi_image)
         self.roi_counter += 1
         # This generates exception if it could not find any centering information
@@ -370,8 +370,11 @@ class INOCC:
             if ok_min == False:
                 for phi in np.arange(phi_min, phi_center, phi_step):
                     self.logfile.write("Around minimum angle\n")
+                    self.logger.info("Around minimum angle\n")
                     try:
+                        self.logger.info("move to simpleCenter function.")
                         area, hamidashi_flag = self.simpleCenter(phi, option="top")
+                        self.logger.info("if this line does not appear if the simpleCenter fails")
                         # When the edge can be detected
                         if hamidashi_flag == True:
                             area, hamidashi_flag = self.simpleCenter(phi, option="top")
@@ -381,7 +384,8 @@ class INOCC:
                         found_phi_around_min = phi
                         break
                     except:
-                        print("PHI=%5.2f failed." % phi)
+                        self.logger.info("PHI=%5.2f failed." % phi)
+                        self.logfile.write("PHI=%5.2f failed." % phi)
                         continue
 
             phi_max = found_phi_around_min + 90.0

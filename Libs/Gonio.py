@@ -14,7 +14,6 @@ from Motor import *
 # from Enc import *
 from BSSconfig import *
 
-#
 class Gonio:
 
     def __init__(self, server):
@@ -188,7 +187,7 @@ class Gonio:
         # marume[um]
         move_x = -round(dx, 5)
         move_z = -round(dz, 5)
-        print("Moving %8.4f um %8.4f um\n"%(move_x,move_z))
+        print("Moving %8.4f um %8.4f um\n" % (move_x, move_z))
 
         # [um] to [pulse]
         move_x = int(move_x * 10)
@@ -910,9 +909,9 @@ if __name__ == "__main__":
 
     gonio = Gonio(s)
 
-    #print gonio.getXYZmm()
-    #print gonio.getZZmm()
-    #gonio.moveZZpulse(6032)
+    # print gonio.getXYZmm()
+    # print gonio.getZZmm()
+    # gonio.moveZZpulse(6032)
 
     # gonio.rotatePhi(120.0)
     # phirange=180.0
@@ -943,7 +942,6 @@ if __name__ == "__main__":
 
     # print "final %8.4f %8.4f %8.4f\n"%(curr_x,curr_y,curr_z)
 
-    # gonio.rotatePhi(90)
     # print gonio.getXmm()
 
     # value=float(raw_input())
@@ -987,14 +985,16 @@ if __name__ == "__main__":
     # move normal position
     # gonio.move(normal_position[0],normal_position[1],"pulse")
 
-    # vertical scan
+    # vertical scankkk
     # gonio.move(vscan_position[0],vscan_position[1],"pulse")
     # gonio.scanZ("gz",300,500,10,0.2,"pulse")
 
     # gonio.move(hscan_position[0],hscan_position[1],"pulse")
     # gonio.scanY("gy",172640,173040,10,0.2,"pulse")
-    #gonio.presetPhi()
+    # gonio.presetPhi()
 
     print((gonio.getXYZmm()))
+    gonio.rotatePhi(90)
+
 
     s.close()
