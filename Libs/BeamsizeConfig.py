@@ -1,11 +1,18 @@
+# -*- coding: utf-8 -*-
 import sys, os
 import socket
 import numpy as np
 from scipy import interpolate
+import configparser
 
 class BeamsizeConfig:
-    def __init__(self, config_dir):
-        self.config_dir = config_dir
+    def __init__(self):
+        # configure file : "beamline.ini" を読む
+        # section 'dirs'  bssconfig_dir
+        self.config = configparser.ConfigParser()
+        config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.config.read(config_path)
+
         self.beamsize = []
         self.tcs_width = []
         self.tcs_height = []
@@ -22,7 +29,8 @@ class BeamsizeConfig:
         self.flux_const = 7E11  # 2017/05/10 FY2017 TCS 0.1x0.1mm
 
         # Default configure file
-        self.configfile = "%s/bss/beamsize.config" % self.config_dir
+        self.bssconfig_dir = self.config.get("dirs", "bssconfig_dir")
+        self.configfile = os.path.join(self.bssconfig_dir, "beamsize.conf")
 
         self.debug = False
 

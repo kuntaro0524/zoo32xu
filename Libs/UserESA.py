@@ -20,14 +20,14 @@ class UserESA():
         self.zoocsv = None
         self.contents = []
 
-        sys.path.append("/isilon/%s/BLsoft/PPPP/10.Zoo/Libs/"%self.beamline.upper())
+        # configure file から情報を読む: beamlineの名前
+        import configparser
+        self.config = configparser.ConfigParser()
+        config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.config.read(config_path)
+        self.beamline = self.config.get("beamline", "beamline")
         import BeamsizeConfig
-        if beamline.upper() == "BL32XU":
-            self.confdir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooConfig/"
-        else:
-            self.confdir = "/isilon/blconfig/%s/" % beamline.lower()
-            print("DIRDIR=", self.confdir)
-        self.bsconf = BeamsizeConfig.BeamsizeConfig(self.confdir)
+        self.bsconf = BeamsizeConfig.BeamsizeConfig()
 
     def getParams(self, desired_exp_string, type_crystal, mode):
         type_crystal = type_crystal.lower()
