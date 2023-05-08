@@ -1,6 +1,7 @@
 #!/bin/bash
-export PYTHONPATH="/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/:/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Libs/"
-export ZOOCONFIGPATH="/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Libs/"
+/staff/bl32xu/BLsoft/NewZoo
+export PYTHONPATH="/staff/bl32xu/BLsoft/NewZoo/:/staff/bl32xu/BLsoft/NewZoo/Libs/"
+export ZOOCONFIGPATH="/staff/bl32xu/BLsoft/NewZoo/Libs/"
 
 args=("$*")
 echo $args

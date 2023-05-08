@@ -1927,3 +1927,237 @@
 
 2022-02-09 16:55:27 - INOCC - INFO - simpleCenter - 332 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/10.Zoo/Log//220209/0008_sample/001_center.ppm
 
+2023-05-08 10:15:05 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:15:05 - INOCC - DEBUG - doAll - 607 - The first edge centering..
+2023-05-08 10:15:05 - INOCC - INFO - edgeCentering - 506 - ################### EDGE CENTERING ######################
+2023-05-08 10:15:07 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING  0.00 deg.
+
+2023-05-08 10:15:07 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/001_center.ppm
+
+2023-05-08 10:15:08 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/001_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:08 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI:    0.000
+2023-05-08 10:15:08 - INOCC - INFO - simpleCenter - 349 - PHI:  0.00 deg Option=top Centering: (Xtarget, Ytarget) = (  209,   240) HAMIDASHI = False
+
+2023-05-08 10:15:08 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:15:08 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:15:09 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/001_center.ppm Area=   0.000 at    0.000
+2023-05-08 10:15:09 - INOCC - INFO - suribachiCentering - 359 - OOOOOOOOOOOOOOOOOO  SURIBACHI STARTS center:  0.00 OOOOOOOOOOOOOO
+
+2023-05-08 10:15:09 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:15:09 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:15:09 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -45.00 deg.
+
+2023-05-08 10:15:09 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/003_center.ppm
+
+2023-05-08 10:15:10 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/003_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:10 - INOCC - INFO - suribachiCentering - 387 - PHI=-45.00 failed.
+2023-05-08 10:15:10 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:15:10 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:15:10 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -35.00 deg.
+
+2023-05-08 10:15:10 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/004_center.ppm
+
+2023-05-08 10:15:11 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/004_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:11 - INOCC - INFO - suribachiCentering - 387 - PHI=-35.00 failed.
+2023-05-08 10:15:11 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:15:11 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:15:11 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -25.00 deg.
+
+2023-05-08 10:15:11 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/005_center.ppm
+
+2023-05-08 10:15:12 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/005_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:12 - INOCC - INFO - suribachiCentering - 387 - PHI=-25.00 failed.
+2023-05-08 10:15:12 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:15:12 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:15:12 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -15.00 deg.
+
+2023-05-08 10:15:12 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/006_center.ppm
+
+2023-05-08 10:15:13 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/006_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:13 - INOCC - INFO - suribachiCentering - 387 - PHI=-15.00 failed.
+2023-05-08 10:15:13 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:15:13 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:15:13 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -5.00 deg.
+
+2023-05-08 10:15:13 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/007_center.ppm
+
+2023-05-08 10:15:13 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0000_sample/007_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:13 - INOCC - INFO - suribachiCentering - 387 - PHI=-5.00 failed.
+2023-05-08 10:15:26 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:15:26 - INOCC - DEBUG - doAll - 607 - The first edge centering..
+2023-05-08 10:15:26 - INOCC - INFO - edgeCentering - 506 - ################### EDGE CENTERING ######################
+2023-05-08 10:15:27 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING  0.00 deg.
+
+2023-05-08 10:15:27 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/001_center.ppm
+
+2023-05-08 10:15:27 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/001_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:28 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 45.00 deg.
+
+2023-05-08 10:15:28 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/002_center.ppm
+
+2023-05-08 10:15:28 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/002_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:29 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 90.00 deg.
+
+2023-05-08 10:15:29 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/003_center.ppm
+
+2023-05-08 10:15:29 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/003_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:31 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 135.00 deg.
+
+2023-05-08 10:15:31 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/004_center.ppm
+
+2023-05-08 10:15:31 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/004_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:31 - INOCC - INFO - edgeCentering - 518 - INOCC.edgeCentering moves Y 2000um
+2023-05-08 10:15:35 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING  0.00 deg.
+
+2023-05-08 10:15:35 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/005_center.ppm
+
+2023-05-08 10:15:35 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/005_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:35 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 5432.000
+2023-05-08 10:15:35 - INOCC - INFO - simpleCenter - 349 - PHI:  0.00 deg Option=top Centering: (Xtarget, Ytarget) = (  230,    65) HAMIDASHI = False
+
+2023-05-08 10:15:35 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:15:35 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:15:37 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/005_center.ppm Area=5432.000 at    0.000
+2023-05-08 10:15:37 - INOCC - INFO - suribachiCentering - 359 - OOOOOOOOOOOOOOOOOO  SURIBACHI STARTS center:  0.00 OOOOOOOOOOOOOO
+
+2023-05-08 10:15:37 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:15:37 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:15:37 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -45.00 deg.
+
+2023-05-08 10:15:37 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/007_center.ppm
+
+2023-05-08 10:15:38 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/007_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:38 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 50960.500
+2023-05-08 10:15:38 - INOCC - INFO - simpleCenter - 349 - PHI: -45.00 deg Option=top Centering: (Xtarget, Ytarget) = (  302,   265) HAMIDASHI = False
+
+2023-05-08 10:15:38 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:15:38 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:15:39 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/007_center.ppm Area=50960.500 at  -45.000
+2023-05-08 10:15:39 - INOCC - INFO - suribachiCentering - 377 - if this line does not appear if the simpleCenter fails
+2023-05-08 10:15:39 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 45.00 deg.
+
+2023-05-08 10:15:39 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/009_center.ppm
+
+2023-05-08 10:15:41 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/009_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:15:41 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 14668.000
+2023-05-08 10:15:41 - INOCC - INFO - simpleCenter - 349 - PHI: 45.00 deg Option=top Centering: (Xtarget, Ytarget) = (  330,    68) HAMIDASHI = False
+
+2023-05-08 10:15:41 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:15:41 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:15:44 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/009_center.ppm Area=14668.000 at   45.000
+2023-05-08 10:15:44 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING  0.00 deg.
+
+2023-05-08 10:15:44 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0001_sample/011_center.ppm
+
+2023-05-08 10:28:36 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:36 - INOCC - DEBUG - doAll - 607 - The first edge centering..
+2023-05-08 10:28:36 - INOCC - INFO - edgeCentering - 506 - ################### EDGE CENTERING ######################
+2023-05-08 10:28:37 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING  0.00 deg.
+
+2023-05-08 10:28:37 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/001_center.ppm
+
+2023-05-08 10:28:37 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/001_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:37 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 2890.500
+2023-05-08 10:28:37 - INOCC - INFO - simpleCenter - 349 - PHI:  0.00 deg Option=top Centering: (Xtarget, Ytarget) = (  267,   465) HAMIDASHI = False
+
+2023-05-08 10:28:37 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:37 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:28:40 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/001_center.ppm Area=2890.500 at    0.000
+2023-05-08 10:28:40 - INOCC - INFO - suribachiCentering - 359 - OOOOOOOOOOOOOOOOOO  SURIBACHI STARTS center:  0.00 OOOOOOOOOOOOOO
+
+2023-05-08 10:28:40 - INOCC - INFO - suribachiCentering - 373 - Around minimum angle
+
+2023-05-08 10:28:40 - INOCC - INFO - suribachiCentering - 375 - move to simpleCenter function.
+2023-05-08 10:28:40 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -45.00 deg.
+
+2023-05-08 10:28:40 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/003_center.ppm
+
+2023-05-08 10:28:41 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/003_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:41 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 11296.500
+2023-05-08 10:28:41 - INOCC - INFO - simpleCenter - 349 - PHI: -45.00 deg Option=top Centering: (Xtarget, Ytarget) = (  364,    11) HAMIDASHI = True
+
+2023-05-08 10:28:41 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:41 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:28:44 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/003_center.ppm Area=11296.500 at  -45.000
+2023-05-08 10:28:44 - INOCC - INFO - suribachiCentering - 377 - if this line does not appear if the simpleCenter fails
+2023-05-08 10:28:44 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING -45.00 deg.
+
+2023-05-08 10:28:44 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/005_center.ppm
+
+2023-05-08 10:28:44 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/005_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:45 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 53728.000
+2023-05-08 10:28:45 - INOCC - INFO - simpleCenter - 349 - PHI: -45.00 deg Option=top Centering: (Xtarget, Ytarget) = (  254,   212) HAMIDASHI = False
+
+2023-05-08 10:28:45 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:45 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:28:46 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/005_center.ppm Area=53728.000 at  -45.000
+2023-05-08 10:28:46 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 45.00 deg.
+
+2023-05-08 10:28:46 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/007_center.ppm
+
+2023-05-08 10:28:48 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/007_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:48 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 6470.500
+2023-05-08 10:28:48 - INOCC - INFO - simpleCenter - 349 - PHI: 45.00 deg Option=top Centering: (Xtarget, Ytarget) = (  348,   426) HAMIDASHI = False
+
+2023-05-08 10:28:48 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:48 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:28:51 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/007_center.ppm Area=6470.500 at   45.000
+2023-05-08 10:28:51 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING  0.00 deg.
+
+2023-05-08 10:28:51 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/009_center.ppm
+
+2023-05-08 10:28:52 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/009_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:52 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 32299.000
+2023-05-08 10:28:52 - INOCC - INFO - simpleCenter - 349 - PHI:  0.00 deg Option=top Centering: (Xtarget, Ytarget) = (  298,   217) HAMIDASHI = False
+
+2023-05-08 10:28:52 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:52 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:28:53 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/009_center.ppm Area=32299.000 at    0.000
+2023-05-08 10:28:53 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 90.00 deg.
+
+2023-05-08 10:28:53 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/011_center.ppm
+
+2023-05-08 10:28:54 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/011_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:54 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 11432.500
+2023-05-08 10:28:54 - INOCC - INFO - simpleCenter - 349 - PHI: 90.00 deg Option=top Centering: (Xtarget, Ytarget) = (  309,   184) HAMIDASHI = False
+
+2023-05-08 10:28:54 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:28:54 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:28:55 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/011_center.ppm Area=11432.500 at   90.000
+2023-05-08 10:28:56 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/013_area.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:57 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/014_area.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:58 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/015_area.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:28:59 - INOCC - INFO - doAll - 622 - >>>> offset angle setting <<<<<
+2023-05-08 10:28:59 - INOCC - INFO - doAll - 625 - >>>> Simple centering <<<<<
+2023-05-08 10:28:59 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 225.00 deg.
+
+2023-05-08 10:28:59 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/016_center.ppm
+
+2023-05-08 10:29:00 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/016_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:29:00 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 4388.000
+2023-05-08 10:29:00 - CryImageProc - INFO - isTouchedToEdge - 650 - Touched: L:False R:True LOWER:False UPPER:False
+2023-05-08 10:29:00 - INOCC - INFO - simpleCenter - 349 - PHI: 225.00 deg Option=gravity Centering: (Xtarget, Ytarget) = (  357,   202) HAMIDASHI = False
+
+2023-05-08 10:29:00 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:29:00 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:29:01 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/016_center.ppm Area=4388.000 at  225.000
+2023-05-08 10:29:01 - INOCC - INFO - simpleCenter - 336 - ##################### TOP CENTERING 135.00 deg.
+
+2023-05-08 10:29:01 - INOCC - INFO - simpleCenter - 337 - INOCC.coreCentering captures /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/018_center.ppm
+
+2023-05-08 10:29:03 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/018_center.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm
+2023-05-08 10:29:03 - CryImageProc - INFO - getCenterInfo - 402 - area of ROI: 18249.000
+2023-05-08 10:29:03 - CryImageProc - INFO - isTouchedToEdge - 650 - Touched: L:False R:True LOWER:False UPPER:False
+2023-05-08 10:29:03 - INOCC - INFO - simpleCenter - 349 - PHI: 135.00 deg Option=gravity Centering: (Xtarget, Ytarget) = (  288,   246) HAMIDASHI = False
+
+2023-05-08 10:29:03 - CoaxImage - INFO - get_coax_center - 208 - Origin shift = 0.006948 0.010422
+2023-05-08 10:29:03 - CoaxImage - DEBUG - calc_shift_by_img_px - 287 - cen_x, cen_y = (  308.13,   236.80)
+2023-05-08 10:29:04 - INOCC - INFO - simpleCenter - 354 - >>>>>> FILE=/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/018_center.ppm Area=18249.000 at  135.000
+2023-05-08 10:29:04 - INOCC - INFO - doAll - 628 - Hamidashi_flag = False
+2023-05-08 10:29:04 - CryImageProc - INFO - setImages - 139 - CIP.setImages: T: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/Log//230508/0002_sample/cap4width_020.ppm, B: /isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm

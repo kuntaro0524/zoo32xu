@@ -7,6 +7,7 @@ import Gonio
 import Zoom
 import CoaxPint
 import logging
+import configparser
 
 # import CryImageProc as CIP
 
@@ -50,6 +51,11 @@ class CoaxImage:
 
         self.logger = logging.getLogger('ZOO').getChild("CoaxImage")
 
+        # configure file を読む
+        # Get information from beamline.ini file.
+        self.config = configparser.ConfigParser()
+        self.config.read(os.path.join(os.environ["ZOOCONFIGPATH"], "beamline.ini"))
+
         if beamline == "BL45XU":
             self.camera_inf = read_camera_inf(os.path.join(os.environ["BLCONFIG"], "video", "camera.inf"))
             self.bss_config = read_bss_config(os.path.join(os.environ["BLCONFIG"], "bss", "bss.config"))
@@ -68,18 +74,11 @@ class CoaxImage:
             self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
             self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
 
-            self.width = 612.0
-            self.height = 480.0
-            # self.pix_size = 4.1778
-            # self.pix_size = 3.9500     # YK@210302 for Zoom=-45000
-            self.pix_size = 3.2578  # YK@210324 for Zoom=-42000
-
-            # Videosrv capture size
-            # BL32XU Centos7
-            # self.image_size = 921615
-            # BL32XU Centos6
-            # self.image_size = 881323
-            self.image_size = 881295  # 2021/04/12 for latest videosrv
+            # self.config 'coaximage' sectionから数値を読む (beamline.ini)
+            self.width = self.config.getfloat("coaximage", "width")
+            self.height = self.config.getfloat("coaximage", "height")
+            self.pix_size = self.config.getfloat("coaximage", "pix_size")
+            self.image_size = self.config.getfloat("coaximage", "image_size")
 
         # This is very dangerous. Values should be referred from 'bl32xu.conf'
         # updated 181209 CentOS7 USB new camera

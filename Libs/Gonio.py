@@ -26,8 +26,9 @@ class Gonio:
         # self.enc=Enc()
         # self.enc.openPort()
 
-        self.convertion = 6667
-        self.base = 210.0
+        self.sense_phi = -1
+        self.convertion = 5000
+        self.base = 0.0
 
     def goMountPosition(self):
         bssconf = BSSconfig()
@@ -58,7 +59,7 @@ class Gonio:
     def getPhi(self):
         phi_pulse = self.phi.getPosition()
         # print phi_pulse
-        phi_deg = float(phi_pulse[0]) / float(self.convertion) + self.base
+        phi_deg = float(phi_pulse[0] * self.sense_phi) / float(self.convertion) + self.base
 
         phi_deg = round(phi_deg, 3)
         # print phi_deg
@@ -252,13 +253,10 @@ class Gonio:
         if phi < -720.0:
             phi = phi + 720.0
 
-        convertion = 6667  # deg2pulse
-        dif = phi * convertion
+        dif = phi * self.convertion
+        orig = self.base * self.convertion
 
-        base = 210
-
-        orig = base * convertion
-        pos_pulse = -(orig + -dif)
+        pos_pulse = -self.sense_phi*(orig-dif)
 
         self.phi.move(pos_pulse)
 
