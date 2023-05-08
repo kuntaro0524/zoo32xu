@@ -12,7 +12,6 @@ import logging
 
 beamline = "BL32XU"
 
-
 def read_camera_inf(infin):
     ret = {}
     origin_shift_x, origin_shift_y = None, None
