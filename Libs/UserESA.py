@@ -55,8 +55,8 @@ class UserESA():
         self.df["cover_flag"] = self.config.getint("experiment", "cover_flag")
 
     # ビームライン、実験モードと結晶のタイプから実験パラメータを取得する
-    def getParams(self, desired_exp_string, type_crystal, mode):
-        type_crystal = type_crystal.lower()
+    # 2023/05/09 type_crystal は使わない
+    def getParams(self, desired_exp_string, mode):
         desired_exp_string = desired_exp_string.lower()
 
         # DEFAULT PARAMETER
@@ -75,56 +75,44 @@ class UserESA():
         # PARAMTER CONDITION
         self.param = {
             "scan_only":{
-                "soluble":{
-                    "single":   [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
-                    "helical":  [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
-                    "multi":    [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
-                    "mixed":    [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
-                },
+                "single":   [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
+                "helical":  [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
+                "multi":    [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
+                "mixed":    [9999, 9999, 0.3, dose_ds, 0, exp_raster, att_raster, hebi_att, 0],
             },
             "normal":{
-                "soluble":{
-                    "single":   [score_min, score_max, 0.1, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "helical":  [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "multi":    [score_min, score_max, 0.1, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "mixed":    [score_min, 9999, 0.1, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                },
+                "single":   [score_min, score_max, 0.1, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "helical":  [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "multi":    [score_min, score_max, 0.1, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "mixed":    [score_min, 9999, 0.1, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
             },
             "high_dose_scan":{
-                "soluble":{
-                    "single":   [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "helical":  [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "multi":    [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "mixed":    [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                },
+                "single":   [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "helical":  [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "multi":    [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "mixed":    [score_min, 9999, 0.05, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
             },
             "ultra_high_dose_scan":{
-                "soluble":{
-                    "single":   [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                    "helical":  [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                    "multi":    [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                    "mixed":    [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                },
+                "single":   [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
+                "helical":  [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
+                "multi":    [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
+                "mixed":    [score_min, score_max, 0.2, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
             },
             "phasing":{
-                "soluble":{
-                    "single":   [score_min, score_max, 0.1, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "helical":  [score_min, 9999, 0.05, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "multi":    [score_min, score_max, 0.1, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                    "mixed":    [score_min, score_max, 0.1, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
-                },
+                "single":   [score_min, score_max, 0.1, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "helical":  [score_min, 9999, 0.05, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "multi":    [score_min, score_max, 0.1, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
+                "mixed":    [score_min, score_max, 0.1, 5, raster_roi, exp_raster, att_raster, hebi_att, cover_flag],
             },
             "rapid":{
-                "soluble":{
-                    "single":   [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                    "helical":  [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                    "multi":    [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                    "mixed":    [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
-                },
+                "single":   [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
+                "helical":  [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
+                "multi":    [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
+                "mixed":    [score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, 100, 100, cover_flag],
             },
         }
 
-        return self.param[desired_exp_string][type_crystal][mode]
+        return self.param[desired_exp_string][mode]
     
     def checkLN2flag(self):
         # self.dfのカラム "ln2_flag" について以下のパターンで処理を行う
@@ -410,7 +398,6 @@ class UserESA():
             n_crystals          = int(cols[11])
             total_osc           = float(cols[12])
             osc_width           = float(cols[13])
-            type_crystal        = "soluble"
             anomalous_flag      = cols[5]
             # LN2 flagについては、"no"の場合は0、それ以外は1とする
             ln2_flag            = 0 if cols[14].lower == "no" else 1
@@ -429,7 +416,7 @@ class UserESA():
             else:
                 wait_time = 30
 
-            # カメラ長を計算する 最も近い整数にしてしまう
+            # カメラ長を計算する 小数点以下1位に丸める
             distance = math.floor(self.calcDist(wavelength, resolution_limit)*10)/10 # 2020/11/24 modified by HM 
             hbeam, vbeam = self.checkBeamsize(beamsize)
 
@@ -438,7 +425,7 @@ class UserESA():
             print("Flux value is read from beamsize.conf: %5.2e\n" % flux)
 
             # Dose estimation for raster scan
-            score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag = self.getParams(desired_exp, type_crystal, mode)
+            score_min, score_max, raster_dose, dose_ds, raster_roi, exp_raster, att_raster, hebi_att, cover_flag = self.getParams(desired_exp, mode)
             # Calculate 'att_raster', 'exp_raster'
             att_raster, mod_exp_raster = self.defineScanCondition(desired_exp, wavelength, hbeam, vbeam, flux, exp_raster)
 
@@ -454,7 +441,7 @@ class UserESA():
                 cry_max_size = 25.0
 
             self.conds.append((puckid, pinid, mode, wavelength, loop_size, resolution_limit, max_crystal_size, beamsize, 
-                sample_name, desired_exp, n_crystals, total_osc, osc_width, type_crystal, anomalous_flag))
+                sample_name, desired_exp, n_crystals, total_osc, osc_width, anomalous_flag))
 
             if self.beamline.lower() == "bl32xu":
                 dist_raster = 200.0
