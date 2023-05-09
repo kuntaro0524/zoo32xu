@@ -9,10 +9,17 @@ NM added function to read xlsx file directly and output zoo.db by using ESA clas
 Author: Nobuhiro Mizuno
 """
 import sys, os, math, numpy, csv, re, datetime, xlrd, codecs
+import configparser
+import pandas as pd
+import numpy as np
 
 class UserESA():
     def __init__(self, fname=None, root_dir=".", beamline=None):
-        self.beamline = beamline
+        # beamlineの名前はconfigから読む
+        self.config = configparser.ConfigParser()
+        config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.config.read(config_path)
+
         self.fname = fname
         self.isRead = None
         self.isPrep = None
@@ -21,31 +28,49 @@ class UserESA():
         self.contents = []
 
         # configure file から情報を読む: beamlineの名前
-        import configparser
-        self.config = configparser.ConfigParser()
-        config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
-        self.config.read(config_path)
         self.beamline = self.config.get("beamline", "beamline")
         import BeamsizeConfig
         self.bsconf = BeamsizeConfig.BeamsizeConfig()
 
+    def setDefaults(self):
+        # self.df に以下のカラムを追加する
+        # self.config.getfloat("experiment", "score_min") などで読み込む
+        # "score_min"
+        # "score_max"
+        # "raster_dose"
+        # "dose_ds"
+        # "raster_roi"
+        # "exp_raster"
+        # "att_raster"
+        # "hebi_att"
+        # "cover_flag"
+        self.df["score_min"] = self.config.getfloat("experiment", "score_min")
+        self.df["score_max"] = self.config.getfloat("experiment", "score_max")
+        self.df["raster_dose"] = self.config.getfloat("experiment", "raster_dose")
+        self.df["dose_ds"] = self.config.getfloat("experiment", "dose_ds")
+        self.df["raster_roi"] = self.config.getfloat("experiment", "raster_roi")
+        self.df["exp_raster"] = self.config.getfloat("experiment", "exp_raster")
+        self.df["att_raster"] = self.config.getfloat("experiment", "att_raster")
+        self.df["hebi_att"] = self.config.getfloat("experiment", "hebi_att")
+        self.df["cover_flag"] = self.config.getint("experiment", "cover_flag")
+
+    # ビームライン、実験モードと結晶のタイプから実験パラメータを取得する
     def getParams(self, desired_exp_string, type_crystal, mode):
         type_crystal = type_crystal.lower()
         desired_exp_string = desired_exp_string.lower()
 
         # DEFAULT PARAMETER
-        score_min   = 10
-        score_max   = 100
-        raster_dose = 0.1
-        dose_ds     = 10
-        raster_roi  = 1
-        if self.beamline.lower() == "bl32xu":
-            exp_raster = 0.01
-        elif self.beamline.lower() == "bl45xu":
-            exp_raster = 0.02
-        att_raster  = 20
-        hebi_att    = 20
-        cover_flag  = 1
+        # beamline.ini から読む
+        #self.beamline = self.config.get("beamline", "beamline")
+        score_min   = self.config.getfloat("experiment", "score_min")
+        score_max   = self.config.getfloat("experiment", "score_max")
+        raster_dose = self.config.getfloat("experiment", "raster_dose")
+        dose_ds     = self.config.getfloat("experiment", "dose_ds")
+        raster_roi  = self.config.getfloat("experiment", "raster_roi")
+        exp_raster = self.config.getfloat("experiment", "exp_raster")
+        att_raster  = self.config.getfloat("experiment", "att_raster")
+        hebi_att    = self.config.getfloat("experiment", "hebi_att")
+        cover_flag  = self.config.getint("experiment", "cover_flag")
 
         # PARAMTER CONDITION
         self.param = {
@@ -100,12 +125,76 @@ class UserESA():
         }
 
         return self.param[desired_exp_string][type_crystal][mode]
+    
+    def checkLN2flag(self):
+        # self.dfのカラム "ln2_flag" について以下のパターンで処理を行う
+        # 'NaN'であれば ０
+        # 'Yes' or 'yes' or "YES" であれば １
+        # 'Unavailable' であれば ０
+        # それ以外であれば ０
+        self.df['ln2_flag'] = self.df['ln2_flag'].fillna(0)
+        self.df['ln2_flag'] = self.df['ln2_flag'].replace('Yes', 1)
+        self.df['ln2_flag'] = self.df['ln2_flag'].replace('yes', 1)
+        self.df['ln2_flag'] = self.df['ln2_flag'].replace('YES', 1)
+        self.df['ln2_flag'] = self.df['ln2_flag'].replace('Unavailable', 0)
 
+        print(self.df)
+
+    def checkZoomFlag(self):
+        # self.dfのカラム "ln2_flag" について以下のパターンで処理を行う
+        # 'NaN'であれば ０
+        # 'Yes' or 'yes' or "YES" であれば １
+        # 'Unavailable' であれば ０
+        # それ以外であれば ０
+        self.df['zoom_flag'] = self.df['zoom_flag'].fillna(0)
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('Yes', 1)
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('yes', 1)
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('YES', 1)
+        # self.df['zoom_flag']が　'No' or 'no' or 'NO' or 'Unavailable' であれば ０
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('No', 0)
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('no', 0)
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('NO', 0)
+        self.df['zoom_flag'] = self.df['zoom_flag'].replace('Unavailable', 0)
+
+        # DataFrameを省略することなく表示する
+        pd.set_option('display.max_rows', None)
+        print(self.df)
+
+    def checkPinFlag(self):
+        print(self.df['pin_flag'])
+        # self.df['wait_time']の初期値を30.0とする
+        self.df['wait_time'] = 30.0
+        # self.df にはすでに"pin_flag"があるので、それを利用する
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "spine"　であれば self.df['wait_time'] = 10.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'spine', 'wait_time'] = 10.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "als + ssrl"　であれば self.df['wait_time'] = 20.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'als + ssrl', 'wait_time'] = 20.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "copper"　であれば self.df['wait_time'] = 60.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'copper', 'wait_time'] = 60.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "no-wait"　であれば self.df['wait_time'] = 0.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'no-wait', 'wait_time'] = 0.0
+
+    def fillFlux(self):
+        # self.df['flux']の数値を読み込む
+        # self.bsconf.getFluxAtWavelength(hbeam, vbeam, wavelength)を呼び出す
+        # この関数の引数に self.df['hbeam'], self.df['vbeam'], self.df['wavelength']を渡す
+        # 戻り値はfluxである
+        # fluxの値をself.df['flux']に代入する
+        self.df['flux'] = self.df.apply(lambda x: self.bsconf.getFluxAtWavelength(x['hbeam'], x['vbeam'], x['wavelength']), axis=1)
+
+    def splitBeamsizeInfo(self):
+        # self.df['beamsize']の文字列をself.checkBeamsizeの引数として渡す
+        # self.checkBeamsize()は self.df['beamsize']を引数とし、戻り値は(hbeam, vbeam)である(どちらもfloatのタプル)
+        # hbeam, vbeamの数値は新たなカラムとしてself.dfに追加される 'hbeam', 'vbeam'
+        self.df['hbeam'], self.df['vbeam'] = zip(*self.df['beamsize'].map(self.checkBeamsize))
+        
+    # Raster scanの露光条件を定義する
     def defineScanCondition(self, desired_exp_string, wavelength, beam_h, beam_v, flux, exp_raster):
         # Dose for scan
         import Raddose
         e = Raddose.Raddose()
     
+        # energy <> wavelength 変換
         energy = 12.3984 / wavelength
 
         # Normal raster scan : 2E10 photons/frame
@@ -155,6 +244,30 @@ class UserESA():
 
         return
 
+    def read_new(self):
+        # pandasを利用して.xlsxファイルを読み込む
+        # tabの名前を指定して読む "ZOOPREP_YYMMDD_NAME_BLNAME_v2"
+        # pandasを利用してエクセルのタブのリストを取得して表示する
+        print(pd.ExcelFile(self.fname).sheet_names)
+
+        # エクセルのタブ名が "ZOOPREP_YYMMDD_NAME_BLNAME_v2" であるタブを読み込む
+        # Index(['PuckID', 'PinID', 'SampleName', 'Objective', 'Mode', 'HA',
+        # 'Wavelength [Å]', 'Hor. scan length [µm]', 'Resolution limit [Å]',
+        # 'Beam size [um]\n(H x V)', 'Crystal size [µm]',
+        # '# of crystals\n / Loop', 'Total osc \n/ Crystal', 'Osc. Width',
+        # 'LN2\nSplash', 'PIN Type', 'Zoom\nCapture', 'Unnamed: 17',
+        # 'Confirmation required'],
+        # column名を指定する
+        columns = ['puckid', 'pinid', 'sample_name', 'desired_exp', 'mode', 'anomalous_flag', \
+            'wavelength', 'loop_size', 'resolution_limit', 'beamsize', 'max_crystal_size', 'n_crystals', 'total_osc', 'osc_width', \
+                'ln2_flag', 'pin_flag', 'zoom_flag', 'what', 'confirmation_require']
+
+        # データは4行目から
+        self.df = pd.read_excel(self.fname, sheet_name="ZOOPREP_YYMMDD_NAME_BLNAME_v2", header=2)
+        # 列名を指定する
+        self.df.columns = columns
+        self.isPrep = True
+        
     def read(self):
         self.cols = []
 
@@ -238,6 +351,9 @@ class UserESA():
         # camera_len_minimum is 125.0 mm at BL32XU (added by HM 2020/11/24)
         if camera_len <= 125.0 and self.beamline.lower() == "bl32xu":
             camera_len = 125.0
+
+        camera_len = math.floor(camera_len*10)/10 # 2020/11/24 modified by HM 
+
         return camera_len
 
     def checkBeamsize(self, beamsize_char):
@@ -246,6 +362,11 @@ class UserESA():
             hbeam = float(cols[0])
             vbeam = float(cols[1])
             return hbeam, vbeam
+
+    # データフレームの分解能限界からカメラ長を計算して格納する
+    def addDistance(self):
+        self.df['distance'] = self.df.apply(lambda x: self.calcDist(x['wavelength'], x['resolution_limit']), axis=1)
+        print(self.df['distance'])
 
     def makeCondList(self):
         if self.isGot:
@@ -279,9 +400,11 @@ class UserESA():
             print((cols[6]))
             wavelength          = float(cols[6])
             loop_size           = float(cols[7])
+            # resolution_limitが10.0より大きい場合は1.5に設定するという意味だそうな
             resolution_limit    = float(cols[8]) if float(cols[8]) <= 10.0 else 1.5
             max_crystal_size    = float(cols[10])
             beamsize            = cols[9]
+            # sample名に()が入っている場合は-に置換する
             sample_name         = cols[2].replace("(", "-").replace(")", "-")
             desired_exp         = cols[3]
             n_crystals          = int(cols[11])
@@ -289,8 +412,10 @@ class UserESA():
             osc_width           = float(cols[13])
             type_crystal        = "soluble"
             anomalous_flag      = cols[5]
+            # LN2 flagについては、"no"の場合は0、それ以外は1とする
             ln2_flag            = 0 if cols[14].lower == "no" else 1
             pin_flag            = cols[15]
+            # Zoom flag については、"no"の場合は0、それ以外は1とする
             zoom_flag           = 0 if cols[16].lower == "no" else 1
 
             if pin_flag.lower() == "spine":
@@ -304,7 +429,7 @@ class UserESA():
             else:
                 wait_time = 30
 
-            #distance = math.floor(self.calcDist(wavelength, resolution_limit)/10)*10 # by N.Mizuno at 2020/02/06
+            # カメラ長を計算する 最も近い整数にしてしまう
             distance = math.floor(self.calcDist(wavelength, resolution_limit)*10)/10 # 2020/11/24 modified by HM 
             hbeam, vbeam = self.checkBeamsize(beamsize)
 
@@ -359,5 +484,16 @@ class UserESA():
 if __name__ == "__main__":
     root_dir = os.getcwd()
     u2db = UserESA(sys.argv[1], root_dir, beamline="BL32XU")
-    u2db.makeCondList()
-    u2db.makeCSV(u2db.csvout)
+    u2db.read_new()
+    u2db.checkLN2flag()
+    u2db.checkZoomFlag()
+    u2db.addDistance()
+    u2db.checkPinFlag()
+    u2db.splitBeamsizeInfo()
+    u2db.fillFlux()
+    u2db.setDefaults()
+
+    print(u2db.df.flux)
+    print(u2db.df.columns)
+    #u2db.makeCondList()
+    #u2db.makeCSV(u2db.csvout)

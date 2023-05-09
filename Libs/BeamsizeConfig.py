@@ -30,7 +30,7 @@ class BeamsizeConfig:
 
         # Default configure file
         self.bssconfig_dir = self.config.get("dirs", "bssconfig_dir")
-        self.configfile = os.path.join(self.bssconfig_dir, "beamsize.conf")
+        self.configfile = os.path.join(self.bssconfig_dir, "beamsize.config")
 
         self.debug = False
 

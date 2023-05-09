@@ -1,0 +1,42 @@
+[beamline]
+beamline = BL32XU
+[server]
+bss_server = 192.168.163.2
+bss_port = 5555
+blanc_address = 172.24.242.41
+
+[dirs]
+zooroot = /staff/bl32xu/BLsoft/NewZoo/
+logdir = $zooroot/Log/
+zoologdir= $zooroot/ZooLogs/
+bssconfig_dir=/home/kuntaro/kundev/zoo32xu-honki/Libs
+
+[files]
+bssconfig_file=/staff/config/bl32xu/bss/bss.config
+inocc_image=/staff/config/bl32xu/bss/test.ppm
+logging_conf=/staff/bl32xu/BLsoft/NewZoo/Libs/logging.conf
+
+[capture]
+bright_default=4300
+gain_default=1200
+contrast_default=18000
+# Dark mode
+bright_default_dark=5000
+gain_default_dark=500
+
+[coaximage]
+width=612.0
+height=480.0
+image_size=881295
+pix_size = 3.2578
+
+[experiment]
+score_min = 10
+score_max = 100
+raster_dose = 0.1
+dose_ds = 10.0
+raster_roi = 1
+exp_raster = 0.01
+att_raster = 20
+hebi_att = 20
+cover_flag = 1
