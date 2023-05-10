@@ -6,11 +6,13 @@ import os,sys
 # 含まれるデータは
 # energy,dose_mgy_per_photon,density_limit
 # 左から順に、エネルギー、1フォトンあたりの線量、損傷までのリミット(photons/um2)
-df = pd.read_csv("en_dose.csv")
+df = pd.read_csv("en_dose_lys.csv")
+df2 = pd.read_csv("en_dose_oxi.csv")
 
 # energy.vs.dose_mgy_per_photonのグラフを作成する
 import matplotlib.pyplot as plt
 plt.plot(df['energy'], df['dose_mgy_per_photon'])
+plt.plot(df2['energy'], df2['dose_mgy_per_photon'])
 plt.xlabel("Energy [keV]")
 plt.ylabel("Dose [mGy/photon]")
 plt.show()
