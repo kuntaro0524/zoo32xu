@@ -36,7 +36,8 @@ class Raddose():
         vbeam_mm = self.vbeam_size_um / 1000.0
         hbeam_mm = self.hbeam_size_um / 1000.0
 
-        oxistr = """#!/bin/csh
+        if self.sample == "oxi":
+            oxistr = """#!/bin/csh
 raddose << EOF  > %s
 ENERGY %12.5f
 CELL 180 178 209 90 90 90 
@@ -51,7 +52,8 @@ IMAGE 1
 EOF
 		""" % (self.logfile, self.energy, vbeam_mm, hbeam_mm, self.phosec, self.exptime)
 
-        lysstr = """#!/bin/csh
+        elif self.sample == "lys":
+            lysstr = """#!/bin/csh
 raddose << EOF > %s
 ENERGY %12.5f
 CELL 78 78 36 90 90 90"
@@ -133,7 +135,8 @@ EOF
         # print "DDDDDDD" , dose
         return dose
 
-    def getDose1sec(self, h_beam_um, v_beam_um, phosec, energy=12.3984, salcon=1500, remote=False):
+    def getDose1sec(self, h_beam_um, v_beam_um, phosec, energy=12.3984, salcon=1500, remote=False,sample="lys"):
+        self.sample = sample
         self.setSalCon(salcon)
         self.setPhosec(phosec)
         self.setExpTime(1.0)
