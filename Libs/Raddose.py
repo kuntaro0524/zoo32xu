@@ -37,7 +37,7 @@ class Raddose():
         hbeam_mm = self.hbeam_size_um / 1000.0
 
         if self.sample == "oxi":
-            oxistr = """#!/bin/csh
+            sample_str = """#!/bin/csh
 raddose << EOF  > %s
 ENERGY %12.5f
 CELL 180 178 209 90 90 90 
@@ -53,7 +53,7 @@ EOF
 		""" % (self.logfile, self.energy, vbeam_mm, hbeam_mm, self.phosec, self.exptime)
 
         elif self.sample == "lys":
-            lysstr = """#!/bin/csh
+            sample_str = """#!/bin/csh
 raddose << EOF > %s
 ENERGY %12.5f
 CELL 78 78 36 90 90 90"
@@ -70,9 +70,7 @@ EOF
 		""" % (self.logfile, self.energy, vbeam_mm, hbeam_mm, self.phosec, self.exptime, self.con, self.con)
         # print vbeam_mm,hbeam_mm
         comf = open(self.comfile, "w")
-        # comf.write("%s"%comstring)
-        # comf.write("%s"%oxistr)
-        comf.write("%s" % lysstr)
+        comf.write("%s" % sample_str)
         comf.close()
 
     def runRemote(self):
