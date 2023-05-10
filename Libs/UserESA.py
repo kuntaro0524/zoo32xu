@@ -12,6 +12,7 @@ import sys, os, math, numpy, csv, re, datetime, xlrd, codecs
 import configparser
 import pandas as pd
 import numpy as np
+import KUMA
 
 class UserESA():
     def __init__(self, fname=None, root_dir=".", beamline=None):
@@ -175,12 +176,11 @@ class UserESA():
         # self.checkBeamsize()は self.df['beamsize']を引数とし、戻り値は(hbeam, vbeam)である(どちらもfloatのタプル)
         # hbeam, vbeamの数値は新たなカラムとしてself.dfに追加される 'hbeam', 'vbeam'
         self.df['hbeam'], self.df['vbeam'] = zip(*self.df['beamsize'].map(self.checkBeamsize))
-        
+
     # Raster scanの露光条件を定義する
     def defineScanCondition(self, desired_exp_string, wavelength, beam_h, beam_v, flux, exp_raster):
-        # Dose for scan
-        import Raddose
-        e = Raddose.Raddose()
+        # Dose estimation will be conducted by KUMA
+        kuma = KUMA.KUMA()
     
         # energy <> wavelength 変換
         energy = 12.3984 / wavelength
@@ -195,14 +195,16 @@ class UserESA():
             hebi_att = trans
 
         elif desired_exp_string == "high_dose_scan":
-            dose_for_raster = 0.3 # MGy
-            dose_per_exptime = e.getDose(beam_h, beam_v, flux, exp_raster, energy=energy)
+            dose_for_raster = 0.30 # MGy
+            dose_per_exptime = kuma.getDose(beam_h, beam_v, flux, energy, exp_raster)
+            print(f'beam_h = {beam_h}, beam_v = {beam_v}, flux = {flux}, energy = {energy}')
+            print(f'dose_per_exptime = {dose_per_exptime}')
             trans = dose_for_raster / dose_per_exptime * 100.0
             print("Transmission = %10.5f" % trans)
 
         elif desired_exp_string == "ultra_high_dose_scan":
             dose_for_raster = 1.0  # MGy
-            dose_per_exptime = e.getDose(beam_h, beam_v, flux, exp_raster, energy=energy)
+            dose_per_exptime = kuma.getDose(beam_h, beam_v, flux, energy, exp_raster)
             trans = dose_for_raster / dose_per_exptime * 100.0
             print("Transmission = %10.5f" % trans)
 
@@ -217,6 +219,8 @@ class UserESA():
 
         return trans, mod_exp_raster
 
+    # end of defineScanCondition()
+        
     def makeCSV(self, zoo_csv=None):
         if not zoo_csv:
             return None
@@ -484,3 +488,5 @@ if __name__ == "__main__":
     print(u2db.df.columns)
     #u2db.makeCondList()
     #u2db.makeCSV(u2db.csvout)
+    trans,mod_exp=u2db.defineScanCondition("high_dose_scan", 1.0, 10, 15, 9.9E12, 0.01)
+    print(trans,mod_exp)
