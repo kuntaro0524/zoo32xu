@@ -115,7 +115,8 @@ EOF
         time.sleep(0.1)
         print(self.logfile)
         print(os.path.exists(self.logfile))
-        lines = open("%s" % self.logfile, encoding="CP932").readlines()
+        #lines = open("%s" % self.logfile, encoding="CP932").readlines()
+        lines = open("%s" % self.logfile).readlines()
         for line in lines:
             if line.rfind("image") != -1:
                 # print line.split()

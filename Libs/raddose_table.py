@@ -3,13 +3,13 @@ import Raddose
 
 if __name__ == "__main__":
     e = Raddose.Raddose()
-    # 6.0-30.0 keVまでを0.1 keV刻みで計算
+    #6-30keV
     import numpy as np
-    en_list = np.arange(6.0, 30.0, 0.1)
+    en_list = np.arange(6.0, 50.0, 0.5)
 
     ofile = open("dose.txt", "w")
     for en in en_list:
-        #dose = e.getDose(beam_h, beam_v, flux, exptime, energy=en)
-        dddd=e.getDose1sec(1.0, 1.0, 1.0, 1.0, energy=en)
-        ofile.write("%8.1f %8.3f MGy\n" % (en, dddd))
+        dddd=e.getDose1sec(1.0, 1.0, 1.0, energy=en)
+        ppp = 10.0 / dddd
+        ofile.write("%8.1f,%8.5e,%8.5e\n" % (en, dddd,ppp))
     ofile.close()

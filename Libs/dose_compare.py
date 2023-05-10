@@ -13,13 +13,11 @@ if __name__=="__main__":
     flux=2E10
     exptime = 1.0
 
-    pf_en = 12.3984 / 3.0
-    numoto_en = 12.3984/1.1
-    en_list=[pf_en,numoto_en,12.3984,13.0]
+    ofile = open("en_dose_1photon.csv","w")
 
     for en in en_list:
         dose=e.getDose(beam_h,beam_v,flux,exptime,energy=en)
         exptime_for_10MGy = 10.0 / dose
         photons_for_10MGy = exptime_for_10MGy * flux
         density_for_10MGy = photons_for_10MGy / beam_h / beam_v
-        print("%8.1f %8.3f MGy density for 10MGy: %6.3e"%(en,dose,density_for_10MGy))
+        ofile.write("%8.1f,%8.3f,%8.3e\n"%(en,dose,density_for_10MGy))
