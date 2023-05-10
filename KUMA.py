@@ -10,8 +10,13 @@ class KUMA:
         self.limit_dens = 1E10  # phs/um^2 this is for 1A wavelength
         # Kuntaro Log file
         self.logger = logging.getLogger('ZOO').getChild("KUMA")
-
         self.debug = True
+
+        # Dose limit file
+        # en_dose_lys.csv, en_dose_oxi.csv
+        # energy,dose_mgy_per_photon,density_limit
+        # 左から順に、エネルギー、1フォトンあたりの線量、損傷までのリミット(photons/um2)
+        self.dose_limit_file = "en_dose_lys.csv"
 
     def setPhotonDensityLimit(self, value):
         self.limit_dens = value
