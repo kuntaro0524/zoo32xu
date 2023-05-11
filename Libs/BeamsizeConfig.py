@@ -135,7 +135,8 @@ class BeamsizeConfig:
         if self.isInit == False:
             self.readConfig()
 
-        print("LENG=",len(self.beamsize_flux_list))
+        # self.isDebug=True
+        if self.debug: print("LENG=",len(self.beamsize_flux_list))
         for (h_beam, v_beam), flux_wave_list in self.beamsize_flux_list:
             #print h_beam, v_beam, flux_wave_list
             if h_beam == hsize and v_beam == vsize:
@@ -163,8 +164,9 @@ class BeamsizeConfig:
                     flux = f(work_x)
                     break
 
-        print("wavelength = ", wavelength)
-        print("Flux = ", flux)
+        if self.debug == True: 
+            print("wavelength = ", wavelength)
+            print("Flux = ", flux)
 
         return flux
 

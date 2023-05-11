@@ -38,12 +38,14 @@ class UserESA():
         # logger の設定
         self.logger = logging.getLogger("ZOO")
         self.logger.setLevel(logging.DEBUG)
+        # levelがwarningのときには標準出力とファイル両方に出力する
+        
         # create file handler which logs even debug messages
         self.logger_fh = logging.FileHandler('useresa.log')
         self.logger_fh.setLevel(logging.DEBUG)
         # create console handler with a higher log level
         self.logger_ch = logging.StreamHandler()
-        self.logger_ch.setLevel(logging.ERROR)
+        self.logger_ch.setLevel(logging.WARNING)
         # create formatter and add it to the handlers
         self.logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self.logger_fh.setFormatter(self.logger_formatter)
@@ -252,67 +254,64 @@ class UserESA():
         # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
         self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
 
-        print(self.df)
+        #print(self.df)
 
-        # # When a calculated transmission exceeds '100%' 
-        # if trans > 100.0:
-        #     mod_exp_raster = exp_raster * trans / 100.0
-        #     trans = 100.0
-        #     print("The transmission is over 100%!", trans)
-        #     print("Exposure time for raster scan is set to %5.2f sec" % mod_exp_raster)
-        # else:
-        #     mod_exp_raster = exp_raster
-
-        # return trans, mod_exp_raster
 
     # end of defineScanCondition()
 
-    # Raster scanの露光条件を定義する
-    def defineScanCondition_obsoleted(self, desired_exp_string, wavelength, beam_h, beam_v, flux, exp_raster):
-        # Dose estimation will be conducted by KUMA
-        kuma = KUMA.KUMA()
-    
-        # energy <> wavelength 変換
-        energy = 12.3984 / wavelength
-
-        # Normal raster scan : 2E10 photons/frame
-        if desired_exp_string == "normal" or desired_exp_string == "scan_only" or desired_exp_string == "phasing" or desired_exp_string == "rapid":
-            photons_per_image = 4E10 # photons
-            photons_per_exptime = flux * exp_raster
-            trans = photons_per_image / photons_per_exptime * 100.0
-            print("Transmission = %10.5f" % trans)
-            att_raster = trans
-            hebi_att = trans
-
-        elif desired_exp_string == "high_dose_scan":
-            dose_for_raster = 0.30 # MGy
-            dose_per_exptime = kuma.getDose(beam_h, beam_v, flux, energy, exp_raster)
-            # logger に書き込む
-            self.logger.info(f'beam_h = {beam_h}, beam_v = {beam_v}, flux = {flux}, energy = {energy}')
-            print(f'beam_h = {beam_h}, beam_v = {beam_v}, flux = {flux}, energy = {energy}')
-            print(f'dose_per_exptime = {dose_per_exptime}')
-            trans = dose_for_raster / dose_per_exptime * 100.0
-            print("Transmission = %10.5f" % trans)
-
-        elif desired_exp_string == "ultra_high_dose_scan":
-            dose_for_raster = 1.0  # MGy
-            dose_per_exptime = kuma.getDose(beam_h, beam_v, flux, energy, exp_raster)
-            trans = dose_for_raster / dose_per_exptime * 100.0
-            print("Transmission = %10.5f" % trans)
-
-        # When a calculated transmission exceeds '100%' 
-        if trans > 100.0:
-            mod_exp_raster = exp_raster * trans / 100.0
-            trans = 100.0
-            print("The transmission is over 100%!", trans)
-            print("Exposure time for raster scan is set to %5.2f sec" % mod_exp_raster)
-        else:
-            mod_exp_raster = exp_raster
-
-        return trans, mod_exp_raster
-
-    # end of defineScanCondition()
+    def makeWargningMessage(self): 
+        # 1 frameあたりのdoseが0.3MGyを超えていて、self.df['desired_exp'] が 'high_dose_scan' もしくは 'ultra_high_dose_scan'出ない場合は警告を出す
+        # 丁寧な文字列でloggerを出力する
+        # "Warning: dose/frame exceeds 0.3 MGy. Please check the exposure condition."
+        # "puckid: 'sample' pinid: 01 dose/frame 0.5 MGy"
+        mask = (self.df['dose_per_frame'] > 0.3) & (self.df['desired_exp'] != 'high_dose_scan') & (self.df['desired_exp'] != 'ultra_high_dose_scan')
         
+        if mask.any():
+            for i in range(len(self.df)):
+                if mask[i]:
+                    self.logger.warning("Warning: dose/frame exceeds 0.3 MGy. Please check the exposure condition.")
+                    self.logger.warning("puckid: {} pinid: {} dose/frame {} MGy".format(self.df['puckid'][i], self.df['pinid'][i], self.df['dose_per_frame'][i]))
+        else:
+            self.logger.info("No warning message for dose/frame check.")
+
+        # self.df['ppf_raster']が 4.0E10 を下回る場合には警告を出す
+        # "Warning: ppf_raster is less than 4.0E10. Please check the exposure condition."
+        mask2 = (self.df['ppf_raster'] < 4.0E10)
+        if mask2.any():
+            for i in range(len(self.df)):
+                if mask2[i]:
+                    self.logger.warning("Warning: ppf_raster is less than 4.0E10. Please check the exposure condition.")
+                    self.logger.warning("puckid: {} pinid: {} ppf_raster {}".format(self.df['puckid'][i], self.df['pinid'][i], self.df['ppf_raster'][i]))
+        else:
+            self.logger.info("No warning message for photons/frame check.")
+
+    # self.dfに格納されているから、データexp_rasterに変更を加える必要がある場合には変更を加える
+    def modifyExposureConditions(self):
+        # self.df['att_raster']　が 100.0 を超えている場合
+        # さらにself.df['exp_raster']を長くして、その分 self.df['att_raster'] = 100.0とする
+        # その場合、self.df['hebi_att']も変更する必要がある
+        # extend_ratio = self.df['att_raster'] / 100.0
+        # new_exp_raster = self.df['exp_raster'] * extend_ratio
+        # この数値を self.df['exp_raster'] に代入する
+        mask = (self.df['att_raster'] > 100.0)
+        self.df.loc[mask, 'exp_raster'] = self.df['exp_raster'] * self.df['att_raster'] / 100.0
+        self.df.loc[mask, 'att_raster'] = 100.0
+        self.df.loc[mask, 'hebi_att'] = 100.0
+        # self.loggerにWarningを出す
+        # mask が Trueの場合のみ、Warningを出す
+        # そのとき 'puckid', 'pinid' を出力する
+        # さらに exp_raster の数値も同時に出力する
+        if mask.any():
+            self.logger.warning("att_raster > 100.0 -> 'exp_raster' was modified")
+            self.logger.warning("Please carefully check 'beam size' and 'desired experimental mode'")
+            self.logger.warning(self.df.loc[mask, ['puckid', 'pinid', 'sample_name', 'exp_raster']])
+
+        # self.dfに含まれる露光条件で
+        # ppf_rasterが 4.0E10 を下回る場合
+        # dose_per_frameが 0.3 MGy を超える場合 にWarning messageを出す
+        # loggingに記録する
+        self.makeWargningMessage()
+
     def makeCSV(self, zoo_csv=None):
         if not zoo_csv:
             return None
@@ -332,7 +331,7 @@ class UserESA():
         # pandasを利用して.xlsxファイルを読み込む
         # tabの名前を指定して読む "ZOOPREP_YYMMDD_NAME_BLNAME_v2"
         # pandasを利用してエクセルのタブのリストを取得して表示する
-        print(pd.ExcelFile(self.fname).sheet_names)
+        #print(pd.ExcelFile(self.fname).sheet_names)
 
         # エクセルのタブ名が "ZOOPREP_YYMMDD_NAME_BLNAME_v2" であるタブを読み込む
         # Index(['PuckID', 'PinID', 'SampleName', 'Objective', 'Mode', 'HA',
@@ -454,7 +453,7 @@ class UserESA():
         self.df['wavelength'] = self.df['wavelength'].astype(float)
         self.df['resolution_limit'] = self.df['resolution_limit'].astype(float)
         self.df['distance'] = self.df.apply(lambda x: self.calcDist(x['wavelength'], x['resolution_limit']), axis=1)
-        print(self.df['distance'])
+        #print(self.df['distance'])
 
     def makeCondList(self):
         if self.isGot:
@@ -580,8 +579,10 @@ if __name__ == "__main__":
     u2db.fillFlux()
     u2db.setDefaults()
 
-    print(u2db.df.columns)
+    #print(u2db.df.columns)
     u2db.defineScanCondition()
+    u2db.modifyExposureConditions()
+    #print(u2db.df)
     # u2db.df['ppf_raster']を 指数表記で出力
     pd.options.display.float_format = '{:.2e}'.format
-    print(u2db.df['ppf_raster'])
+    #print(u2db.df['ppf_raster'])
