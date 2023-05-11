@@ -13,6 +13,8 @@ import configparser
 import pandas as pd
 import numpy as np
 import KUMA
+# logger の設定
+import logging
 
 class UserESA():
     def __init__(self, fname=None, root_dir=".", beamline=None):
@@ -32,6 +34,23 @@ class UserESA():
         self.beamline = self.config.get("beamline", "beamline")
         import BeamsizeConfig
         self.bsconf = BeamsizeConfig.BeamsizeConfig()
+
+        # logger の設定
+        self.logger = logging.getLogger("ZOO")
+        self.logger.setLevel(logging.DEBUG)
+        # create file handler which logs even debug messages
+        self.logger_fh = logging.FileHandler('useresa.log')
+        self.logger_fh.setLevel(logging.DEBUG)
+        # create console handler with a higher log level
+        self.logger_ch = logging.StreamHandler()
+        self.logger_ch.setLevel(logging.ERROR)
+        # create formatter and add it to the handlers
+        self.logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.logger_fh.setFormatter(self.logger_formatter)
+        self.logger_ch.setFormatter(self.logger_formatter)
+        # add the handlers to logger
+        self.logger.addHandler(self.logger_fh)
+        self.logger.addHandler(self.logger_ch)
 
     def setDefaults(self):
         # self.df に以下のカラムを追加する
@@ -127,7 +146,7 @@ class UserESA():
         self.df['ln2_flag'] = self.df['ln2_flag'].replace('YES', 1)
         self.df['ln2_flag'] = self.df['ln2_flag'].replace('Unavailable', 0)
 
-        print(self.df)
+        #print(self.df)
 
     def checkZoomFlag(self):
         # self.dfのカラム "ln2_flag" について以下のパターンで処理を行う
@@ -147,10 +166,10 @@ class UserESA():
 
         # DataFrameを省略することなく表示する
         pd.set_option('display.max_rows', None)
-        print(self.df)
+        #print(self.df)
 
     def checkPinFlag(self):
-        print(self.df['pin_flag'])
+        #print(self.df['pin_flag'])
         # self.df['wait_time']の初期値を30.0とする
         self.df['wait_time'] = 30.0
         # self.df にはすでに"pin_flag"があるので、それを利用する
@@ -178,7 +197,78 @@ class UserESA():
         self.df['hbeam'], self.df['vbeam'] = zip(*self.df['beamsize'].map(self.checkBeamsize))
 
     # Raster scanの露光条件を定義する
-    def defineScanCondition(self, desired_exp_string, wavelength, beam_h, beam_v, flux, exp_raster):
+    # Pandas dataframeに対して一気に処理を行う
+    def defineScanCondition(self):
+        # Dose estimation will be conducted by KUMA
+        kuma = KUMA.KUMA()
+    
+        # self.df['wavelgnth']からself.df['energy']を計算する
+        self.df['energy'] = 12.3984 / self.df['wavelength']
+
+        # self.df['desired_exp']の文字列を小文字に変換した文字列が "normal", "scan_only", "phasing", "rapid"の場合は以下の処理を行う
+        # photons_per_image は 4E10 で固定する
+        # photons_per_exptime は flux * exp_raster で計算する
+        # df['att_raster'] = photons_per_image / photons_per_exptime * 100.0 とする
+        # df['hebi_att'] = photons_per_image / photons_per_exptime * 100.0 とする
+        # maskを利用して条件ごとに処理をしていく
+        mask1 = (self.df['desired_exp'] == 'normal') | (self.df['desired_exp'] == 'scan_only') | (self.df['desired_exp'] == 'phasing') | (self.df['desired_exp'] == 'rapid')
+        photons_per_image = 4E10
+        # 1 secあたりの最大フォトン数を計算する
+        photons_per_exptime = self.df['flux'] * self.df['exp_raster']
+        # 1 frameあたりに必要なフォトン数を入れるためのatt_factorを計算する
+        self.df.loc[mask1, 'att_raster'] = photons_per_image / photons_per_exptime * 100.0
+        # 1 frameあたりに必要なフォトン数を入れるためのhebi_att_factorを計算する
+        self.df.loc[mask1, 'hebi_att'] = photons_per_image / photons_per_exptime * 100.0
+        # 1 frameあたりのphotonsを計算する
+        self.df.loc[mask1, 'ppf_raster'] = photons_per_image
+        # 1 frameあたりのdoseを計算する
+        # kuma.getDose()の引数は hbeam, vbeam, flux, energy, exp_raster
+        # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
+        self.df.loc[mask1, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
+
+        # mask2 
+        mask2 = (self.df['desired_exp'] == 'high_dose_scan')
+        dose_for_raster = 0.30 # MGy
+        # 1 frameあたりのdoseを計算する
+        self.df.loc[mask2, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster'])
+        # transmissionは dose_for_raster / dose_per_frame * 100.0 で計算する
+        self.df.loc[mask2, 'att_raster'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
+        self.df.loc[mask2, 'hebi_att'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
+        # 'ppf' = photons per frame
+        self.df.loc[mask2, 'ppf_raster'] = self.df['flux'] * self.df['exp_raster'] * self.df['att_raster'] / 100.0
+        # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
+        self.df.loc[mask2, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
+
+        # masks
+        mask3 = (self.df['desired_exp'] == 'ultra_high_dose_scan')
+        dose_for_raster = 1.0 # MGy
+        # 1 frame あたりのdoseを計算する
+        self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster'])
+        # transmissionは dose_for_raster / dose_per_frame * 100.0 で計算する
+        self.df.loc[mask3, 'att_raster'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
+        self.df.loc[mask3, 'hebi_att'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
+        # 'ppf' = photons per frame
+        self.df.loc[mask3, 'ppf_raster'] = self.df['flux'] * self.df['exp_raster'] * self.df['att_raster'] / 100.0
+        # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
+        self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
+
+        print(self.df)
+
+        # # When a calculated transmission exceeds '100%' 
+        # if trans > 100.0:
+        #     mod_exp_raster = exp_raster * trans / 100.0
+        #     trans = 100.0
+        #     print("The transmission is over 100%!", trans)
+        #     print("Exposure time for raster scan is set to %5.2f sec" % mod_exp_raster)
+        # else:
+        #     mod_exp_raster = exp_raster
+
+        # return trans, mod_exp_raster
+
+    # end of defineScanCondition()
+
+    # Raster scanの露光条件を定義する
+    def defineScanCondition_obsoleted(self, desired_exp_string, wavelength, beam_h, beam_v, flux, exp_raster):
         # Dose estimation will be conducted by KUMA
         kuma = KUMA.KUMA()
     
@@ -197,6 +287,8 @@ class UserESA():
         elif desired_exp_string == "high_dose_scan":
             dose_for_raster = 0.30 # MGy
             dose_per_exptime = kuma.getDose(beam_h, beam_v, flux, energy, exp_raster)
+            # logger に書き込む
+            self.logger.info(f'beam_h = {beam_h}, beam_v = {beam_v}, flux = {flux}, energy = {energy}')
             print(f'beam_h = {beam_h}, beam_v = {beam_v}, flux = {flux}, energy = {energy}')
             print(f'dose_per_exptime = {dose_per_exptime}')
             trans = dose_for_raster / dose_per_exptime * 100.0
@@ -208,11 +300,11 @@ class UserESA():
             trans = dose_for_raster / dose_per_exptime * 100.0
             print("Transmission = %10.5f" % trans)
 
-        # When a calculated transmission exceeds '1.00'
+        # When a calculated transmission exceeds '100%' 
         if trans > 100.0:
             mod_exp_raster = exp_raster * trans / 100.0
             trans = 100.0
-            print("The transmission is over 1.000!", trans)
+            print("The transmission is over 100%!", trans)
             print("Exposure time for raster scan is set to %5.2f sec" % mod_exp_raster)
         else:
             mod_exp_raster = exp_raster
@@ -357,6 +449,10 @@ class UserESA():
 
     # データフレームの分解能限界からカメラ長を計算して格納する
     def addDistance(self):
+        # dataframe中の 'wavelength', 'resolution_limit'を利用してカメラ長を計算する
+        # 各数値は、self.df['wavelength'], self.df['resolution_limit']で取得できるが文字列の可能性があるので数値にしてから利用する
+        self.df['wavelength'] = self.df['wavelength'].astype(float)
+        self.df['resolution_limit'] = self.df['resolution_limit'].astype(float)
         self.df['distance'] = self.df.apply(lambda x: self.calcDist(x['wavelength'], x['resolution_limit']), axis=1)
         print(self.df['distance'])
 
@@ -484,9 +580,8 @@ if __name__ == "__main__":
     u2db.fillFlux()
     u2db.setDefaults()
 
-    print(u2db.df.flux)
     print(u2db.df.columns)
-    #u2db.makeCondList()
-    #u2db.makeCSV(u2db.csvout)
-    trans,mod_exp=u2db.defineScanCondition("high_dose_scan", 1.0, 10, 15, 9.9E12, 0.01)
-    print(trans,mod_exp)
+    u2db.defineScanCondition()
+    # u2db.df['ppf_raster']を 指数表記で出力
+    pd.options.display.float_format = '{:.2e}'.format
+    print(u2db.df['ppf_raster'])
