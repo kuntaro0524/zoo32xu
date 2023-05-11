@@ -54,6 +54,8 @@ class UserESA():
         self.logger.addHandler(self.logger_fh)
         self.logger.addHandler(self.logger_ch)
 
+        self.root_dir = root_dir
+
     def setDefaults(self):
         # self.df に以下のカラムを追加する
         # self.config.getfloat("experiment", "score_min") などで読み込む
@@ -66,15 +68,57 @@ class UserESA():
         # "att_raster"
         # "hebi_att"
         # "cover_flag"
+        # "exp_ds"
         self.df["score_min"] = self.config.getfloat("experiment", "score_min")
         self.df["score_max"] = self.config.getfloat("experiment", "score_max")
         self.df["raster_dose"] = self.config.getfloat("experiment", "raster_dose")
         self.df["dose_ds"] = self.config.getfloat("experiment", "dose_ds")
         self.df["raster_roi"] = self.config.getfloat("experiment", "raster_roi")
+        self.df["exp_ds"] = self.config.getfloat("experiment", "exp_ds")
         self.df["exp_raster"] = self.config.getfloat("experiment", "exp_raster")
+        # att_raster の数値を取得して小数点以下第一位までに丸める
         self.df["att_raster"] = self.config.getfloat("experiment", "att_raster")
-        self.df["hebi_att"] = self.config.getfloat("experiment", "hebi_att")
-        self.df["cover_flag"] = self.config.getint("experiment", "cover_flag")
+        self.df["att_raster"] = round(self.df["att_raster"], 1)
+        self.df["hebi_att"] = self.df["att_raster"]
+        self.df["cover_scan_flag"] = self.config.getint("experiment", "cover_flag")
+        # 結晶サイズは max_crystal_size として読み込む
+        self.df['cry_min_size_um'] = self.df['max_crystal_size']
+        self.df['cry_max_size_um'] = self.df['max_crystal_size']
+        # root_dir は self.root_dir として読み込む
+        self.df['root_dir'] = self.root_dir
+        # p_indexはDataFrameのインデックスと同じで良い
+        self.df['p_index'] = self.df.index
+        # offset_angle は 0 とする
+        self.df['offset_angle'] = 0
+        # reduced_fact は 1 とする
+        self.df['reduced_fact'] = 1
+        # ntimes は 1 とする
+        self.df['ntimes'] = 1
+        # meas_name は 変換に利用したファイル名を入れておく
+        self.df['meas_name'] = self.fname 
+        # hel_full_osc,hel_part_osc
+        self.df['hel_full_osc'] = 60.0
+        self.df['hel_part_osc'] = 30.0
+
+        # 'desired_exp' と 'mode' から実験パラメータを設定する
+        # 1) desired_exp が "scan_only" のとき 
+        # score_min, score_max ともに 9999 とする
+        # raster_dose: 0.3, dose_ds: 0.0, cover_flag: 0
+        self.df.loc[self.df['desired_exp'] == "scan_only", 'score_min'] = 9999
+        self.df.loc[self.df['desired_exp'] == "scan_only", 'raster_dose'] = 0.3
+        self.df.loc[self.df['desired_exp'] == "scan_only", 'dose_ds'] = 0.0
+        self.df.loc[self.df['desired_exp'] == "scan_only", 'cover_scan_flag'] = 0
+
+        # 2) desired_exp が "normal" のとき
+        # mode が "helical" の場合には、score_max を 9999 とする
+        self.df.loc[self.df['desired_exp'] == "normal", 'score_max'] = 9999
+
+        # 3) desired_exp が "ultra_high_dose_scan" のとき
+        # dose_ds = 9.0 とする
+        self.df.loc[self.df['desired_exp'] == "ultra_high_dose_scan", 'dose_ds'] = 9.0
+        # 4) desired_exp が "phaing" のとき
+        # dose_ds = 5.0 とする
+        self.df.loc[self.df['desired_exp'] == "phasing", 'dose_ds'] = 5.0
 
     # ビームライン、実験モードと結晶のタイプから実験パラメータを取得する
     # 2023/05/09 type_crystal は使わない
@@ -147,6 +191,7 @@ class UserESA():
         self.df['ln2_flag'] = self.df['ln2_flag'].replace('yes', 1)
         self.df['ln2_flag'] = self.df['ln2_flag'].replace('YES', 1)
         self.df['ln2_flag'] = self.df['ln2_flag'].replace('Unavailable', 0)
+        self.df['ln2_flag'] = self.df['ln2_flag'].replace('-', 0)
 
         #print(self.df)
 
@@ -156,15 +201,15 @@ class UserESA():
         # 'Yes' or 'yes' or "YES" であれば １
         # 'Unavailable' であれば ０
         # それ以外であれば ０
-        self.df['zoom_flag'] = self.df['zoom_flag'].fillna(0)
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('Yes', 1)
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('yes', 1)
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('YES', 1)
-        # self.df['zoom_flag']が　'No' or 'no' or 'NO' or 'Unavailable' であれば ０
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('No', 0)
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('no', 0)
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('NO', 0)
-        self.df['zoom_flag'] = self.df['zoom_flag'].replace('Unavailable', 0)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].fillna(0)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('Yes', 1)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('yes', 1)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('YES', 1)
+        # self.df['zoomcap_flag']が　'No' or 'no' or 'NO' or 'Unavailable' であれば ０
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('No', 0)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('no', 0)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('NO', 0)
+        self.df['zoomcap_flag'] = self.df['zoomcap_flag'].replace('Unavailable', 0)
 
         # DataFrameを省略することなく表示する
         pd.set_option('display.max_rows', None)
@@ -172,17 +217,17 @@ class UserESA():
 
     def checkPinFlag(self):
         #print(self.df['pin_flag'])
-        # self.df['wait_time']の初期値を30.0とする
-        self.df['wait_time'] = 30.0
+        # self.df['warm_time']の初期値を30.0とする
+        self.df['warm_time'] = 30.0
         # self.df にはすでに"pin_flag"があるので、それを利用する
-        # self.df['pin_flag']の文字列を小文字に変換した文字列が "spine"　であれば self.df['wait_time'] = 10.0
-        self.df.loc[self.df['pin_flag'].str.lower() == 'spine', 'wait_time'] = 10.0
-        # self.df['pin_flag']の文字列を小文字に変換した文字列が "als + ssrl"　であれば self.df['wait_time'] = 20.0
-        self.df.loc[self.df['pin_flag'].str.lower() == 'als + ssrl', 'wait_time'] = 20.0
-        # self.df['pin_flag']の文字列を小文字に変換した文字列が "copper"　であれば self.df['wait_time'] = 60.0
-        self.df.loc[self.df['pin_flag'].str.lower() == 'copper', 'wait_time'] = 60.0
-        # self.df['pin_flag']の文字列を小文字に変換した文字列が "no-wait"　であれば self.df['wait_time'] = 0.0
-        self.df.loc[self.df['pin_flag'].str.lower() == 'no-wait', 'wait_time'] = 0.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "spine"　であれば self.df['warm_time'] = 10.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'spine', 'warm_time'] = 10.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "als + ssrl"　であれば self.df['warm_time'] = 20.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'als + ssrl', 'warm_time'] = 20.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "copper"　であれば self.df['warm_time'] = 60.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'copper', 'warm_time'] = 60.0
+        # self.df['pin_flag']の文字列を小文字に変換した文字列が "no-wait"　であれば self.df['warm_time'] = 0.0
+        self.df.loc[self.df['pin_flag'].str.lower() == 'no-wait', 'warm_time'] = 0.0
 
     def fillFlux(self):
         # self.df['flux']の数値を読み込む
@@ -190,13 +235,14 @@ class UserESA():
         # この関数の引数に self.df['hbeam'], self.df['vbeam'], self.df['wavelength']を渡す
         # 戻り値はfluxである
         # fluxの値をself.df['flux']に代入する
-        self.df['flux'] = self.df.apply(lambda x: self.bsconf.getFluxAtWavelength(x['hbeam'], x['vbeam'], x['wavelength']), axis=1)
+        self.df['flux'] = self.df.apply(lambda x: self.bsconf.getFluxAtWavelength(x['ds_hbeam'], x['ds_vbeam'], x['wavelength']), axis=1)
 
     def splitBeamsizeInfo(self):
         # self.df['beamsize']の文字列をself.checkBeamsizeの引数として渡す
         # self.checkBeamsize()は self.df['beamsize']を引数とし、戻り値は(hbeam, vbeam)である(どちらもfloatのタプル)
         # hbeam, vbeamの数値は新たなカラムとしてself.dfに追加される 'hbeam', 'vbeam'
-        self.df['hbeam'], self.df['vbeam'] = zip(*self.df['beamsize'].map(self.checkBeamsize))
+        self.df['ds_hbeam'], self.df['ds_vbeam'] = zip(*self.df['beamsize'].map(self.checkBeamsize))
+        self.df['raster_hbeam'], self.df['raster_vbeam'] = zip(*self.df['beamsize'].map(self.checkBeamsize))
 
     # Raster scanの露光条件を定義する
     # Pandas dataframeに対して一気に処理を行う
@@ -226,40 +272,40 @@ class UserESA():
         # 1 frameあたりのdoseを計算する
         # kuma.getDose()の引数は hbeam, vbeam, flux, energy, exp_raster
         # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
-        self.df.loc[mask1, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
+        self.df.loc[mask1, 'dose_per_frame'] = kuma.getDose(self.df['ds_hbeam'], self.df['ds_vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
 
         # mask2 
         mask2 = (self.df['desired_exp'] == 'high_dose_scan')
         dose_for_raster = 0.30 # MGy
         # 1 frameあたりのdoseを計算する
-        self.df.loc[mask2, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster'])
+        self.df.loc[mask2, 'dose_per_frame'] = kuma.getDose(self.df['ds_hbeam'], self.df['ds_vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster'])
         # transmissionは dose_for_raster / dose_per_frame * 100.0 で計算する
         self.df.loc[mask2, 'att_raster'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
         self.df.loc[mask2, 'hebi_att'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
         # 'ppf' = photons per frame
         self.df.loc[mask2, 'ppf_raster'] = self.df['flux'] * self.df['exp_raster'] * self.df['att_raster'] / 100.0
         # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
-        self.df.loc[mask2, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
+        self.df.loc[mask2, 'dose_per_frame'] = kuma.getDose(self.df['ds_hbeam'], self.df['ds_vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
 
         # masks
         mask3 = (self.df['desired_exp'] == 'ultra_high_dose_scan')
         dose_for_raster = 1.0 # MGy
         # 1 frame あたりのdoseを計算する
-        self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster'])
+        self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['ds_hbeam'], self.df['ds_vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster'])
         # transmissionは dose_for_raster / dose_per_frame * 100.0 で計算する
         self.df.loc[mask3, 'att_raster'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
         self.df.loc[mask3, 'hebi_att'] = dose_for_raster / self.df['dose_per_frame'] * 100.0
         # 'ppf' = photons per frame
         self.df.loc[mask3, 'ppf_raster'] = self.df['flux'] * self.df['exp_raster'] * self.df['att_raster'] / 100.0
         # dose_per_frame = kuma.getDose(hbeam, vbeam, flux, energy, exp_raster) * self.df['att_raster'] / 100.0
-        self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['hbeam'], self.df['vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
+        self.df.loc[mask3, 'dose_per_frame'] = kuma.getDose(self.df['ds_hbeam'], self.df['ds_vbeam'], self.df['flux'], self.df['energy'], self.df['exp_raster']) * self.df['att_raster'] / 100.0
 
         #print(self.df)
 
 
     # end of defineScanCondition()
 
-    def makeWargningMessage(self): 
+    def makeExpWarning(self): 
         # 1 frameあたりのdoseが0.3MGyを超えていて、self.df['desired_exp'] が 'high_dose_scan' もしくは 'ultra_high_dose_scan'出ない場合は警告を出す
         # 丁寧な文字列でloggerを出力する
         # "Warning: dose/frame exceeds 0.3 MGy. Please check the exposure condition."
@@ -285,6 +331,21 @@ class UserESA():
         else:
             self.logger.info("No warning message for photons/frame check.")
 
+    def sizeWarning(self):
+        # self.df['mode']が 'multi' である場合、self.df['max_crystal_size']と self.df['beam_size']を比較して、
+        # self.df['hbeam']と self.df['vbeam']を比較して大きい方を tmp_beamsize とする
+        # self.df['max_crystal_size']が tmp_beamsize の2倍よりも大きい場合には警告を出す
+        # "Warning: max_crystal_size is larger than 2 times of beam_size. Please check the exposure condition."
+        mask = (self.df['mode'] == 'multi')
+        if mask.any():
+            for i in range(len(self.df)):
+                if mask[i]:
+                    tmp_beamsize = max(self.df['ds_hbeam'][i], self.df['ds_vbeam'][i])
+                    if self.df['max_crystal_size'][i] > tmp_beamsize * 2.0:
+                        self.logger.warning("Warning: max_crystal_size is larger than 2 times of the larger dimension of the beam size.")
+                        self.logger.warning("Please re-confirm the conditions of 'multi' mode.")
+                        self.logger.warning("puckid: {} pinid: {} max_crystal_size:{:.1f}um beam size:{}um".format(self.df['puckid'][i], self.df['pinid'][i], self.df['max_crystal_size'][i], tmp_beamsize))
+        
     # self.dfに格納されているから、データexp_rasterに変更を加える必要がある場合には変更を加える
     def modifyExposureConditions(self):
         # self.df['att_raster']　が 100.0 を超えている場合
@@ -310,7 +371,7 @@ class UserESA():
         # ppf_rasterが 4.0E10 を下回る場合
         # dose_per_frameが 0.3 MGy を超える場合 にWarning messageを出す
         # loggingに記録する
-        self.makeWargningMessage()
+        self.makeExpWarning()
 
     def makeCSV(self, zoo_csv=None):
         if not zoo_csv:
@@ -342,8 +403,8 @@ class UserESA():
         # 'Confirmation required'],
         # column名を指定する
         columns = ['puckid', 'pinid', 'sample_name', 'desired_exp', 'mode', 'anomalous_flag', \
-            'wavelength', 'loop_size', 'resolution_limit', 'beamsize', 'max_crystal_size', 'n_crystals', 'total_osc', 'osc_width', \
-                'ln2_flag', 'pin_flag', 'zoom_flag', 'what', 'confirmation_require']
+            'wavelength', 'loopsize', 'resolution_limit', 'beamsize', 'max_crystal_size', 'maxhits', 'total_osc', 'osc_width', \
+                'ln2_flag', 'pin_flag', 'zoomcap_flag', 'what', 'confirmation_require']
 
         # データは4行目から
         self.df = pd.read_excel(self.fname, sheet_name="ZOOPREP_YYMMDD_NAME_BLNAME_v2", header=2)
@@ -351,91 +412,22 @@ class UserESA():
         self.df.columns = columns
         self.isPrep = True
         
-    def read(self):
-        self.cols = []
-
-        self.basename = os.path.splitext(self.fname)
-
-        if self.basename[1].count("xls"):
-            book = xlrd.open_workbook(self.fname)
-            for sname in book.sheet_names():
-                #print("SNAME=",sname)
-                # 2021/04/06 modified by mat (can read both current and previous sample sheet)
-                if sname.count("Sheet") or sname.count("ZOOPREP_YYMMDD_NAME_BLNAME_v2"):
-                    sheet = book.sheet_by_name(sname)
-                    xkey = None
-                    print(("ROW=",sheet.nrows))
-                    for row in range(sheet.nrows):
-                        line = []
-                        print(sheet.cell(row, 0))
-                        if sheet.cell(row, 0).value == "PuckID":
-                            xkey = True
-                        if xkey and sheet.cell(row, 0).value == "":
-                            break
-                        for col in range(sheet.ncols):
-                            cell = sheet.cell(row, col)
-                            if cell.ctype == xlrd.XL_CELL_NUMBER:
-                                outval = cell.value
-                                if outval.is_integer():
-                                    outval = int(outval)
-                            else:
-                                outval = cell.value.encode('utf-8')
-                            line.append(str(outval))
-                        self.cols.append(line)
-#            print(self.cols)
-#            sys.exit()
-#            for sheet in book.sheets():
-#                for row in range(sheet.nrows):
-#                    line = []
-#                    for col in range(sheet.ncols):
-#                        cell = sheet.cell(row, col)
-#                        if cell.ctype == xlrd.XL_CELL_NUMBER:
-#                            outval = cell.value
-#                            if outval.is_integer():
-#                                outval = int(outval)
-#                        else:
-#                            print(cell.value)
-#                            outval = cell.value.encode('utf-8')
-#                        line.append(str(outval))
-#                    self.cols.append(line)
-        elif self.basename[1].count("csv"):
-            lines = open(self.fname, "r").readlines()
-            for line in lines:
-                cols = line.splilt(',')
-                self.cols.append(cols)
-
-        self.isRead = True
-        return self.isRead
-
-    def exRealList(self):
-        if not self.isRead:
-            self.read()
-        print((self.cols))
-        key = None
-        for cols in self.cols:
-            if cols[0] == "":
-                key = None
-            if key:
-                self.contents.append(cols)
-            if cols[0] == "PuckID":
-                key = True
-
-        self.isPrep = True
-        return self.isPrep
-
     def calcDist(self, wavelength, resolution_limit):
-        if self.beamline.lower() == "bl32xu":
-            min_dim = 233.0
-        elif self.beamline.lower() == "bl45xu":
-            min_dim = 422.0
+        # beamline.ini　の experiment セクション　から min_camera_dim を読んで min_dimに代入
+        # wavelength と resolution_limit から camera_len を計算する
+        # camera_len が min_dim 以下なら min_dim を返す
+        # camera_len が min_dim より大きいなら camera_len を返す
+        min_camera_len = self.config.getfloat("experiment", "min_camera_len")
+        min_camera_dim = self.config.getfloat("experiment", "min_camera_dim")
         theta = numpy.arcsin(wavelength / 2.0 / resolution_limit)
         bunbo = 2.0 * numpy.tan(2.0 * theta)
-        camera_len = min_dim / bunbo
-        # camera_len_minimum is 125.0 mm at BL32XU (added by HM 2020/11/24)
-        if camera_len <= 125.0 and self.beamline.lower() == "bl32xu":
-            camera_len = 125.0
+        camera_len = min_camera_dim / bunbo
+        # camera_len が　min_camera_len 以下なら min_camera_len を返す
+        if camera_len < min_camera_len:
+            camera_len = min_camera_len
 
-        camera_len = math.floor(camera_len*10)/10 # 2020/11/24 modified by HM 
+        # 小数点第一位に丸める camera_len
+        camera_len = round(camera_len, 1)
 
         return camera_len
 
@@ -452,10 +444,59 @@ class UserESA():
         # 各数値は、self.df['wavelength'], self.df['resolution_limit']で取得できるが文字列の可能性があるので数値にしてから利用する
         self.df['wavelength'] = self.df['wavelength'].astype(float)
         self.df['resolution_limit'] = self.df['resolution_limit'].astype(float)
-        self.df['distance'] = self.df.apply(lambda x: self.calcDist(x['wavelength'], x['resolution_limit']), axis=1)
-        #print(self.df['distance'])
+        self.df['dist_ds'] = self.df.apply(lambda x: self.calcDist(x['wavelength'], x['resolution_limit']), axis=1)
+        # resolution limit は beamline.iniから読み込む
+        # self.config : section=experiment, option=resol_raster
+        self.df['dist_raster'] = self.df.apply(lambda x: self.calcDist(x['wavelength'], self.config.getfloat("experiment", "resol_raster")), axis=1)
 
     def makeCondList(self):
+        # DataFrameとしてExcelファイルを読み込む　 →　self.df
+        self.read_new()
+        # 液体窒素ぶっ掛けの情報を管理してCSV用の情報へ変換
+        self.checkLN2flag()
+        # カメラのZoomに関する情報を管理してCSV用の情報へ変換
+        self.checkZoomFlag()
+        # カメラ長に関する情報をCSV用の情報へ変換
+        self.addDistance()
+        # ピンの温めに関する情報を管理してCSV用の情報へ変換
+        self.checkPinFlag()
+        self.splitBeamsizeInfo()
+        # beam sizeから beamsize.config → Fluxを読み込んでDataFrameに入れる
+        self.fillFlux()
+        # default parameterをDataFrameに入れていく（beamline.iniからほとんど読み込んでいる）
+        self.setDefaults()
+        # raster scanの露光条件の決定
+        self.defineScanCondition()
+        # 露光条件について検討。transmission > 100% のときに露光時間とtransmissionを編集する
+        self.modifyExposureConditions()
+        # 結晶サイズについてのWarning（今は multi だけ)
+        self.sizeWarning()
+
+        # self.dfの内容をCSVファイルに書き出す
+        # column の並び順は以下のように変更する
+        # root_dir,p_index,mode,puckid,pinid,sample_name,wavelength,raster_vbeam,raster_hbeam,att_raster,
+        # hebi_att,exp_raster,dist_raster,loopsize,score_min,score_max,maxhits,total_osc,osc_width,ds_vbeam,ds_hbeam,
+        # exp_ds,dist_ds,dose_ds,offset_angle,reduced_fact,ntimes,meas_name,cry_min_size_um,cry_max_size_um,
+        # hel_full_osc,hel_part_osc, raster_roi, ln2_flag, cover_scan_flag, zoomcap_flag, warm_time 
+        # その他の値は self.df から読み込む
+        self.columns = ['root_dir', 'p_index', 'mode', 'puckid', 'pinid', 'sample_name', 'wavelength', 'raster_vbeam', 'raster_hbeam', 'att_raster', \
+                        'hebi_att', 'exp_raster', 'dist_raster', 'loopsize', 'score_min', 'score_max', 'maxhits', 'total_osc', 'osc_width', 'ds_vbeam', 'ds_hbeam', \
+                        'exp_ds', 'dist_ds', 'dose_ds', 'offset_angle', 'reduced_fact', 'ntimes', 'meas_name', 'cry_min_size_um', 'cry_max_size_um', \
+                        'hel_full_osc', 'hel_part_osc', 'raster_roi', 'ln2_flag', 'cover_scan_flag', 'zoomcap_flag', 'warm_time']       
+
+        # float については小数点以下第一位までに丸める
+        # floatのフォーマットを指定
+        float_format = '%.2f'
+        # to_csv()メソッドでファイルに書き出す際にfloatのフォーマットを指定して書き出す
+        self.df.to_csv("qqqq.csv", columns=self.columns, index=False, float_format=float_format)
+        
+        #line_str = "%s,%d,%s,%s,%s,%s," % (root_dir,p_index,mode,puckid,pinid,sample_name)
+        #line_str += "%7.5f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%f,%f,%f,%f,0.02,%f,%f,%f,%f,%f,%s,%f,%f,%f," \
+        #               "%f,%d,%d,%d,%d,%d" % \ (wavelength,vbeam,hbeam,att_raster,hebi_att,exp_raster,dist_raster, \
+        #       loop_size,score_min,score_max,n_crystals,total_osc,osc_width,vbeam,hbeam,distance,dose_ds,0.0,1.0,1.0, \
+        #        desired_exp,cry_min_size,cry_max_size,60,40,raster_roi,ln2_flag,cover_flag,zoom_flag,warm_time) 
+    
+    def makeCondList_obsoleted(self):
         if self.isGot:
             return
         if self.fname.count("_zoo.csv"):
@@ -505,15 +546,15 @@ class UserESA():
             zoom_flag           = 0 if cols[16].lower == "no" else 1
 
             if pin_flag.lower() == "spine":
-                wait_time = 10
+                warm_time = 10
             elif pin_flag.lower() == "als + ssrl":
-                wait_time = 20
+                warm_time = 20
             elif pin_flag.lower() == "copper": 
-                wait_time = 60
+                warm_time = 60
             elif pin_flag.lower() == "no-wait":
-                wait_time = 0
+                warm_time = 0
             else:
-                wait_time = 30
+                warm_time = 30
 
             # カメラ長を計算する 小数点以下1位に丸める
             distance = math.floor(self.calcDist(wavelength, resolution_limit)*10)/10 # 2020/11/24 modified by HM 
@@ -553,7 +594,7 @@ class UserESA():
                         "%f,%d,%d,%d,%d,%d" % \
                 (wavelength,vbeam,hbeam,att_raster,hebi_att,exp_raster,dist_raster,
                 loop_size,score_min,score_max,n_crystals,total_osc,osc_width,vbeam,hbeam,distance,dose_ds,0.0,1.0,1.0,
-                 desired_exp,cry_min_size,cry_max_size,60,40,raster_roi,ln2_flag,cover_flag,zoom_flag,wait_time)
+                 desired_exp,cry_min_size,cry_max_size,60,40,raster_roi,ln2_flag,cover_flag,zoom_flag,warm_time)
             line_strs.append(line_str)
             pin_param = []
             p_index += 1
@@ -570,19 +611,9 @@ class UserESA():
 if __name__ == "__main__":
     root_dir = os.getcwd()
     u2db = UserESA(sys.argv[1], root_dir, beamline="BL32XU")
-    u2db.read_new()
-    u2db.checkLN2flag()
-    u2db.checkZoomFlag()
-    u2db.addDistance()
-    u2db.checkPinFlag()
-    u2db.splitBeamsizeInfo()
-    u2db.fillFlux()
-    u2db.setDefaults()
 
-    #print(u2db.df.columns)
-    u2db.defineScanCondition()
-    u2db.modifyExposureConditions()
-    #print(u2db.df)
+    u2db.makeCondList()
     # u2db.df['ppf_raster']を 指数表記で出力
     pd.options.display.float_format = '{:.2e}'.format
-    #print(u2db.df['ppf_raster'])
+    #print(u2db.df['dist_raster'])
+    #print(u2db.df['dist_ds'])
