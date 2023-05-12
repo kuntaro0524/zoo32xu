@@ -70,7 +70,6 @@ class ZooNavigator():
 
         self.logger = logging.getLogger('ZOO').getChild("ZooNavigator")
 
-        self.zooprog = open("/isilon/%s/BLsoft/PPPP/10.Zoo/ZooLogs/zoo_progress.log" % beamline.upper(), "a")
         self.stopwatch = StopWatch.StopWatch()
 
         # Data processing file
@@ -311,7 +310,7 @@ class ZooNavigator():
 
     def goAround(self, zoodb="none"):
         # Common settings
-        print("goAround=", zoodb)
+        self.logger.info(f"ZooDB: {zoodb}")
         if zoodb == "none":
             self.prepESA()
         else:
@@ -662,7 +661,6 @@ class ZooNavigator():
         #### /Centering
         # Succeeded
         self.esa.addEventTimeAt(o_index, "center_end")
-        self.zooprog.flush()
 
         # Save Gonio XYZ to the previous pins
         self.sx, self.sy, self.sz, sphi = self.lm.saveGXYZphi()
@@ -703,7 +701,7 @@ class ZooNavigator():
             if self.dump_recov.checkAndRecover(cond['wavelength']) == False:
                 # 2019/04/21 K.Hirata Skipped at BL45XU
                 # self.bsc.changeBeamsizeHV(cond['raster_hbeam'],cond['raster_vbeam'])
-                print("skipping change beam size")
+                self.logger.info("skipping change beam size")
 
         # Check point of 'skipping' this loop
         # check 'isSkip' in zoo.db
@@ -731,7 +729,6 @@ class ZooNavigator():
 
         self.esa.addEventTimeAt(o_index, "meas_end")
         self.logger.info("Adding 'meas_end' time information has been finished.")
-        self.zooprog.flush()
 
     def finishZoo(self):
         open(os.path.join(os.environ["HOME"], ".zoo_current"), "w").write("%s %s finished\n" \
@@ -819,21 +816,17 @@ class ZooNavigator():
                 gfile.write("%8.4f %8.4f %8.4f\n" % (x, y, z))
             gfile.close()
 
-            self.zooprog.flush()
-
         except MyException as tttt:
-            print("Skipping this loop!!")
+            self.logger.warning("Skipping this loop!!")
             self.esa.updateValueAt(o_index, "isDone", 4002)
-            self.zooprog.write("\n")
-            self.zooprog.flush()
             # Disconnecting capture in this loop's 'capture' instance
-            print("Disconnecting capture")
+            self.logger.info("Disconnecting capture")
             self.lm.closeCapture()
             return
 
         finally:
             try:
-                print("FINALLY")
+                self.logger.info("FINALLY")
                 # nhits = len(glist)
                 # self.html_maker.add_result(puckname=trayid, pin=pinid,
                 # h_grid=self.lm.raster_n_width, v_grid=self.lm.raster_n_height,
@@ -844,10 +837,10 @@ class ZooNavigator():
                 print(traceback.format_exc())
 
         if len(glist) == 0:
-            print("Skipping this loop!!")
+            self.logger.warning("Skipping this loop!!")
             self.esa.updateValueAt(o_index, "isDone", 4001)
             # Disconnecting capture in this loop's 'capture' instance
-            print("Disconnecting capture")
+            self.logger.warning("Disconnecting capture")
             self.lm.closeCapture()
             return
 
@@ -859,15 +852,21 @@ class ZooNavigator():
         if self.phosec_meas == 0.0:
             beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
             flux = beamsizeconf.getFluxAtWavelength(cond['ds_hbeam'], cond['ds_vbeam'], cond['wavelength'])
-            self.zooprog.write("Flux value is read from beamsize.conf: %5.2e\n" % flux)
+            self.logger.info("Flux value is read from beamsize.conf: %5.2e" % flux)
         else:
             flux = self.phosec_meas
-            self.zooprog.write("Multi: Beam size = %5.2f %5.2f um Measured flux : %5.2e\n" % (
-                cond['ds_hbeam'], cond['ds_vbeam'], flux))
-
+            # loggerにbeam size と Fluxを書き込む
+            self.logger.info(f"Flux value is read from phosec: {flux:5.2e}")
+            # beam size はそれぞれ小数点以下1桁まで記載する
+            # cond['ds_hbeam], cond['ds_vbeam'] は小数点以下1桁まで記載する
+            self.logger.info(f"Beam size is read from config: {cond['ds_hbeam']:.1f} x {cond['ds_vbeam']:.1f} um")
+            
         # For dose estimation
-        print("Beam size = ", cond['ds_hbeam'], cond['ds_vbeam'], " [um]")
-        print("Photon flux=%8.3e" % flux)
+        # self.loggerにbeam size と Fluxを書き込む
+        self.logger.info(f"Flux value is read from phosec: {flux:5.2e}")
+        # beam size はそれぞれ小数点以下1桁まで記載する
+        # cond['ds_hbeam], cond['ds_vbeam'] は小数点以下1桁まで記載する
+        self.logger.info(f"Beam size is read from config: {cond['ds_hbeam']:.1f}um x {cond['ds_vbeam']:.1f} um")
 
         # Generate Schedule file
         multi_sch = self.lm.genMultiSchedule(sphi, glist, cond, flux, prefix=data_prefix)
@@ -889,12 +888,7 @@ class ZooNavigator():
         self.data_proc_file.write("%s/_kamoproc/%s/,%s,no\n" % (root_dir, prefix, sample_name))
         self.data_proc_file.flush()
 
-        # Writing Time table for this data collection
-        # logstr="%6.1f "%(t_for_ds)
-        # self.zooprog.write("%s\n"%logstr)
-        # self.zooprog.flush()
-        # Disconnecting capture in this loop's 'capture' instance
-        print("Disconnecting capture")
+        self.logger.info("Disconnecting capture")
         self.lm.closeCapture()
 
     # Collect single
@@ -1028,8 +1022,8 @@ class ZooNavigator():
                     crystals = CrystalList.CrystalList(crystal_array)
                     final_cxyz = crystals.getBestCrystalCode()
                 except Exception as e:
-                    print("Analyze vertical scans failed.\n")
-                    self.logger.info("ZN.collectSingle: Left vertical scan analysis failed.")
+                    self.logger.warning("Analyze vertical scans failed.\n")
+                    self.logger.warning("ZN.collectSingle: Left vertical scan analysis failed.")
                     self.logger.error("ERROR", exc_info=True)
                     vertical_index += 1
                     if vertical_index > n_try:
@@ -1105,7 +1099,7 @@ class ZooNavigator():
         self.data_proc_file.flush()
 
         # Disconnecting capture in this loop's 'capture' instance
-        print("Disconnecting capture")
+        self.logger.info("Disconnecting capture")
         self.lm.closeCapture()
 
     # collectSingle
@@ -1115,8 +1109,8 @@ class ZooNavigator():
     def collectHelical(self, trayid, pinid, prefix, cond, sphi):
         o_index = cond['o_index']
         # Beamsize
-        print("now moving to the beam size to raster scan...")
-        print("Liar: beam size should be changed by BSS")
+        self.logger.info("now moving to the beam size to raster scan...")
+        self.logger.info("beam size should be changed by BSS")
         # self.bsc.changeBeamsizeHV(cond['raster_hbeam'],cond['raster_vbeam'])
 
         # Initial 2D scan
@@ -1190,7 +1184,7 @@ class ZooNavigator():
         # Pin index
         o_index = cond['o_index']
         # Beamsize
-        print("now moving to the beam size to raster scan...")
+        self.logger.info("now moving to the beam size to raster scan...")
         # Specific code for BL41XU and obsoleted temporally on 2019/06/03
         # self.bsc.changeBeamsizeHV(cond['raster_hbeam'], cond['raster_vbeam'])
 
@@ -1332,22 +1326,19 @@ class ZooNavigator():
                 x, y, z = gxyz
                 gfile.write("%8.4f %8.4f %8.4f\n" % (x, y, z))
             gfile.close()
-            self.zooprog.flush()
 
         except MyException as tttt:
-            print("Skipping this loop!!")
-            self.zooprog.write("\n")
-            self.zooprog.flush()
+            self.logger.warning("Skipping this loop!!")
             # Disconnecting capture in this loop's 'capture' instance
-            print("Disconnecting capture")
+            self.logger.warning("Disconnecting capture")
             self.lm.closeCapture()
             return
 
         finally:
             try:
-                print("FINALLY")
+                self.logger.info("FINALLY")
                 # Disconnecting capture in this loop's 'capture' instance
-                print("Disconnecting capture")
+                self.logger.info("Disconnecting capture")
                 self.lm.closeCapture()
                 return
             except:
