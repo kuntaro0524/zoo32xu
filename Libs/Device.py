@@ -126,9 +126,9 @@ class Device(Singleton.Singleton):
         print("PHOSEC: %e"%phosec)
         return phosec
 
-    def getBeamsize(self,config_dir="/isilon/blconfig/bl32xu/"):
+    def getBeamsize(self):
         tcs_vmm,tcs_hmm=self.tcs.getApert()
-        bsf=BeamsizeConfig.BeamsizeConfig(config_dir)
+        bsf=BeamsizeConfig.BeamsizeConfig()
         hbeam,vbeam=bsf.getBeamsizeAtTCS_HV(tcs_hmm,tcs_vmm)
         return hbeam,vbeam
 
@@ -313,41 +313,4 @@ if __name__=="__main__":
     dev.init()
 
     logpath="/isilon/users/target/target/Staff/2016B/161003/03.Test/"
-
-    """
-        if os.path.exists(logpath)==False:
-                os.makedirs(logpath)
-    print "%e"%dev.measureFlux(logpath,tune=False,config_dir="/isilon/blconfig/bl32xu/bss/")
-    """
-    #phosec=dev.measureFlux()
-    #hbeam,vbeam=dev.getCurrentBeamsize(config_dir="/isilon/blconfig/bl32xu/")
-
-    #print phosec,hbeam,vbeam
-
     dev.prepCentering()
-
-#dev.closeAllShutter()
-
-#print proc.gonio.getXYZmm()
-#proc.setAttThick(0)
-#proc.bsOff()
-#print proc.captureBM("TEST")
-#en_list=arange(19.5,8.0,-0.5)
-#print en_list,len(en_list)
-
-#en_list=[19.5,15.5,12.5,11.5,11.0,10.5,10.4,10.3,10.2,10.1,10.0,9.9,9.8,9.7,9.6,9.5,8.5]
-#en_list=[19.5,15.5,12.3984,11.5,10.5,9.5,8.5]
-#en_list=[8.5,9.5,10.5,11.5,12.3984,15.5,19.5]
-#en_list=arange(8.5,11.0,0.1)
-#print en_list
-#print len(en_list)
-
-#while(1):
-#for en in en_list:
-#proc.makeTable(en)
-
-# Analyze knife
-#print proc.analyzeKnife("049_stagey.scn")
-
-# Energy table check
-#proc.moveEtable(8.5)

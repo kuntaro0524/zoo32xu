@@ -8,7 +8,8 @@ import os
 import numpy
 from socket import error as socket_error
 from MyException import *
-import configparser
+from configparser import ConfigParser, ExtendedInterpolation
+
 
 class Capture:
     def __init__(self):
@@ -21,7 +22,7 @@ class Capture:
 
         # Read configure file
         # Get information from beamline.ini file.
-        self.config = configparser.ConfigParser()
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         self.config.read(config_path)
 

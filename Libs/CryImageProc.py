@@ -6,8 +6,7 @@ from MyException import *
 import logging
 import logging.config
 import File, os
-
-beamline = "BL32XU"
+from configparser import ConfigParser, ExtendedInterpolation
 
 class CryImageProc():
     def __init__(self, logdir = "./"):
@@ -21,30 +20,18 @@ class CryImageProc():
         self.ymax = 470
         self.roi_len_um = 200.0 #[um]
 
-        # Pixel resolution
-        print("Beamline is %s"%beamline)
-        if beamline == "BL32XU":
-            # self.pix_size = 2.36 #[um]
-            # 201002 Pixel resolution for the minimum zoom
-            #self.pix_size = 4.9173 #[um]
-            #self.pix_size = 3.9500 #[um]    YK@210302 for Zoom=-45000
-            self.pix_size = 3.2578 #[um]    YK@210302 for Zoom=-42000
-            self.gonio_direction = "FROM_RIGHT"
-            # threshold in binarization
-            #self.bin_thresh = 8
-            self.bin_thresh = 10
-        if beamline == "BL41XU":
-            self.pix_size = 3.245 #[um]
-            self.gonio_direction = "FROM_RIGHT"
-            # threshold in binarization
-            self.bin_thresh = 30
-        if beamline == "BL45XU":
-            self.pix_size = 3.2439 #[um]
-            self.gonio_direction = "FROM_LEFT"
-            # threshold in binarization
-            self.bin_thresh = 10
+        # beamlineのなまえ、gonio_direction, pix_size, bin_threshについては beamline.ini から読み込む
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read(os.environ['ZOOCONFIGPATH']+"/beamline.ini")
+        self.beamline = self.config.get("beamline", "beamline")
 
-        print(self.roi_len_um, self.pix_size)
+        # Pixel size (section: coaximage, option: pix_size)
+        self.pix_size = self.config.getfloat("coaximage", "pix_size")
+        # gonio direction (section: experiment, option: gonio_direction)
+        self.gonio_direction = self.config.get("experiment", "gonio_direction")
+        # bin threshold for detecting the edge (section: coaximage, option: bin_thresh)
+        self.bin_thresh = self.config.getint("coaximage", "bin_thresh")
+
         self.roi_len_pix = self.roi_len_um / self.pix_size
         
         # Flags 
@@ -53,6 +40,7 @@ class CryImageProc():
         self.isTopXY = True
 
         # The top 5 lines should be removed at BL45XU
+        # とりあえず今の所使っていない
         # Noisy 190514 K.Hirata
         self.removeTop = 5
         # Noise at the bottom 190607 K.Hirata

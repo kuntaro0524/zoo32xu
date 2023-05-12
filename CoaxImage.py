@@ -2,16 +2,14 @@ import sys, os, math, numpy, socket, time, cv2
 import re
 
 import MyException
-from Capture import *
+import Capture
 import Gonio
 import Zoom
 import CoaxPint
 import logging
-import configparser
+from configparser import ConfigParser, ExtendedInterpolation
 
 # import CryImageProc as CIP
-
-beamline = "BL32XU"
 
 def read_camera_inf(infin):
     ret = {}
@@ -31,8 +29,6 @@ def read_camera_inf(infin):
         ret["origin_shift"] = list(zip(origin_shift_x, origin_shift_y))
 
     return ret
-
-
 # read_camera_inf()
 
 def read_bss_config(cfgin):
@@ -43,7 +39,6 @@ def read_bss_config(cfgin):
             ret["zoom_pulses"] = list(map(int, l[l.index(":") + 1:].split()))
     return ret
 
-
 class CoaxImage:
     def __init__(self, ms):
         self.thread = None
@@ -53,45 +48,37 @@ class CoaxImage:
 
         # configure file を読む
         # Get information from beamline.ini file.
-        self.config = configparser.ConfigParser()
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
         self.config.read(os.path.join(os.environ["ZOOCONFIGPATH"], "beamline.ini"))
 
-        if beamline == "BL45XU":
-            self.camera_inf = read_camera_inf(os.path.join(os.environ["BLCONFIG"], "video", "camera.inf"))
-            self.bss_config = read_bss_config(os.path.join(os.environ["BLCONFIG"], "bss", "bss.config"))
-            self.coax_pulse2zoom = dict(list(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"])))
-            self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
-            self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
-            self.width = 612.0
-            self.height = 480.0
-            # BL45XU Centos6
-            self.image_size = 881295
+        # camera.inf パスは beamline.ini から取得
+        # section: files, option: camera_inf
+        self.camera_inf_path = self.config.get("files", "camera_inf")
+        # bss.config パスは beamline.ini から取得
+        # section: files, option: bss_config
+        self.bss_config_path = self.config.get("files", "bss_config")
 
-        elif beamline == "BL32XU":
-            self.camera_inf = read_camera_inf(os.path.join(os.environ["BLCONFIG"], "video", "camera.inf"))
-            self.bss_config = read_bss_config(os.path.join(os.environ["BLCONFIG"], "bss", "bss.config"))
-            self.coax_pulse2zoom = dict(list(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"])))
-            self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
-            self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
+        # gonio direction : beamline.local.ini から取得
+        self.gonio_direction = self.config.get("experiment", "gonio_direction")
 
-            # self.config 'coaximage' sectionから数値を読む (beamline.ini)
-            self.width = self.config.getfloat("coaximage", "width")
-            self.height = self.config.getfloat("coaximage", "height")
-            self.pix_size = self.config.getfloat("coaximage", "pix_size")
-            self.image_size = self.config.getfloat("coaximage", "image_size")
+        self.camera_inf = read_camera_inf(self.camera_inf_path)
+        self.bss_config = read_bss_config(self.bss_config_path)
+        self.coax_pulse2zoom = dict(list(zip(self.bss_config["zoom_pulses"], self.camera_inf["zoom_opts"])))
+        self.coax_zoom2pulse = dict(list(zip(self.camera_inf["zoom_opts"], self.bss_config["zoom_pulses"])))
+        self.coax_zoom2oshift = dict(list(zip(self.camera_inf["zoom_opts"], self.camera_inf["origin_shift"])))
+
+        # self.config 'coaximage' sectionから数値を読む (beamline.ini)
+        self.width = self.config.getfloat("coaximage", "width")
+        self.height = self.config.getfloat("coaximage", "height")
+        self.pix_size = self.config.getfloat("coaximage", "pix_size")
+        self.image_size = self.config.getfloat("coaximage", "image_size")
 
         # This is very dangerous. Values should be referred from 'bl32xu.conf'
-        # updated 181209 CentOS7 USB new camera
-        # self.coax_zpulse2pint = {0:20100, -16000:20098, -32000:20114, -48000:20215} # zoom pulse to pint pulse
-        # updated 200124 CentOS6 USB camera connected to BSS machine
-        # self.coax_zpulse2pint = {0:20367, -16000:20367, -32000:20367, -48000:20367} # zoom pulse to pint pulse
-        # self.coax_zpulse2pint = {0:20367, -16000:20367, -32000:20367, -45000:20367} # zoom pulse to pint pulse   YK@210302
+        # このコードもはや不要なのではないかという説が
+        # 使用しているのは set_zoom だけなのでこの関数をどっかで使っているかどうかって話 2023/05/12 K.Hirata
         self.coax_zpulse2pint = {0: 20367, -16000: 20367, -32000: 20367, -38000: 20367}  # zoom pulse to pint pulse   YK@210302
         self.gonio = Gonio.Gonio(ms)
-        self.capture = Capture()
-
-        # Gonio direction
-        self.gonio_direction = "FROM_LEFT"
+        self.capture = Capture.Capture(ms)
 
         # Flag for dark experiment
         self.isDark = False

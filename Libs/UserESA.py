@@ -15,11 +15,12 @@ import numpy as np
 import KUMA
 # logger の設定
 import logging
+from configparser import ConfigParser, ExtendedInterpolation
 
 class UserESA():
     def __init__(self, fname=None, root_dir=".", beamline=None):
         # beamlineの名前はconfigから読む
-        self.config = configparser.ConfigParser()
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         self.config.read(config_path)
 
