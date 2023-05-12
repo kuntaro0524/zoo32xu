@@ -26,6 +26,7 @@ from html_log_maker import ZooHtmlLog
 import logging
 import logging.config
 
+from configparser import ConfigParser, ExtendedInterpolation
 
 def check_abort(lm):
     print("Abort check")
@@ -33,16 +34,12 @@ def check_abort(lm):
     if ret: print("ABORTABORT")
     return ret
 
-
-# check_abort()
-
 # Version 2.1.0 modified on 2019/07/04 K.Hirata
 # Version 2.1.1 modified on 2019/07/23 K.Hirata
 # Version 2.1.2 modified on 2019/10/26 K.Hirata at BL45XU
 
 class ZooNavigator():
     def __init__(self, zoo, ms, esa_csv, is_renew_db=False):
-        print("ZooNavigator was called.")
         # From arguments
         self.zoo = zoo
         self.esa_csv = esa_csv
@@ -57,11 +54,13 @@ class ZooNavigator():
         self.recoverOption = False
 
         # Back img
-        self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-1811221806.ppm" % beamline.upper()
+        self.backimg = "dummy.ppm"
 
-        # Configure directory
-        self.config_dir = "/isilon/blconfig/%s/" % beamline.lower()
-        self.config_file = "%s/bss/bss.config" % self.config_dir
+        # BSS configure file path
+        # beamline.ini から読み込む 
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
+        self.config_file = self.config.get("files", "bssconfig_file")
 
         # Attenuator index
         self.att = AttFactor.AttFactor()

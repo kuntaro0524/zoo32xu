@@ -6,7 +6,7 @@ import socket
 from MyException import *
 import logging
 import logging.config
-import configparser
+from configparser import ConfigParser, ExtendedInterpolation
 
 # 150722 AM4:00
 # Debug: when SPACE has some troubles Zoo stops immediately
@@ -14,7 +14,7 @@ import configparser
 class Zoo:
     def __init__(self, emulator=True):
         # Get information from beamline.ini file.
-        config = configparser.ConfigParser()
+        config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         config.read(config_path)
 
