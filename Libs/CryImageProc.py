@@ -75,7 +75,9 @@ class CryImageProc():
     def setDebugFlag(self, flag):
         self.debug = flag
 
+    # 長さを指定して、ROIのピクセル数を計算している
     def calcPixLen(self, length):
+        # loop size は、ROIの横幅の長さ
         self.roi_len_um = length
         self.roi_len_pix = self.roi_len_um / self.pix_size
         return int(self.roi_len_pix)
@@ -306,6 +308,7 @@ class CryImageProc():
     # 190514 coded by K.Hirata
     # New function for INOCC
     def getROIcontour(self, loop_size):
+        # loop size は、ROIの横幅の長さ
         self.roi_pix_len = self.calcPixLen(loop_size)
         self.full_contour = self.getContour()
         self.isContourFull = True
