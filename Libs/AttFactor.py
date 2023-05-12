@@ -1,22 +1,27 @@
-import sys
+import sys,os
 import socket
 import time
 import math
 from numpy import *
 import BSSconfig
 import logging
+from configparser import ConfigParser, ExtendedInterpolation
 
 class AttFactor:
-    def __init__(self, config_file="/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooConfig/bss/bss.config"):
+    def __init__(self):
         dummy = 1
         self.isInit = False
-        self.beamline_config=config_file
         self.logger = logging.getLogger('ZOO').getChild("AttFactor")
 
+        # BSS config path is read from beamline.ini
+        conf_file_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read(conf_file_path)
+        self.bssconfig_path = self.config.get("files", "bssconfig_file")
+        # self.bssconfig="./bss.config"
+
     def cnFactor(self, wl):
-        cnfac = 0.028 * math.pow(wl, 5) - 0.188 * math.pow(wl, 4) + 0.493 * math.pow(wl, 3) - 0.633 * math.pow(wl,
-                                                                                                               2) + 0.416 * math.pow(
-            wl, 1) + 0.268
+        cnfac = 0.028 * math.pow(wl, 5) - 0.188 * math.pow(wl, 4) + 0.493 * math.pow(wl, 3) - 0.633 * math.pow(wl, 2) + 0.416 * math.pow( wl, 1) + 0.268
         return cnfac
 
     def calcMu(self, wl, cnfac):
@@ -192,9 +197,7 @@ class AttFactor:
     # return att
 
     def readAttConfig(self):
-        self.bssconfig = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooConfig/bss/bss.config"
-        # self.bssconfig="./bss.config"
-        confile = open(self.bssconfig, "r")
+        confile = open(self.bssconfig_path, "r")
         lines = confile.readlines()
         confile.close()
 
@@ -202,6 +205,7 @@ class AttFactor:
         self.att_thick = []
 
         for line in lines:
+            print(line)
             if line.find("Attenuator_Menu_Label") != -1:
                 line = line.replace("[", "").replace("]", "").replace("{", "").replace("}", "")
                 cols = line.split()
@@ -248,7 +252,7 @@ class AttFactor:
 
         self.logger.info("READING....")
 
-        self.bssconfig_class = BSSconfig.BSSconfig(self.beamline_config)
+        self.bssconfig_class = BSSconfig.BSSconfig()
         thinnest_att_um = self.bssconfig_class.getThinnestAtt()
 
         self.logger.info("thinnest=%9.5f " % thinnest_att_um)
@@ -276,19 +280,6 @@ if __name__ == "__main__":
     att = AttFactor()
     exptime = 0.05
     transmission = 1.5
-    print(("Original exposure time=", exptime))
-    print(("Original transmission time=", transmission))
-
     transmission,newExptime = att.checkThinnestAtt(1.0, exptime, transmission)
     print(("New exposure time=", newExptime))
     print(("New transmission time=", transmission))
-
-    #print "550um=", att.calcAttFac(1.0, 550)
-# best_thick=att.getBestAtt(1.0,float(sys.argv[1]))
-# print best_thick
-# def calcThickness(self,wl,transmission,material="Al"):
-# print best_thick,att.calcAttFac(1.0,best_thick)
-# def calcAttFac(self,wl,thickness,material="Al"):
-# def getBestAtt(self,wl,transmission):
-# print ick,att.getAttIndexConfig(best_thick)
-# print att.getAttIndexConfig(1200)

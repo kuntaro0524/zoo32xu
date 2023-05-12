@@ -49,11 +49,8 @@ class LoopMeasurement:
         self.light = Light.Light(self.ms)
         self.colli = Colli.Colli(self.ms)
 
-        config_dir = "/isilon/blconfig/%s/" % beamline.lower()
-        self.beamsizeconf = BeamsizeConfig.BeamsizeConfig(config_dir)
-        self.bss_config = "%s/bss/bss.config" % config_dir
-
-        self.multi_dir = "/isilon/users/target/target/AutoUsers/190420/"
+        self.beamsizeconf = BeamsizeConfig.BeamsizeConfig()
+        self.multi_dir = "/foo/bar"
 
         # Raster scan setting: additional grids
         self.raster_n_add = 3
@@ -419,7 +416,7 @@ class LoopMeasurement:
             if flag_mod_exptime:
                 # Check transmission with 'thinnest attenuator'
                 trans_ratio = transmission / 100.0  # convertion to 'ratio'
-                attfac = AttFactor.AttFactor(self.bss_config)
+                attfac = AttFactor.AttFactor()
                 mod_exp, mod_trans = attfac.checkThinnestAtt(cond['wavelength'], exp_raster, trans_ratio)
                 tmp_trans = mod_trans * 100.0
                 # Schedule setting (attenuator factor) [% is converted to ratio in RSS])
@@ -436,7 +433,7 @@ class LoopMeasurement:
 
         # case for the beamline with discrete attenuator thickness
         else:
-            att_fact = AttFactor.AttFactor(self.bss_config)
+            att_fact = AttFactor.AttFactor()
             trans = transmission / 100.0  # convertion to 'ratio'
             best_thick = att_fact.getBestAtt(cond['wavelength'], trans)
             self.att_idx = att_fact.getAttIndexConfig(best_thick)
@@ -781,7 +778,7 @@ class LoopMeasurement:
 
         if beamline == "BL32XU" or beamline == "BL41XU" or beamline=="BL45XU":
             # Check transmission with 'thinnest attenuator'
-            attfac = AttFactor.AttFactor(self.bss_config)
+            attfac = AttFactor.AttFactor()
             mod_exp, mod_trans = attfac.checkThinnestAtt(cond['wavelength'], exp_time, best_transmission)
             tmp_trans = mod_trans * 100.0
             mc.setTrans(tmp_trans)  # this is unit of [%]
@@ -844,7 +841,7 @@ class LoopMeasurement:
 
         if beamline == "BL32XU" or beamline == "BL41XU" or beamline == "BL45XU":
             # Check transmission with 'thinnest attenuator'
-            attfac = AttFactor.AttFactor(self.bss_config)
+            attfac = AttFactor.AttFactor()
             mod_exp, mod_trans = attfac.checkThinnestAtt(cond['wavelength'], exp_time, best_transmission)
             tmp_trans = mod_trans * 100.0
             mc.setTrans(tmp_trans)  # this is unit of [%]
@@ -1232,7 +1229,7 @@ class LoopMeasurement:
 
         if beamline == "BL32XU" or beamline == "BL41XU" or beamline == "BL45XU":
             # Check transmission with 'thinnest attenuator'
-            attfac = AttFactor.AttFactor(self.bss_config)
+            attfac = AttFactor.AttFactor()
             mod_exp, mod_trans = attfac.checkThinnestAtt(cond['wavelength'], exp_time, best_transmission)
             tmp_trans = mod_trans * 100.0
             schbss.setTrans(tmp_trans)  # this is unit of [%]
@@ -1325,7 +1322,6 @@ if __name__ == "__main__":
 
     # ESA
     esa = ESA.ESA("./zoo.db")
-    # esa.readCSV("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/41.Ohto/test5.csv")
     esa.makeTable(sys.argv[1])
     ppp = esa.getDict()
 

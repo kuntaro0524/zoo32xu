@@ -1,9 +1,10 @@
 import sys, os, math
 import logging
 import pandas as pd
-import configparser
 from scipy import interpolate
 import numpy as np
+from configparser import ConfigParser, ExtendedInterpolation
+
 
 # Version 2.0.0 2019/07/04 K.Hirata
 class KUMA:
@@ -18,7 +19,7 @@ class KUMA:
         # en_dose_lys.csv, en_dose_oxi.csv
         # energy,dose_mgy_per_photon,density_limit
         # 左から順に、エネルギー、1フォトンあたりの線量、10MGyに到達するまでのリミット(photons/um2)
-        self.config = configparser.ConfigParser()
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         self.config.read(config_path)
         self.dose_limit_file = self.config.get("files", "dose_csv")

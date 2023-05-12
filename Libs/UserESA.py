@@ -417,8 +417,8 @@ class UserESA():
         # wavelength と resolution_limit から camera_len を計算する
         # camera_len が min_dim 以下なら min_dim を返す
         # camera_len が min_dim より大きいなら camera_len を返す
-        min_camera_len = self.config.getfloat("experiment", "min_camera_len")
-        min_camera_dim = self.config.getfloat("experiment", "min_camera_dim")
+        min_camera_len = self.config.getfloat("detector", "min_camera_len")
+        min_camera_dim = self.config.getfloat("detector", "min_camera_dim")
         theta = numpy.arcsin(wavelength / 2.0 / resolution_limit)
         bunbo = 2.0 * numpy.tan(2.0 * theta)
         camera_len = min_camera_dim / bunbo

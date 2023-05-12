@@ -15,17 +15,19 @@ import DirectoryProc
 import FittingForFacing
 import logging
 import logging.config
-import configparser
+from configparser import ConfigParser, ExtendedInterpolation
 
 class INOCC:
     def __init__(self, ms, root_dir, sample_name="sample"):
         self.coi = CoaxImage.CoaxImage(ms)
         self.isInit = False
         self.debug = True
+
+        # 
         self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210324.ppm" % beamline
 
         # Get information from beamline.ini file.
-        config = configparser.ConfigParser()
+        config = ConfigParser(interpolation=ExtendedInterpolation()
         config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         config.read(config_path)
 

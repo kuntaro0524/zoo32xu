@@ -1,9 +1,16 @@
+import os,sys
 from MyException import *
-
+from configparser import ConfigParser, ExtendedInterpolation
 
 class BSSconfig:
-    def __init__(self, config_file="/isilon/blconfig/bl32xu/bss/bss.config"):
-        self.confile = config_file
+    def __init__(self):
+        # beamline.ini から bssconfig_file のパスを読む
+        # section: files, option: bssconfig_file
+        self.inifile_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.confile = ConfigParser(interpolation=ExtendedInterpolation())
+        self.confile.read(self.inifile_path)
+        self.confile = self.confile.get("files", "bssconfig_file")
+
         self.isRead = False
         self.isPrep = False
 
@@ -89,6 +96,7 @@ class BSSconfig:
         thick_list = []
         for line in self.lines:
             if line.rfind("Attenuator1_") != -1:
+                print(line)
                 cols = line.split()
                 thickness = float(cols[2].replace("um", ""))
                 thick_list.append((cols[0], thickness))
