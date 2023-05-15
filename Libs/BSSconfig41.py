@@ -4,8 +4,8 @@ import sys,os
 from configparser import ConfigParser, ExtendedInterpolation
 
 class BSSconfig:
-    def __init__(self, config_file="/isilon/blconfig/bl41xu/bss/bss.config"):
-        self.confile = config_file
+    def __init__(self):
+        #self.confile = config_file
         self.isRead = False
         self.isPrepDict = False
         self.isPrep = False
@@ -14,6 +14,7 @@ class BSSconfig:
         # beamline.ini から bssconfig_file のパスを読む
         # section: files, option: bssconfig_file
         self.inifile_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        print(self.inifile_path)
         self.confile = ConfigParser(interpolation=ExtendedInterpolation())
         self.confile.read(self.inifile_path)
         self.confile = self.confile.get("files", "bssconfig_file")
@@ -427,7 +428,7 @@ class BSSconfig:
 # print ttt.args[0]
 
 if __name__ == "__main__":
-    bssconf = BSSconfig('/home/kuntaro/kundev/zoo32xu-honki/Libs/bss.config')
+    bssconf = BSSconfig()
     #bssconf.getThinnestAtt()
     axis_name="st2_gonio_1_z"
     #bssconf.getPulseInfo(axis_name)
