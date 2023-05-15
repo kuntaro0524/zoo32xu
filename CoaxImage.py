@@ -200,7 +200,7 @@ class CoaxImage:
     def get_zoom(self):
         command = "get/bl_32in_st2_coax_1_zoom/query"
         recbuf = self.communicate(command)
-        print("RRRRRRRRRRRRRRRR%s"%recbuf)
+        #print("RRRRRRRRRRRRRRRR%s"%recbuf)
 
         sp = recbuf.split("/")
         if len(sp) == 5:

@@ -62,6 +62,10 @@ class ZooNavigator():
         self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
         self.config_file = self.config.get("files", "bssconfig_file")
 
+        # beamline name is read from 'beamline.ini'
+        # section:beamline, option: beamline
+        self.beamline = self.config.get("beamline", "beamline")
+
         # Attenuator index
         self.att = AttFactor.AttFactor()
 
@@ -80,14 +84,14 @@ class ZooNavigator():
 
         # Goniometer positions 
         # The values will be updated by the current pin position
-        self.sx = 0.75
-        self.sy = -10.1
-        self.sz = -0.98
+        self.sx = -1.5089
+        self.sy = 0.5714
+        self.sz = -0.3183
 
         # Goniometer mount position( will be read from BSS configure file)
-        self.mx = 0.75
-        self.my = -10.1
-        self.mz = -0.95
+        self.mx = -1.5089
+        self.my = 0.5714
+        self.mz = -0.3183
 
         # DB name
         self.phosec_meas = 0
@@ -195,7 +199,7 @@ class ZooNavigator():
         # Beam size change
         if self.doesBSSchangeBeamsize == True:
             current_beam_index = self.zoo.getBeamsize()
-            beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
+            beamsizeconf = BeamsizeConfig.BeamsizeConfig()
             beamsize_index = beamsizeconf.getBeamIndexHV(cond['ds_hbeam'], cond['ds_vbeam'])
             if current_beam_index != beamsize_index:
                 self.logger.info("Beam size will be changed from now.")
@@ -438,7 +442,7 @@ class ZooNavigator():
         if self.doesBSSchangeBeamsize == True:
             # Beamsize setting
             current_beam_index = self.zoo.getBeamsize()
-            beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
+            beamsizeconf = BeamsizeConfig.BeamsizeConfig()
             self.logger.debug(
                 "Raster beam size = %5.2f(H) x %5.2f(V) [um]" % (cond['raster_hbeam'], cond['raster_vbeam']))
             beamsize_index = beamsizeconf.getBeamIndexHV(cond['raster_hbeam'], cond['raster_vbeam'])
@@ -850,7 +854,7 @@ class ZooNavigator():
 
         # Photon flux is extracted from beamsize.config
         if self.phosec_meas == 0.0:
-            beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
+            beamsizeconf = BeamsizeConfig.BeamsizeConfig()
             flux = beamsizeconf.getFluxAtWavelength(cond['ds_hbeam'], cond['ds_vbeam'], cond['wavelength'])
             self.logger.info("Flux value is read from beamsize.conf: %5.2e" % flux)
         else:
@@ -1066,7 +1070,7 @@ class ZooNavigator():
 
         # Photon flux is extracted from beamsize.config
         if self.phosec_meas == 0.0:
-            beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
+            beamsizeconf = BeamsizeConfig.BeamsizeConfig()
             flux = beamsizeconf.getFluxAtWavelength(cond['ds_hbeam'], cond['ds_vbeam'], cond['wavelength'])
             self.logger.info("Flux value is read from beamsize.conf: %5.2e." % flux)
             # self.logger.info()
@@ -1140,7 +1144,7 @@ class ZooNavigator():
 
         # photon flux
         if self.phosec_meas == 0.0:
-            beamsizeconf = BeamsizeConfig.BeamsizeConfig(self.config_dir)
+            beamsizeconf = BeamsizeConfig.BeamsizeConfig()
             flux = beamsizeconf.getFluxAtWavelength(cond['ds_hbeam'], cond['ds_vbeam'], cond['wavelength'])
             self.logger.info("Flux value is read from beamsize.conf: %5.2e" % flux)
         else:

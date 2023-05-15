@@ -250,7 +250,7 @@ class BSSconfig:
 
         for on_off_line in self.on_off_list:
             axis_string=on_off_line['axis_name'].lower().replace("_"," ")
-            print("axis_string=",axis_string)
+            #print("axis_string=",axis_string)
             if axis_string.rfind(type_axis)!=-1:
                 on_mm = float(on_off_line['on'])
                 off_mm = float(on_off_line['off'])
@@ -431,26 +431,17 @@ if __name__ == "__main__":
     bssconf = BSSconfig()
     #bssconf.getThinnestAtt()
     axis_name="st2_gonio_1_z"
-    #bssconf.getPulseInfo(axis_name)
+    # collimator evacuation parameters
+    print("#####################3")
     e,a,b=bssconf.getEvacuateInfo("collimator")
     print(e,a,b)
-    # print(bssconf.getBLobject())
 
-    """
-    try:
-        # This is for Zoom -48000, 4x4 binning image
-        print bssconf.getCmount()
-        print bssconf.getCryo()
-        print bssconf.getColli()
-        print bssconf.getBS()
-    except MyException, ttt:
-        print ttt.args[0]
-    """
+    # Beam stopper evacuation parameters
+    print("#####################3")
+    e,a,b=bssconf.getEvacuateInfo("beam stop")
+    print(e,a,b)
 
-    # print(bssconf.getDictOf("tc1_slit_3_lower"))
-    # on_pulse, off_pulse = bssconf.getEvacuateInfo("beam stop")
-    # print("ON :",on_pulse)
-    # print("OFF:",off_pulse)
-    # bssconf.getEvacuateInfo("sample light")
+    print("#####################3")
+    e,a,b=bssconf.getEvacuateInfo("cryo")
 
-    # bssconf.makeListOnOff()
+    print(e,a,b)

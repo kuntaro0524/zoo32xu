@@ -35,9 +35,7 @@ class INOCC:
         self.backimg = config.get("files", "backimg")
 
         self.logdir=config.get("dirs", "logdir")
-        self.bssconfig_file=config.get("files", "bssconfig_file")
         self.fname = config.get("files", "inocc_image")
-        print(self.logdir)
 
         # Directory for saving the INOCC result for each data
         self.sample_name = sample_name
@@ -111,6 +109,7 @@ class INOCC:
         self.bssconfig = BSSconfig.BSSconfig()
         # Read Cmount position from configure file
         self.mx, self.my, self.mz = self.bssconfig.getCmount()
+        print("########################## ", self.mx, self.my, self.mz)
 
         # File name for each directory
         self.ff = File(self.loop_dir)
@@ -336,7 +335,7 @@ class INOCC:
 
     def simpleCenter(self, phi, loop_size=600.0, option='top'):
         new_idx = self.ff.getNewIdx3()
-        print("DDDDDDDDDDDDDDDDDDDDD %d"% new_idx)
+        #print("DDDDDDDDDDDDDDDDDDDDD %d"% new_idx)
         self.fname = "%s/%03d_center.ppm" % (self.loop_dir, new_idx)
         self.logger.info("##################### TOP CENTERING %5.2f deg.\n" % phi)
         self.logger.info("INOCC.coreCentering captures %s\n" % self.fname)

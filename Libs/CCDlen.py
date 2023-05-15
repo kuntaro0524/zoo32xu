@@ -7,10 +7,7 @@ import datetime
 # My library
 from Received import *
 from Motor import *
-from BSSconfig import *
 
-
-#
 class CCDlen:
     def __init__(self, server):
         self.s = server
@@ -37,8 +34,6 @@ class CCDlen:
         tmp = len - self.homevalue
         pls = int(tmp * 5000.0)
         sense_pls = -pls
-        # print sense_pls
-        # print self.getPos()
         self.move(sense_pls)
         print("Current Camera distance %8.2fmm" % self.getLen())
 
@@ -47,8 +42,6 @@ class CCDlen:
 
     def evac(self):
         self.moveCL(300.0)
-
-    #		self.moveCL(500.0)
 
     def isMoved(self):
         isY = self.coly.isMoved()
