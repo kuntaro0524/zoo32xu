@@ -54,8 +54,8 @@ class CoaxImage:
         # section: files, option: camera_inf
         self.camera_inf_path = self.config.get("files", "camera_inf")
         # bss.config パスは beamline.ini から取得
-        # section: files, option: bss_config
-        self.bss_config_path = self.config.get("files", "bss_config")
+        # section: files, option: bssconfig_file
+        self.bss_config_path = self.config.get("files", "bssconfig_file")
 
         # gonio direction : beamline.local.ini から取得
         self.gonio_direction = self.config.get("experiment", "gonio_direction")
@@ -77,7 +77,7 @@ class CoaxImage:
         # 使用しているのは set_zoom だけなのでこの関数をどっかで使っているかどうかって話 2023/05/12 K.Hirata
         self.coax_zpulse2pint = {0: 20367, -16000: 20367, -32000: 20367, -38000: 20367}  # zoom pulse to pint pulse   YK@210302
         self.gonio = Gonio.Gonio(ms)
-        self.capture = Capture.Capture(ms)
+        self.capture = Capture.Capture()
 
         # Flag for dark experiment
         self.isDark = False

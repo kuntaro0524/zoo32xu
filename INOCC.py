@@ -23,13 +23,16 @@ class INOCC:
         self.isInit = False
         self.debug = True
 
-        # 
-        self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210324.ppm" % beamline
-
         # Get information from beamline.ini file.
         config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         config.read(config_path)
+
+        # beamline name is read from 'beamline.ini'
+        beamline = config.get("beamline", "beamline")
+
+        # back ground image
+        self.backimg = config.get("files", "backimg")
 
         self.logdir=config.get("dirs", "logdir")
         self.bssconfig_file=config.get("files", "bssconfig_file")
@@ -105,7 +108,7 @@ class INOCC:
         self.cenx, self.ceny = self.coi.get_cross_pix()
         # 170425-Yamagiwa safety
         # Configure file for reading gonio mount position
-        self.bssconfig = BSSconfig.BSSconfig(self.bssconfig_file)
+        self.bssconfig = BSSconfig.BSSconfig()
         # Read Cmount position from configure file
         self.mx, self.my, self.mz = self.bssconfig.getCmount()
 
@@ -653,27 +656,35 @@ class INOCC:
 if __name__ == "__main__":
     ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ms.connect(("172.24.242.41", 10101))
-    root_dir = "/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/"
+
+    # read configure file(beamline.init)
+    config = ConfigParser(interpolation=ExtendedInterpolation())
+    ini_file = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+    config.read(ini_file)
+    zooroot = config.get('dirs', 'zooroot')
 
     logname = "./inocc.log"
-    logging.config.fileConfig('%s/Libs/logging.conf' % (root_dir), defaults={'logfile_name': logname})
+    logging.config.fileConfig('%s/Libs/logging.conf' % (zooroot), defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
     os.chmod(logname, 0o666)
 
-    inocc = INOCC(ms, root_dir)
+    test_dir = "/staff/bl32xu/BLsoft/NewZoo/BackImages/"
+
+    inocc = INOCC(ms, test_dir)
     phi_face = 90
 
     start_time = datetime.datetime.now()
-    backimg = "/isilon/BL32XU/BLsoft/PPPP/93.ZooSandbox/BackImages/back-2302151858.ppm"
+
+    # back image path read from 'beamline.ini'
+    backimg = config.get('files', 'backimg')
     inocc.setBack(backimg)
     # For each sample raster.png
-    raster_picpath = "%s/raster.png" % root_dir
+    raster_picpath = "%s/raster.png" % test_dir
     inocc.setRasterPicture(raster_picpath)
 
     # def doAll(self, ntimes=3, skip=False, loop_size=600.0, offset_angle=0.0):
     rwidth, rheight, phi_face, gonio_info = inocc.doAll(ntimes=2, skip=False, loop_size=300.0)
 
-    print(n_good, phi_area_list)
-    print(("Loop width/height=", rwidth, rheigh))
+    print(("Loop width/height=", rwidth, rheight))
 
     ms.close()

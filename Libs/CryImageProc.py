@@ -24,14 +24,6 @@ class CryImageProc():
         self.config.read(os.environ['ZOOCONFIGPATH']+"/beamline.ini")
         self.beamline = self.config.get("beamline", "beamline")
 
-        # ROI length [um]
-        # 上下左右の方向からこの距離オフセットした中央のROIを設定するためのパラメータ
-        # 通常は200umくらいだが beamline.iniから読むことにする
-        # section: inocc, option: roi_len_um
-        self.roi_len_um = self.config.getfloat("inocc", "roi_len_um")
-        # Edge margin to judge 'Hamidashi'
-        self.edge_margin_pix = int(self.roi_len_um / self.pix_size)
-
         # 最初に上下左右の一定ピクセルを解析から除外する→beamline.iniから読む
         # section: inocc, option: delete_pix
         self.delete_pix = self.config.getint("inocc", "delete_pix")
@@ -47,6 +39,13 @@ class CryImageProc():
         self.filter_thresh_min = self.config.getint("inocc", "filter_thresh_min")
         self.filter_thresh_max = self.config.getint("inocc", "filter_thresh_max")
 
+        # ROI length [um]
+        # 上下左右の方向からこの距離オフセットした中央のROIを設定するためのパラメータ
+        # 通常は200umくらいだが beamline.iniから読むことにする
+        # section: inocc, option: roi_len_um
+        self.roi_len_um = self.config.getfloat("inocc", "roi_len_um")
+        # Edge margin to judge 'Hamidashi'
+        self.edge_margin_pix = int(self.roi_len_um / self.pix_size)
         self.roi_len_pix = self.roi_len_um / self.pix_size
         
         # Flags 
@@ -170,13 +169,15 @@ class CryImageProc():
         self.ymin = self.delete_pix 
         self.ymax = self.im_height - self.delete_pix 
 
-        print(self.im_width, self.im_height)
+        #print(self.im_width, self.im_height)
 
         # Top centering edge
         self.xmin_top = self.edge_margin_pix
         self.xmax_top = self.im_width - self.edge_margin_pix
         self.ymin_top = self.edge_margin_pix
         self.ymax_top = self.im_height - self.edge_margin_pix
+
+        #print(self.xmin_top, self.xmax_top, self.ymin_top, self.ymax_top)
 
         # Log file for centering
         self.logfile = open("%s/cip.log" % self.logdir, "a")

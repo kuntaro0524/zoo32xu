@@ -7,14 +7,18 @@ blanc_address = 172.24.242.41
 
 [dirs]
 zooroot = /staff/bl32xu/BLsoft/NewZoo/
-logdir = $zooroot/Log/
-zoologdir= $zooroot/ZooLogs/
-bssconfig_dir=/staff/config/bl32xu/bss/
+logdir = ${dirs:zooroot}/Logs/
+zoologdir= ${dirs:zooroot}/ZooLogs/
+bssconfig_dir=/staff/config/bl32xu/
 
 [files]
-bssconfig_file=/staff/config/bl32xu/bss/bss.config
+bssconfig_file=${dirs:bssconfig_dir}/bss/bss.config
+camera_inf=${dirs:bssconfig_dir}/video/camera.inf
 inocc_image=/staff/config/bl32xu/bss/test.ppm
 logging_conf=/staff/bl32xu/BLsoft/NewZoo/Libs/logging.conf
+dose_csv=${dirs:zooroot}/Libs/en_dose_lys.csv
+# Just a default background image file.
+backimg = ${dirs:zooroot}/BackImages/back.ppm
 
 [capture]
 bright_default=4300
@@ -30,6 +34,18 @@ height=480.0
 image_size=881295
 pix_size = 3.2578
 
+[inocc]
+# 上下左右このピクセル分は削ってから解析をする
+delete_pix=5
+# 中央のROIを切る→センタリングのときに先端が入っているかどうかを見る
+# 上下左右、どのくらい隙間をとるかを決定している
+roi_len_um = 200.0
+# cv2で filteringするときのしきい値（経験的に決めた）
+filter_thresh_min=15
+filter_thresh_max=20
+# ２値化のときのしきい値
+bin_thresh=20
+
 [experiment]
 score_min = 10
 score_max = 100
@@ -40,3 +56,16 @@ exp_raster = 0.01
 att_raster = 20
 hebi_att = 20
 cover_flag = 1
+exp_ds=0.02
+# Rasterのときの端分解能
+resol_raster=2.5
+# "" are not required to define 'character variable'
+gonio_direction =FROM_RIGHT
+
+[detector]
+# カメラ長最短 [mm]
+min_camera_len=125.0
+# カメラの長さ（短て方向） [mm]
+min_camera_dim = 233.0
+
+
