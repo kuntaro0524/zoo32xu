@@ -1,5 +1,5 @@
-import cv2,sys,datetime
-import matplotlib.pyplot as plt
+# encoding: utf-8
+import cv2,sys
 import numpy as np
 import copy
 from MyException import *
@@ -12,25 +12,40 @@ class CryImageProc():
     def __init__(self, logdir = "./"):
         self.debug = False
         # ROI definition 
-        # the values can be reloaded from the target image size
-        # by calling 'setImages"
-        self.xmin = 100
-        self.xmax = 500
+        # これらの変数は重要ではあるが、各ビームラインごとに画像の画素数などが異なるため
+        # ここでは適当な値を入れておく
+        self.xmin = 10
+        self.xmax = 600
         self.ymin = 10
-        self.ymax = 470
-        self.roi_len_um = 200.0 #[um]
+        self.ymax = 480
 
         # beamlineのなまえ、gonio_direction, pix_size, bin_threshについては beamline.ini から読み込む
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
         self.config.read(os.environ['ZOOCONFIGPATH']+"/beamline.ini")
         self.beamline = self.config.get("beamline", "beamline")
 
+        # ROI length [um]
+        # 上下左右の方向からこの距離オフセットした中央のROIを設定するためのパラメータ
+        # 通常は200umくらいだが beamline.iniから読むことにする
+        # section: inocc, option: roi_len_um
+        self.roi_len_um = self.config.getfloat("inocc", "roi_len_um")
+        # Edge margin to judge 'Hamidashi'
+        self.edge_margin_pix = int(self.roi_len_um / self.pix_size)
+
+        # 最初に上下左右の一定ピクセルを解析から除外する→beamline.iniから読む
+        # section: inocc, option: delete_pix
+        self.delete_pix = self.config.getint("inocc", "delete_pix")
+
         # Pixel size (section: coaximage, option: pix_size)
         self.pix_size = self.config.getfloat("coaximage", "pix_size")
         # gonio direction (section: experiment, option: gonio_direction)
         self.gonio_direction = self.config.get("experiment", "gonio_direction")
-        # bin threshold for detecting the edge (section: coaximage, option: bin_thresh)
-        self.bin_thresh = self.config.getint("coaximage", "bin_thresh")
+        # bin threshold for detecting the edge (section: inocc, option: bin_thresh)
+        self.bin_thresh = self.config.getint("inocc", "bin_thresh")
+        # filter threshold for detecting the edge (section: inocc, option: filter_thresh_min)
+        # filter threshold for detecting the edge (section: inocc, option: filter_thresh_max)
+        self.filter_thresh_min = self.config.getint("inocc", "filter_thresh_min")
+        self.filter_thresh_max = self.config.getint("inocc", "filter_thresh_max")
 
         self.roi_len_pix = self.roi_len_um / self.pix_size
         
@@ -38,17 +53,6 @@ class CryImageProc():
         self.isContourFull = False
         self.isContourROI  = False
         self.isTopXY = True
-
-        # The top 5 lines should be removed at BL45XU
-        # とりあえず今の所使っていない
-        # Noisy 190514 K.Hirata
-        self.removeTop = 5
-        # Noise at the bottom 190607 K.Hirata
-        self.removeDown = 5
-
-        # Edge margin to judge 'Hamidashi'
-        edge_margin_um = 200.0 #[um]
-        self.edge_margin_pix = int(edge_margin_um / self.pix_size)
 
         # Log picture
         self.roi_pic = "roi.png"
@@ -133,25 +137,21 @@ class CryImageProc():
         self.bgrey = self.trimEdges(self.bgrey, ntrim=7)
 
         # For binarization
-        filter_thresh = 20
         if self.isGamma:
             self.dimg = self.gammaCorrAndDiff(self.tgrey, self.bgrey)
             # Median Blur
-            # self.blur = cv2.medianBlur(self.dimg, 1)
-            self.blur = cv2.bilateralFilter(self.dimg,15,filter_thresh,filter_thresh)
+            self.blur = cv2.bilateralFilter(self.dimg,self.filter_thresh_min,self.filter_thresh_max,self.filter_thresh_max)
             self.bin_image = cv2.threshold(self.blur, self.bin_thresh, 150, 0)[1]
 
         elif self.isUseNew:
             self.dimg = self.tgrey
             self.blur = cv2.medianBlur(self.tgrey, 5)
-            self.bin_image = cv2.adaptiveThreshold(self.blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 3)
-            # binirization1
-            # self.bin_image = cv2.threshold(self.blur,self.bin_thresh,150,0)[1]
+            self.bin_image = cv2.adaptiveThreshold(self.blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, self.filter_thresh_min, 3)
             cv2.imwrite("bin.png", self.bin_image)
 
         else:
             self.dimg=cv2.absdiff(self.tgrey,self.bgrey)
-            self.blur = cv2.bilateralFilter(self.dimg,15,filter_thresh,filter_thresh)
+            self.blur = cv2.bilateralFilter(self.dimg,self.filter_thresh_min,self.filter_thresh_max,self.filter_thresh_max)
             # binirization1
             self.bin_image = cv2.threshold(self.blur, self.bin_thresh, 150, 0)[1]
 
@@ -165,10 +165,10 @@ class CryImageProc():
         self.target_save = copy.deepcopy(self.timg)
 
         # min - max in XY directions
-        self.xmin = 10
-        self.xmax = self.im_width - 10
-        self.ymin = 10
-        self.ymax = self.im_height - 10
+        self.xmin = self.delete_pix 
+        self.xmax = self.im_width - self.delete_pix 
+        self.ymin = self.delete_pix 
+        self.ymax = self.im_height - self.delete_pix 
 
         print(self.im_width, self.im_height)
 
@@ -420,15 +420,6 @@ class CryImageProc():
             hamidashi_flag = True
         else:
             hamidashi_flag = False
-
-        """ # Old code : hamidashi Left or Right
-        if self.gonio_direction == "FROM_RIGHT" and top_x <= self.xmin:
-            print "HIDARI NI HAMIDASHITERU"
-            hamidashi_flag = True
-        elif self.gonio_direction != "FROM_RIGHT" and top_x >= self.xmax:
-            print "MIGI NI HAMIDASHITERU"
-            hamidashi_flag = True
-        """ 
 
         return target_x, target_y, area, hamidashi_flag
 

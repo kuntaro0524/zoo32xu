@@ -9,7 +9,6 @@ import CoaxPint
 import logging
 from configparser import ConfigParser, ExtendedInterpolation
 
-# import CryImageProc as CIP
 
 def read_camera_inf(infin):
     ret = {}

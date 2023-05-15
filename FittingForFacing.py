@@ -1,13 +1,8 @@
-import cv2,sys,datetime, socket, time
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
-import copy
-
-sys.path.append("/isilon/BL45XU/BLsoft/PPPP/10.Zoo/Libs")
 
 from MyException import *
-import CryImageProc
-import Device
 
 # Modified 2015/07/22
 # Y translation is changed 500um -> 1000um when the loop is 

@@ -27,7 +27,7 @@ class INOCC:
         self.backimg = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/back-210324.ppm" % beamline
 
         # Get information from beamline.ini file.
-        config = ConfigParser(interpolation=ExtendedInterpolation()
+        config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
         config.read(config_path)
 
