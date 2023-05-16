@@ -6,14 +6,21 @@ import time
 # My library
 from Motor import *
 import BSSconfig
+from configparser import ConfigParser, ExtendedInterpolation
 
 class Cryo:
     def __init__(self, server):
         self.s = server
 
+        # Read bemaline.ini 
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
+        # Cryo Z axis name is extracted from 'beamline.ini'
+        # section: axes, option: cryo_z_name
+        self.axis_name = self.config.get("axes", "cryo_z_name")
+
         self.bssconfig = BSSconfig.BSSconfig()
         self.bl_object = self.bssconfig.getBLobject()
-        self.axis_name = "st2_cryo_1_z"
         self.cryoz = Motor(self.s, f"bl_{self.bl_object}_{self.axis_name}", "pulse")
 
         self.isInit = False
@@ -25,7 +32,8 @@ class Cryo:
     # 退避する軸はビームラインごとに違っているのでそれを取得する必要がある。
     # 現時点では１軸しか取得できないのでそうでないビームライン（ビームストッパーをYZどちらも退避）が出てくると修正する必要がある
     def getEvacuate(self):
-        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconfig.getEvacuateInfo("cryo")
+        evac_info = self.config.get("axes", "cryo_evacinfo")
+        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconfig.getEvacuateInfo(evac_info)
         print("ON (VME value):",self.on_pulse)
         print("OFF(VME value):",self.off_pulse)
         # 退避軸を自動認識してそれをオブジェクトとして設定してしまう

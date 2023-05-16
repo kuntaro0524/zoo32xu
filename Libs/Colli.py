@@ -9,15 +9,23 @@ from Received import *
 from Motor import *
 import BSSconfig
 from MyException import *
+from configparser import ConfigParser, ExtendedInterpolation
 
 class Colli:
     def __init__(self, server):
         self.bssconf = BSSconfig.BSSconfig()
         self.bl_object = self.bssconf.getBLobject()
 
+        # beamline.ini 
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
+
         self.s = server
-        self.coly_axis = "st2_collimator_1_y"
-        self.colz_axis = "st2_collimator_1_z"
+        # names of collimator axes
+        # coly > section: axes, option: col_y_name
+        self.coly_axis = self.config.get("axes", "col_y_name")
+        # colz > section: axes, option: col_z_name
+        self.colz_axis = self.config.get("axes", "col_z_name")
 
         self.coly = Motor(self.s, "bl_%s_%s" %(self.bl_object, self.coly_axis), "pulse")
         self.colz = Motor(self.s, "bl_%s_%s" %(self.bl_object, self.colz_axis), "pulse")
@@ -32,7 +40,8 @@ class Colli:
     # 退避する軸はビームラインごとに違っているのでそれを取得する必要がある。
     # 現時点では１軸しか取得できないのでそうでないビームライン（ビームストッパーをYZどちらも退避）が出てくると修正する必要がある
     def getEvacuate(self):
-        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconf.getEvacuateInfo("collimator")
+        evacinfo = self.config.get("axes", "col_evacinfo")
+        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconf.getEvacuateInfo(evacinfo)
         print("ON (VME value):",self.on_pulse)
         print("OFF(VME value):",self.off_pulse)
         # 退避軸を自動認識してそれをオブジェクトとして設定してしまう

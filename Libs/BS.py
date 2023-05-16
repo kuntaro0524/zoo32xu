@@ -44,7 +44,8 @@ class BS:
     # 退避する軸はビームラインごとに違っているのでそれを取得する必要がある。
     # 現時点では１軸しか取得できないのでそうでないビームライン（ビームストッパーをYZどちらも退避）が出てくると修正する必要がある
     def getEvacuate(self):
-        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconf.getEvacuateInfo("beam stop")
+        evacinfo = self.config.get("axes", "bs_evacinfo")
+        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconf.getEvacuateInfo(evacinfo)
         print("ON (VME value):",self.on_pulse)
         print("OFF(VME value):",self.off_pulse)
         # 退避軸を自動認識してそれをオブジェクトとして設定してしまう
