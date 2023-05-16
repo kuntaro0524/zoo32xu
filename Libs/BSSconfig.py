@@ -21,6 +21,7 @@ class BSSconfig:
 
         self.isRead = False
         self.isPrep = False
+        self.debug = False
 
     def storeLines(self):
         ifile = open(self.confile, "r")
@@ -131,19 +132,27 @@ class BSSconfig:
 
         return self.all_dicts
 
-
     # 格納した辞書のリストから指定した軸名のパラメータ辞書をもらう
     def getDictOf(self, axis_name):
         if self.isPrepDict==False:
             self.storeAxesBlocks()
         
         for ddiicc in self.all_dicts:
-            #print("DICT")
-            #print(ddiicc['_axis_name'],axis_name)
-            #print("DICT")
+            if self.debug:
+                print("DICT")
+                print(ddiicc['_axis_name'],axis_name)
+                print("DICT")
             if ddiicc['_axis_name'] == axis_name:
                 # print("FOUND!")
                 return ddiicc
+
+    def getHomeValue(self, axis_name):
+        if self.isPrepDict==False:
+            self.storeAxesBlocks()
+        dddd = self.getDictOf(axis_name)
+        if '_val2pulse' in dddd.keys():
+            homevalue = float(dddd['_home_value'])
+            return homevalue
 
     # 軸名を指定してパルス分解能など動かすときに必要な情報を得る
     def getPulseInfo(self, axis_name):
@@ -165,6 +174,26 @@ class BSSconfig:
         else:
             print("Fatal errors.")
             sys.exit()
+
+    def getLimit(self, axis_name):
+        dddd = self.getDictOf(axis_name)
+        # lower limit flag
+        lower_limit = 0.0
+        upper_limit = 99999.99999
+
+        if '_lower_limit' in dddd.keys():
+            lower_limit = float(dddd['_lower_limit'])
+        else:
+            print("No lower limit")
+            sys.exit()
+
+        if '_upper_limit' in dddd.keys():
+            upper_limit = float(dddd['_upper_limit'])
+        else:
+            print("No lower limit")
+            sys.exit()
+
+        return lower_limit, upper_limit
     
     def makeListOnOff(self):
         if self.isRead == False:
@@ -329,35 +358,6 @@ class BSSconfig:
         # print strvalue
         return float(strvalue)
 
-    # 2022/03/24までに利用していたコード→今は基本使っていない
-    # _obsoleted 拡張子を追記した
-    def readEvacuate_obsoleted(self):
-        # mm 単位の数値を読み込むよ
-        try:
-            self.cryo_on = self.getValue("Cryostream_1_On_Position")
-            self.cryo_off = self.getValue("Cryostream_1_Off_Position")
-            self.colli_on = self.getValue("Collimator_1_On_Position")
-            self.colli_off = self.getValue("Collimator_1_Off_Position:")
-            self.bs_on = self.getValue("Beam_Stop_1_On_Position")
-            self.bs_off = self.getValue("Beam_Stop_1_Off_Position:")
-            self.im_on = self.getValue("Intensity_Monitor_On_Position:")
-            self.im_off = self.getValue("Intensity_Monitor_Off_Position:")
-
-            self.mx = self.getValue("Cmount_Gonio_X:")
-            # self.my=self.getValue("Cmount_Gonio_Y:")
-            self.mz = self.getValue("Cmount_Gonio_Z:")
-            self.my = self.getValue("Cmount_Gonio_Y_Magnet")
-
-        # 例外のときは、エラーメッセージを表示する
-        except Exception as e:
-            print(e)
-            print("Error: Cannot read the configuration file")
-            print("Please check the file path and the file name")
-            print("The file name should be 'evacuate.conf'")
-            print("The file path should be '/home/sxfeloper/evacuate.conf'")
-
-        self.isPrep = True
-
     def getCmount(self):
         self.mx = self.getValue("Cmount_Gonio_X:")
         self.mz = self.getValue("Cmount_Gonio_Z:")
@@ -445,4 +445,11 @@ if __name__ == "__main__":
     print("#####################3")
     e,a,b=bssconf.getEvacuateInfo("cryo")
 
+    print(bssconf.getDictOf("st2_detector_1_x"))
+
     print(e,a,b)
+
+    print("################################")
+    print(bssconf.getLimit("st2_detector_1_x"))
+    print(bssconf.getPulseInfo("st2_detector_1_x"))
+    print(bssconf.getHomeValue("st2_detector_1_x"))

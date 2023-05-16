@@ -7,15 +7,30 @@ import datetime
 # My library
 from Received import *
 from Motor import *
+from configparser import ConfigParser, ExtendedInterpolation
+import BSSconfig
 
 class CCDlen:
     def __init__(self, server):
         self.s = server
-        self.ccdlen = Motor(self.s, "bl_32in_st2_detector_1_x", "pulse")
 
-        self.off_pos = 0  # pulse
-        self.on_pos = -245000  # pulse
-        self.homevalue = 692.290
+        # beamline.ini file
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
+
+        # axis definition is read from 'beamline.ini' file
+        # section: axes, option: ccdlen
+        self.ccdlen_name = self.config.get('axes', 'ccdlen')
+
+        # BSSconfig file
+        self.bssconf = BSSconfig.BSSconfig()
+        self.bl_object = self.bssconf.getBLobject()
+        self.ccdlen = Motor(self.s, f"bl_{self.bl_object}_{self.ccdlen_name}", "pulse")
+
+        # Pulse, home and limit parameters
+        self.ccdlen_v2p, self.ccdlen_sense = self.bssconf.getPulseInfo(self.ccdlen_name)
+        self.ccdlen_home = self.bssconf.getHomeValue(self.ccdlen_name)
+        self.low_limit, self.upper_limit = self.bssconf.getLimit(self.ccdlen_name)
 
         self.isInit = False
 
@@ -23,18 +38,17 @@ class CCDlen:
         return self.ccdlen.getPosition()[0]
 
     def getLen(self):
-        pls = -float(self.getPos())
-        len = pls / 5000.0 + self.homevalue
+        pls = self.ccdlen_sense*float(self.getPos())
+        len = pls / self.ccdlen_v2p + self.ccdlen_home
         return len
 
     def moveCL(self, len):
-        if len > 600.0 or len < 120.0:
+        if len > self.upper_limit or len < self.low_limit:
             print("Do nothing because CL should be in 110-600mm")
             return False
-        tmp = len - self.homevalue
-        pls = int(tmp * 5000.0)
-        sense_pls = -pls
-        self.move(sense_pls)
+        tmp = len - self.ccdlen_home
+        pls = int(tmp * self.ccdlen_v2p) * self.ccdlen_sense
+        self.move(pls)
         print("Current Camera distance %8.2fmm" % self.getLen())
 
     def move(self, pls):
@@ -62,7 +76,8 @@ if __name__ == "__main__":
 
     clen = CCDlen(s)
     print(clen.getLen())
-    # clen.moveCL(300.0)
+    clen.moveCL(400.0)
+    clen.moveCL(300.0)
     # clen.evac()
 
     s.close()
