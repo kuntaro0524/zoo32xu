@@ -7,53 +7,62 @@ import time
 from Received import *
 from Motor import *
 from MyException import *
-from BSSconfig import *
 from Count import *
+import BSSconfig
+from configparser import ConfigParser, ExtendedInterpolation
 
-
-#
 class BS:
     def __init__(self, server):
         self.s = server
-        self.bs_y = Motor(self.s, "bl_32in_st2_bs_1_y", "pulse")
-        self.bs_z = Motor(self.s, "bl_32in_st2_bs_1_z", "pulse")
-        self.sense_y = -1
-        self.sense_z = 1
+        
+        # Beamline object
+        self.bssconf = BSSconfig.BSSconfig()
+        self.bl_object = self.bssconf.getBLobject()
+
+        # configure file "beamline.ini"
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.config.read(config_path)
+
+        # beam stopper axis definition
+        # beam stopper axis name > section: axes, option: bs_y_name
+        self.bs_y_name = self.config.get("axes", "bs_y_name")
+        # beam stopper axis name > section: axes, option: bs_z_name
+        self.bs_z_name = self.config.get("axes", "bs_z_name")
+
+        print(self.bs_y_name)
+        
+        self.bs_y = Motor(self.s, f"bl_{self.bl_object}_{self.bs_y_name}", "pulse")
+        self.bs_z = Motor(self.s, f"bl_{self.bl_object}_{self.bs_z_name}", "pulse")
+
+        # Read configure file and get parameters
+        self.bs_y_v2p, self.bs_y_sense = self.bssconf.getPulseInfo(self.bs_y_name)
+        self.bs_z_v2p, self.bs_z_sense = self.bssconf.getPulseInfo(self.bs_z_name)
 
         self.isInit = False
-        self.v2p = 2000
 
-        # Default value
-        self.off_pos = -60000  # pulse
-        self.on_pos = 0  # pulse
-        self.evac_large_holder = -10000
-
+    # 退避する軸はビームラインごとに違っているのでそれを取得する必要がある。
+    # 現時点では１軸しか取得できないのでそうでないビームライン（ビームストッパーをYZどちらも退避）が出てくると修正する必要がある
     def getEvacuate(self):
-        bssconf = BSSconfig()
-
-        try:
-            tmpon, tmpoff = bssconf.getBS()
-        except MyException as ttt:
-            print(ttt.args[0])
-
-        self.on_pos = float(tmpon) * self.v2p
-        self.off_pos = float(tmpoff) * self.v2p
-
+        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconf.getEvacuateInfo("beam stop")
+        print("ON (VME value):",self.on_pulse)
+        print("OFF(VME value):",self.off_pulse)
+        # 退避軸を自動認識してそれをオブジェクトとして設定してしまう
+        self.evac_axis = Motor(self.s, "bl_%s_%s" % (self.bl_object, self.evac_axis_name), "pulse")
         self.isInit = True
-        print(self.on_pos, self.off_pos)
 
     def getZ(self):
-        return self.sense_z * int(self.bs_z.getPosition()[0])
+        return self.bs_z_sense * int(self.bs_z.getPosition()[0])
 
     def getY(self):
-        return self.sense_y * int(self.bs_y.getPosition()[0])
+        return self.bs_y_sense * int(self.bs_y.getPosition()[0])
 
     def moveY(self, pls):
-        v = pls * self.sense_y
+        v = pls * self.bs_y_sense
         self.bs_y.move(v)
 
     def moveZ(self, pls):
-        v = pls * self.sense_z
+        v = pls * self.bs_z_sense
         self.bs_z.move(v)
 
     def scan2D(self, prefix, startz, endz, stepz, starty, endy, stepy):
@@ -83,12 +92,12 @@ class BS:
     def on(self):
         if self.isInit == False:
             self.getEvacuate()
-        self.bs_z.move(self.on_pos)
+        self.bs_z.move(self.on_pulse)
 
     def off(self):
         if self.isInit == False:
             self.getEvacuate()
-        self.bs_z.move(self.off_pos)
+        self.bs_z.move(self.off_pulse)
 
     def goOn(self):
         if self.isInit == False:
@@ -122,20 +131,8 @@ if __name__ == "__main__":
     bs = BS(s)
 
     print(bs.getZ())
-    # y=bs.getY()
-
-    # bs.scan2D(-2000,2000,200,-500,500,50)
-
+    bs.getEvacuate()
     bs.on()
-    # bs.evacLargeHolder()
-
-    # print z,y
-    # bs.go(-30000)
-
-    # bs.getEvacuate()
-    # if option=="on":
-    # bs.on()
-    # elif option=="off":
-    # bs.off()
-    # bs.off()
+    bs.off()
+    bs.on()
     s.close()

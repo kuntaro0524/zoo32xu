@@ -250,12 +250,13 @@ class BSSconfig:
 
         for on_off_line in self.on_off_list:
             axis_string=on_off_line['axis_name'].lower().replace("_"," ")
-            #print("axis_string=",axis_string)
+            print("axis_string=",axis_string)
             if axis_string.rfind(type_axis)!=-1:
                 on_mm = float(on_off_line['on'])
                 off_mm = float(on_off_line['off'])
                 on_pulse = int(on_mm * val2pulse) * sense
                 off_pulse = int(off_mm * val2pulse) * sense
+                print("###############################")
                 return evac_axis, on_pulse, off_pulse
 
     def getLightEvacuateInfo(self, axis_name):

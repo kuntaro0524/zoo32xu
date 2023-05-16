@@ -15,29 +15,36 @@ class Gonio:
         self.bssconf = BSSconfig.BSSconfig()
         self.bl_object = self.bssconf.getBLobject()
 
+        # beamline name is extracted from beamline.ini
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
+        # section: beamline, option: beamline
+        self.beamline = self.config.get("beamline", "beamline")
+
         # axis names
-        self.x_name = "st2_gonio_1_x"
-        self.y_name = "st2_gonio_1_y"
-        self.z_name = "st2_gonio_1_z"
-        self.zz_name = "st2_gonio_1_zz"
-        self.phi_name = "st2_gonio_1_phi"
+        # Read from beamline.ini 
+        # gonio x > section: axes, option: gonio_x_name
+        self.x_name = self.config.get("axes", "gonio_x_name")
+        # gonio y > section: axes, option: gonio_y_name
+        self.y_name = self.config.get("axes", "gonio_y_name")
+        # gonio z > section: axes, option: gonio_z_name
+        self.z_name = self.config.get("axes", "gonio_z_name")
+        # gonio zz > section: axes, option: gonio_zz_name
+        self.zz_name = self.config.get("axes", "gonio_zz_name")
+        # gonio rotation axis > section: axes, option: gonio_rot_name
+        self.rot_name = self.config.get("axes", "gonio_rot_name")
 
         # axes definitions
         self.goniox=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.x_name),"pulse")
         self.gonioy=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.y_name),"pulse")
         self.gonioz=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.z_name),"pulse")
         self.goniozz=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.zz_name),"pulse")
-        self.phi=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.phi_name),"pulse")
+        self.phi=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.rot_name),"pulse")
         self.base = 0.0
 
         # initialization flag
         self.isPrep = False
 
-        # beamline name is extracted from beamline.ini
-        self.config = ConfigParser(interpolation=ExtendedInterpolation())
-        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
-        # section: beamline, option: beamline
-        self.beamline = self.config.get("beamline", "beamline")
         # BL32XU specific sense parameter for a rotation axis: mysterious setting
         if self.beamline == "BL32XU":
             self.sense_phi_bl32xu = -1.0
@@ -50,7 +57,7 @@ class Gonio:
         self.v2p_y, self.sense_y = self.bssconf.getPulseInfo(self.y_name)
         self.v2p_z, self.sense_z = self.bssconf.getPulseInfo(self.z_name)
         self.v2p_zz, self.sense_zz = self.bssconf.getPulseInfo(self.zz_name)
-        self.v2p_phi, self.sense_phi = self.bssconf.getPulseInfo(self.phi_name)
+        self.v2p_phi, self.sense_phi = self.bssconf.getPulseInfo(self.rot_name)
 
         print(self.v2p_x, self.sense_x, self.v2p_y, self.sense_y , self.v2p_x, self.sense_z , self.v2p_zz, self.sense_zz , self.v2p_phi, self.sense_phi)
         self.isPrep = True
