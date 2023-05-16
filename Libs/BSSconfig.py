@@ -138,9 +138,9 @@ class BSSconfig:
             self.storeAxesBlocks()
         
         for ddiicc in self.all_dicts:
-            # print("DICT")
-            # print(ddiicc['_axis_name'],axis_name)
-            # print("DICT")
+            #print("DICT")
+            #print(ddiicc['_axis_name'],axis_name)
+            #print("DICT")
             if ddiicc['_axis_name'] == axis_name:
                 # print("FOUND!")
                 return ddiicc

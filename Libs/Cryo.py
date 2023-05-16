@@ -5,36 +5,32 @@ import time
 
 # My library
 from Motor import *
-from BSSconfig import *
-
+import BSSconfig
 
 class Cryo:
     def __init__(self, server):
         self.s = server
-        self.cryoz = Motor(self.s, "bl_32in_st2_cryo_1_z", "pulse")
 
-        self.v2p = 1250
+        self.bssconfig = BSSconfig.BSSconfig()
+        self.bl_object = self.bssconfig.getBLobject()
+        self.axis_name = "st2_cryo_1_z"
+        self.cryoz = Motor(self.s, f"bl_{self.bl_object}_{self.axis_name}", "pulse")
+
         self.isInit = False
 
-        # kawano (20100726)
-        #		self.off_pos=800 # pulse
-        #		self.on_pos=200 # pulse
-        self.off_pos = 1000  # pulse (add kawano@100726)
-        self.on_pos = 600  # pulse (add kawano@100726)
+        # pulse information of each axis
+        self.v2p_z, self.sense_z = self.bssconfig.getPulseInfo(self.axis_name)
+        print(self.sense_z)
 
+    # 退避する軸はビームラインごとに違っているのでそれを取得する必要がある。
+    # 現時点では１軸しか取得できないのでそうでないビームライン（ビームストッパーをYZどちらも退避）が出てくると修正する必要がある
     def getEvacuate(self):
-        bssconf = BSSconfig()
-
-        try:
-            tmpon, tmpoff = bssconf.getCryo()
-        except MyException as ttt:
-            print(ttt.args[0])
-
-        self.on_pos = float(tmpon) * self.v2p
-        self.off_pos = float(tmpoff) * self.v2p
-
+        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconfig.getEvacuateInfo("cryo")
+        print("ON (VME value):",self.on_pulse)
+        print("OFF(VME value):",self.off_pulse)
+        # 退避軸を自動認識してそれをオブジェクトとして設定してしまう
+        self.evac_axis = Motor(self.s, "bl_%s_%s" % (self.bl_object, self.evac_axis_name), "pulse")
         self.isInit = True
-        print(self.on_pos, self.off_pos)
 
     def getPosition(self):
         value = self.cryoz.getPosition()[0]
@@ -43,12 +39,12 @@ class Cryo:
     def on(self):
         if self.isInit == False:
             self.getEvacuate()
-        self.cryoz.move(self.on_pos)
+        self.cryoz.move(self.on_pulse)
 
     def off(self):
         if self.isInit == False:
             self.getEvacuate()
-        self.cryoz.move(self.off_pos)
+        self.cryoz.move(self.off_pulse)
 
     def offFull(self):
         self.cryoz.nageppa(2000)
@@ -105,14 +101,10 @@ if __name__ == "__main__":
     # bm.off()
 
     cry = Cryo(s)
+    print(cry.getEvacuate())
     pos = cry.getPosition()
     print(pos)
-    print(cry.getEvacuate())
-    # cry.go_and_check(0)
-    # cry.moveTo(-10000)
-    # time.sleep(3)
-    # cry.go_and_check(980)
     cry.on()
-    # coli.off()
+    cry.off()
 
     s.close()
