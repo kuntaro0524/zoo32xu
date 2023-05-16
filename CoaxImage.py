@@ -9,7 +9,6 @@ import CoaxPint
 import logging
 from configparser import ConfigParser, ExtendedInterpolation
 
-
 def read_camera_inf(infin):
     ret = {}
     origin_shift_x, origin_shift_y = None, None
@@ -323,6 +322,7 @@ class CoaxImage:
     # pv: pixel coordinate of vertical axis
     def calc_gxyz_of_pix_at(self, ph, pv, gcenx, gceny, gcenz, phi):
         print("CoaxImage.calc_gxyz_of_pix_at is called")
+        print("EEEEEEE ", gcenx, gceny, gcenz, phi)
         if ph < 0 or pv < 0:
             print("Invalid ph or ph:", ph, pv)
             return

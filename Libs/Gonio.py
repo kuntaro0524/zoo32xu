@@ -51,15 +51,12 @@ class Gonio:
         else:
             self.sense_phi_bl32xu = 1.0
 
-    def prepprep(self):
         # Read bss.config 
         self.v2p_x, self.sense_x = self.bssconf.getPulseInfo(self.x_name)
         self.v2p_y, self.sense_y = self.bssconf.getPulseInfo(self.y_name)
         self.v2p_z, self.sense_z = self.bssconf.getPulseInfo(self.z_name)
         self.v2p_zz, self.sense_zz = self.bssconf.getPulseInfo(self.zz_name)
-        self.v2p_phi, self.sense_phi = self.bssconf.getPulseInfo(self.rot_name)
-
-        print(self.v2p_x, self.sense_x, self.v2p_y, self.sense_y , self.v2p_x, self.sense_z , self.v2p_zz, self.sense_zz , self.v2p_phi, self.sense_phi)
+        self.v2p_rot, self.sense_phi = self.bssconf.getPulseInfo(self.rot_name)
         self.isPrep = True
 
     def goMountPosition(self):
@@ -80,7 +77,7 @@ class Gonio:
     def getPhi(self):
         phi_pulse=self.phi.getPosition()
         #print phi_pulse
-        phi_deg=float(phi_pulse[0])/float(self.v2p_phi)+self.base
+        phi_deg=float(phi_pulse[0])/float(self.v2p_rot)+self.base
 
         phi_deg=round(phi_deg,3)
         #print phi_deg
@@ -148,7 +145,7 @@ class Gonio:
 
     def moveUpDown(self,height):
         curr_phi=self.getPhi()
-        #print "PHI:%12.5f" % curr_phi
+        print("PHI:%12.5f"% curr_phi)
         curr_phi_rad=math.radians(curr_phi)
 
         # current pulse
@@ -158,7 +155,9 @@ class Gonio:
 
         # unit [um]
         # Goniometer X should be (-) for going up
-        move_x=-self.sense_x*height*math.sin(curr_phi_rad)
+        # BL41XU code ?? 230516 -> incorrect movement at BL32XU
+        # move_x=-self.sense_x*height*math.sin(curr_phi_rad)
+        move_x=self.sense_x*height*math.sin(curr_phi_rad)
         move_z=self.sense_z*height*math.cos(curr_phi_rad)
 
         # marume[um]
@@ -184,11 +183,13 @@ class Gonio:
     # height : height in unit of [um]
     def calcUpDown(self,height):
         curr_phi=self.getPhi()
-        #print "PHI:%12.5f" % curr_phi
+        print("PPPPPPPPPPPPPPPPPPPPPPPPPPPHIIIIIIIIIIIIIIIIIi:%12.5f" % curr_phi)
         curr_phi=math.radians(curr_phi)
 
         # unit [um]
-        move_x=-height*math.sin(curr_phi)
+        # Correct at BL41XU? This line is not suitable for BL32XU.
+        #move_x=-height*math.sin(curr_phi)
+        move_x=height*math.sin(curr_phi)
         move_z=height*math.cos(curr_phi)
 
         # marume[um]
@@ -201,13 +202,13 @@ class Gonio:
 
         return mm_x,mm_z
 
-    # height : height in unit of [um]
-    # phi : current gonio phi degrees
     def calcUpDown(self,height,phi):
         phi=math.radians(phi)
 
         # unit [um]
-        move_x=-height*math.sin(phi)
+        # Correct at BL41XU? This line is not suitable for BL32XU.
+        #move_x=-height*math.sin(curr_phi)
+        move_x=height*math.sin(phi)
         move_z=height*math.cos(phi)
 
         # marume[um]
@@ -233,9 +234,9 @@ class Gonio:
         if phi<-720.0:
             phi=phi+720.0
 
-        dif=phi*self.v2p_phi
+        dif=phi*self.v2p_rot
 
-        orig=self.base*self.v2p_phi
+        orig=self.base*self.v2p_rot
         pos_pulse=self.sense_phi*self.sense_phi_bl32xu*(orig+-dif)
         self.phi.move(pos_pulse)
 
@@ -331,7 +332,6 @@ class Gonio:
         self.gonioz.move(movez)
 
     def getXYZmm(self):
-        if self.isPrep == False: self.prepprep()
         x=self.getXmm()
         y=self.getYmm()
         z=self.getZmm()
@@ -339,7 +339,6 @@ class Gonio:
         return x,y,z
 
     def moveXYZmm(self,movex,movey,movez):
-        if self.isPrep == False: self.prepprep()
         # convertion
         xpulse=self.sense_x*movex*self.v2p_x
         ypulse=self.sense_y*movey*self.v2p_y
@@ -887,6 +886,7 @@ if __name__ == "__main__":
     gonio = Gonio(s)
     print((gonio.getXYZmm()))
     #gonio.moveXYZmm(-1.0,0.5,-0.3)
-    gonio.rotatePhi(90.0)
+    gonio.rotatePhi(135.0)
+    gonio.moveUpDown(100.0)
 
     s.close()

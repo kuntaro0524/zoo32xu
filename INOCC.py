@@ -621,6 +621,7 @@ class INOCC:
                     raise MyException("Loop cannot be found after edgeCentering x 2 times. %s " % tttt)
 
             phi_face = self.fitAndFace(phi_area_list)
+            self.logger.info(f"face_angle = {phi_face}deg")
 
             # adds offset angles for plate-like crystals
             self.logger.info(">>>> offset angle setting <<<<<")
