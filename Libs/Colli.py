@@ -7,41 +7,37 @@ import datetime
 # My library
 from Received import *
 from Motor import *
-from BSSconfig import *
+import BSSconfig
 from MyException import *
 
-
-#
 class Colli:
     def __init__(self, server):
+        self.bssconf = BSSconfig.BSSconfig()
+        self.bl_object = self.bssconf.getBLobject()
+
         self.s = server
-        self.coly = Motor(self.s, "bl_32in_st2_collimator_1_y", "pulse")
-        self.colz = Motor(self.s, "bl_32in_st2_collimator_1_z", "pulse")
+        self.coly_axis = "st2_collimator_1_y"
+        self.colz_axis = "st2_collimator_1_z"
 
-        self.off_pos = -60000  # pulse
-        self.on_pos = 0  # pulse
+        self.coly = Motor(self.s, "bl_%s_%s" %(self.bl_object, self.coly_axis), "pulse")
+        self.colz = Motor(self.s, "bl_%s_%s" %(self.bl_object, self.colz_axis), "pulse")
+        # pulse information of each axis
+        self.v2p_y, self.sense_y = self.bssconf.getPulseInfo(self.coly_axis)
+        self.v2p_z, self.sense_z = self.bssconf.getPulseInfo(self.colz_axis)
 
-        self.y_v2p = 500  # pulse/mm
-        self.z_v2p = 2000  # pulse/mm
+        print(self.v2p_y, self.sense_y, self.v2p_z, self.sense_z)
 
         self.isInit = False
 
-    def go(self, pvalue):
-        self.colz.nageppa(pvalue)
-
+    # 退避する軸はビームラインごとに違っているのでそれを取得する必要がある。
+    # 現時点では１軸しか取得できないのでそうでないビームライン（ビームストッパーをYZどちらも退避）が出てくると修正する必要がある
     def getEvacuate(self):
-        bssconf = BSSconfig()
-
-        try:
-            tmpon, tmpoff = bssconf.getColli()
-        except MyException as ttt:
-            print(ttt.args[0])
-
-        self.on_pos = float(tmpon) * self.z_v2p
-        self.off_pos = float(tmpoff) * self.z_v2p
-
+        self.evac_axis_name, self.on_pulse, self.off_pulse = self.bssconf.getEvacuateInfo("collimator")
+        print("ON (VME value):",self.on_pulse)
+        print("OFF(VME value):",self.off_pulse)
+        # 退避軸を自動認識してそれをオブジェクトとして設定してしまう
+        self.evac_axis = Motor(self.s, "bl_%s_%s" % (self.bl_object, self.evac_axis_name), "pulse")
         self.isInit = True
-        print(self.on_pos, self.off_pos)
 
     def getY(self):
         tmp = int(self.coly.getPosition()[0])
@@ -54,12 +50,20 @@ class Colli:
     def on(self):
         if self.isInit == False:
             self.getEvacuate()
-        self.colz.move(self.on_pos)
+        self.evac_axis.move(self.on_pulse)
 
     def off(self):
         if self.isInit == False:
             self.getEvacuate()
-        self.colz.move(self.off_pos)
+        self.evac_axis.move(self.off_pulse)
+
+    # 2023/04/12 Temp mod.
+    def offY(self):
+        self.coly.move(self.evac_y_axis_off)
+        #self.coly.move(-4000)
+
+    def onY(self):
+        self.coly.move(self.evac_y_axis_on)
 
     def goOn(self):
         if self.isInit == False:
@@ -448,8 +452,9 @@ if __name__ == "__main__":
     s.connect((host, port))
 
     coli = Colli(s)
-    # coli.getEvacuate()
-    # coli.off()
+    coli.getEvacuate()
+    coli.off()
+    coli.on()
     # coli.scan("colllli",0)
 
     # print coli.getY()
