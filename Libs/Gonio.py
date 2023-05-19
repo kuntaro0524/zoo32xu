@@ -5,262 +5,240 @@ import time
 import math
 from pylab import *
 
-# My library
-# from Received import *
 from Motor import *
-# from AnalyzePeak import *
-# from Capture import *
-# from File import *
-# from Enc import *
-from BSSconfig import *
+import BSSconfig
+from configparser import ConfigParser, ExtendedInterpolation
 
 class Gonio:
+    def __init__(self,server):
+        self.s=server
+        self.bssconf = BSSconfig.BSSconfig()
+        self.bl_object = self.bssconf.getBLobject()
 
-    def __init__(self, server):
-        self.s = server
-        self.goniox = Motor(self.s, "bl_32in_st2_gonio_1_x", "pulse")
-        self.gonioy = Motor(self.s, "bl_32in_st2_gonio_1_y", "pulse")
-        self.gonioz = Motor(self.s, "bl_32in_st2_gonio_1_z", "pulse")
-        self.goniozz = Motor(self.s, "bl_32in_st2_gonio_1_zz", "pulse")
-        self.phi = Motor(self.s, "bl_32in_st2_gonio_1_phi", "pulse")
-        # self.enc=Enc()
-        # self.enc.openPort()
+        # beamline name is extracted from beamline.ini
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
+        # section: beamline, option: beamline
+        self.beamline = self.config.get("beamline", "beamline")
 
-        self.sense_phi = -1
-        self.convertion = 5000
+        # axis names
+        # Read from beamline.ini 
+        # gonio x > section: axes, option: gonio_x_name
+        self.x_name = self.config.get("axes", "gonio_x_name")
+        # gonio y > section: axes, option: gonio_y_name
+        self.y_name = self.config.get("axes", "gonio_y_name")
+        # gonio z > section: axes, option: gonio_z_name
+        self.z_name = self.config.get("axes", "gonio_z_name")
+        # gonio zz > section: axes, option: gonio_zz_name
+        self.zz_name = self.config.get("axes", "gonio_zz_name")
+        # gonio rotation axis > section: axes, option: gonio_rot_name
+        self.rot_name = self.config.get("axes", "gonio_rot_name")
+
+        # axes definitions
+        self.goniox=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.x_name),"pulse")
+        self.gonioy=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.y_name),"pulse")
+        self.gonioz=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.z_name),"pulse")
+        self.goniozz=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.zz_name),"pulse")
+        self.phi=Motor(self.s,"bl_%s_%s" % (self.bl_object, self.rot_name),"pulse")
         self.base = 0.0
 
-    def goMountPosition(self):
-        bssconf = BSSconfig()
-        mountx = bssconf.getValue("Cmount_Gonio_X")
-        mounty = bssconf.getValue("Cmount_Gonio_Y")
-        mountz = bssconf.getValue("Cmount_Gonio_Z")
+        # initialization flag
+        self.isPrep = False
 
-        print(mountx, mounty, mountz)
+        # BL32XU specific sense parameter for a rotation axis: mysterious setting
+        if self.beamline == "BL32XU":
+            self.sense_phi_bl32xu = -1.0
+        else:
+            self.sense_phi_bl32xu = 1.0
+
+        # Read bss.config 
+        self.v2p_x, self.sense_x = self.bssconf.getPulseInfo(self.x_name)
+        self.v2p_y, self.sense_y = self.bssconf.getPulseInfo(self.y_name)
+        self.v2p_z, self.sense_z = self.bssconf.getPulseInfo(self.z_name)
+        self.v2p_zz, self.sense_zz = self.bssconf.getPulseInfo(self.zz_name)
+        self.v2p_rot, self.sense_phi = self.bssconf.getPulseInfo(self.rot_name)
+        self.isPrep = True
+
+    def goMountPosition(self):
+        bssconf=BSSconfig()
+        mountx=bssconf.getValue("Cmount_Gonio_X")
+        mounty=bssconf.getValue("Cmount_Gonio_Y")
+        mountz=bssconf.getValue("Cmount_Gonio_Z")
+
+        print(mountx,mounty,mountz)
 
         self.rotatePhi(0.0)
-        self.moveXYZmm(mountx, mounty, mountz)
+        self.moveXYZmm(mountx,mounty,mountz)
 
     def setSpeed(self):
-        com = "put/bl_32in_st2_gonio_1_phi_speed/1200000pps"
+        com="put/bl_41in_st2_gonio_1_phi_speed/1200000pps"
         return 0
 
-    def prepScan(self):
-        ##      Preparing gonio information
-        curr_gx = self.getX()[0]
-        curr_gy = self.getY()[0]
-        curr_gz = self.getZ()[0]
-        print("Current gonio[pulse]:%5d %5d %5d\n" % (curr_gx, curr_gy, curr_gz))
-
-        ##	Encoder reset
-        self.enc.resetEnc(curr_gx, curr_gy, curr_gz)
-        return True
-
     def getPhi(self):
-        phi_pulse = self.phi.getPosition()
-        # print phi_pulse
-        phi_deg = float(phi_pulse[0] * self.sense_phi) / float(self.convertion) + self.base
+        phi_pulse=self.phi.getPosition()
+        #print phi_pulse
+        phi_deg=float(phi_pulse[0])/float(self.v2p_rot)+self.base
 
-        phi_deg = round(phi_deg, 3)
-        # print phi_deg
+        phi_deg=round(phi_deg,3)
+        #print phi_deg
         return phi_deg
 
-    def presetPhi(self):
-        self.phi.preset(0)
-
-    def movePint(self, value_um):
-        curr_phi = self.getPhi()
-        # print "PHI:%12.5f" % curr_phi
-        curr_phi = math.radians(curr_phi)
+    def movePint(self,value_um):
+        curr_phi=self.getPhi()
+        #print "PHI:%12.5f" % curr_phi
+        curr_phi=math.radians(curr_phi)
 
         # current pulse
-        curr_x = int(self.getX()[0])
-        curr_z = int(self.getZ()[0])
+        curr_x=int(self.getX()[0])
+        curr_z=int(self.getZ()[0])
 
         # unit [um]
-        move_x = value_um * math.cos(curr_phi)
-        move_z = value_um * math.sin(curr_phi)
+        move_x=value_um*math.cos(curr_phi)
+        move_z=value_um*math.sin(curr_phi)
 
         # marume [um]
-        move_x = round(move_x, 5)
-        move_z = round(move_z, 5)
+        move_x=round(move_x,5)
+        move_z=round(move_z,5)
 
         # marume value[pulse]
-        move_x = int(move_x * 10)
-        move_z = int(move_z * 10)
+        # 1mm/4000pulse
+        move_x=int(move_x*10)
+        move_z=int(move_z*10)
 
-        # print move_x,move_z
+        #print move_x,move_z
 
         # final position
-        final_x = curr_x + move_x
-        final_z = curr_z + move_z
+        final_x=curr_x+move_x
+        final_z=curr_z+move_z
 
-        # print final_x,final_z
+        #print final_x,final_z
 
-        self.moveXZ(final_x, final_z)
+        self.moveXZ(final_x,final_z)
 
-    # print move_x,move_z
-    # return move_x,move_z
+        #print move_x,move_z
+        #return move_x,move_z
 
-    def moveTrans(self, trans):
+    def moveTrans(self,trans):
         # current pulse
-        curr_y = int(self.getY()[0])
+        curr_y=int(self.getY()[0])
 
         # relative movement unit [um]
-        move_y = -trans
+        move_y=-trans
 
         # marume[um]
-        move_y = round(move_y, 5)
-        # print "round %8.4f "%(move_y)
+        move_y=round(move_y,5)
+        #print "round %8.4f "%(move_y)
 
         # [um] to [pulse]
-        move_y = int(move_y * 10)
+        # move_y=int(move_y*10)
+        um_to_pulse_y = self.v2p_y/1000.0
+        move_y=int(move_y*um_to_pulse_y)
 
         # final position
-        final_y = curr_y + move_y
+        final_y=curr_y+move_y
 
-        # print curr_y,final_y
+        #print curr_y,final_y
 
         # final position
-        # print "final %8d\n"%(final_y)
+        #print "final %8d\n"%(final_y)
         self.moveY(final_y)
 
-    def moveUpDown(self, height):
-        curr_phi = self.getPhi()
-        print("PHI:%12.5f" % curr_phi)
-
-        curr_phi = math.radians(curr_phi)
-
-        # current pulse
-        curr_x = int(self.getX()[0])
-        curr_z = int(self.getZ()[0])
-        # print curr_x,curr_z
-
-        # unit [um]
-        move_x = -height * math.sin(curr_phi)
-        move_z = height * math.cos(curr_phi)
-
-        # marume[um]
-        move_x = round(move_x, 5)
-        move_z = round(move_z, 5)
-        # print "rount %8.4f %8.4f\n"%(move_x,move_z)
-
-        # [um] to [pulse]
-        move_x = int(move_x * 10)
-        move_z = int(move_z * 10)
-
-        # final position
-        final_x = curr_x + move_x
-        final_z = curr_z + move_z
-
-        # final position
-        # print "final %8d %8d\n"%(final_x,final_z)
-        self.moveXZ(final_x, final_z)
-
-    # 2020/01/21 Hyottoshite Chigaunjanai?
-    # height should be defined in [um]
-    def moveUpDown_obsoleted(self, height_um):
-        curr_phi = self.getPhi()
-        while (curr_phi > 360.0):
-            curr_phi = curr_phi - 360.0
-
-        print("PHI:%12.5f" % curr_phi)
-        curr_rad = math.radians(curr_phi)
-
-        height = height_um
-        if curr_phi >= 0.0 and curr_phi < 90.0:
-            dz = -height * math.cos(curr_rad)
-            dx = height * math.sin(curr_rad)
-        elif curr_phi >= 90.0 and curr_phi < 180.0:
-            dz = height * math.cos(curr_rad)
-            dx = height * math.sin(curr_rad)
-        elif curr_phi >= 180.0 and curr_phi < 270.0:
-            dz = -height * math.cos(curr_rad)
-            dx = -height * math.sin(curr_rad)
-        elif curr_phi >= 270. and curr_phi <= 360.0:
-            dz = height * math.cos(curr_rad)
-            dx = -height * math.sin(curr_rad)
+    def moveUpDown(self,height):
+        curr_phi=self.getPhi()
+        print("PHI:%12.5f"% curr_phi)
+        curr_phi_rad=math.radians(curr_phi)
 
         # current pulse
-        curr_x = int(self.getX()[0])
-        curr_z = int(self.getZ()[0])
+        curr_x=int(self.getX()[0])
+        curr_z=int(self.getZ()[0])
+        #print curr_x,curr_z
+
+        # unit [um]
+        # Goniometer X should be (-) for going up
+        # BL41XU code ?? 230516 -> incorrect movement at BL32XU
+        # move_x=-self.sense_x*height*math.sin(curr_phi_rad)
+        move_x=self.sense_x*height*math.sin(curr_phi_rad)
+        move_z=self.sense_z*height*math.cos(curr_phi_rad)
 
         # marume[um]
-        move_x = -round(dx, 5)
-        move_z = -round(dz, 5)
-        print("Moving %8.4f um %8.4f um\n" % (move_x, move_z))
+        move_x=round(move_x,5)
+        move_z=round(move_z,5)
+        print("move_x,z %8.4f %8.4f %5.2f[deg]\n"%(move_x,move_z,curr_phi))
 
         # [um] to [pulse]
-        move_x = int(move_x * 10)
-        move_z = int(move_z * 10)
+        # mm_to_pulse : self.v2p_x
+        um_to_pulse_x = self.v2p_x/1000.0
+        um_to_pulse_z = self.v2p_z/1000.0
+        move_x=int(move_x*um_to_pulse_x)
+        move_z=int(move_z*um_to_pulse_z)
 
         # final position
-        final_x = curr_x + move_x
-        final_z = curr_z + move_z
+        final_x=curr_x+move_x
+        final_z=curr_z+move_z
 
         # final position
-        # print "final %8d %8d\n"%(final_x,final_z)
-        self.moveXZ(final_x, final_z)
+        #print "final %8d %8d\n"%(final_x,final_z)
+        self.moveXZ(final_x,final_z)
 
     # height : height in unit of [um]
-    def calcUpDown(self, height):
-        curr_phi = self.getPhi()
-        # print "PHI:%12.5f" % curr_phi
-        curr_phi = math.radians(curr_phi)
+    def calcUpDown(self,height):
+        curr_phi=self.getPhi()
+        print("PPPPPPPPPPPPPPPPPPPPPPPPPPPHIIIIIIIIIIIIIIIIIi:%12.5f" % curr_phi)
+        curr_phi=math.radians(curr_phi)
 
         # unit [um]
-        move_x = -height * math.sin(curr_phi)
-        move_z = height * math.cos(curr_phi)
+        # Correct at BL41XU? This line is not suitable for BL32XU.
+        #move_x=-height*math.sin(curr_phi)
+        move_x=height*math.sin(curr_phi)
+        move_z=height*math.cos(curr_phi)
 
         # marume[um]
-        move_x = round(move_x, 5)
-        move_z = round(move_z, 5)
+        move_x=round(move_x,5)
+        move_z=round(move_z,5)
 
         # unit conv[mm]
-        mm_x = move_x / 1000.0
-        mm_z = move_z / 1000.0
+        mm_x=move_x/1000.0
+        mm_z=move_z/1000.0
 
-        return mm_x, mm_z
+        return mm_x,mm_z
 
-    # height : height in unit of [um]
-    # phi : current gonio phi degrees
-    def calcUpDown(self, height, phi):
-        phi = math.radians(phi)
+    def calcUpDown(self,height,phi):
+        phi=math.radians(phi)
 
         # unit [um]
-        move_x = -height * math.sin(phi)
-        move_z = height * math.cos(phi)
+        # Correct at BL41XU? This line is not suitable for BL32XU.
+        #move_x=-height*math.sin(curr_phi)
+        move_x=height*math.sin(phi)
+        move_z=height*math.cos(phi)
 
         # marume[um]
-        move_x = round(move_x, 5)
-        move_z = round(move_z, 5)
+        move_x=round(move_x,5)
+        move_z=round(move_z,5)
 
         # unit conv[mm]
-        mm_x = move_x / 1000.0
-        mm_z = move_z / 1000.0
+        mm_x=move_x/1000.0
+        mm_z=move_z/1000.0
 
-        return mm_x, mm_z
+        return mm_x,mm_z
 
-    def rotatePhiRelative(self, relphi):
-        curr_deg = self.getPhi()
-        final_deg = curr_deg + relphi
+    def rotatePhiRelative(self,relphi):
+        curr_deg=self.getPhi()
+        final_deg=curr_deg+relphi
+        print("FINAL=",final_deg)
         self.rotatePhi(final_deg)
 
-    def rotatePhi(self, phi):
+    def rotatePhi(self,phi):
         self.setSpeed()
-        if phi > 720.0:
-            phi = phi - 720.0
-        if phi < -720.0:
-            phi = phi + 720.0
+        if phi>720.0:
+            phi=phi-720.0
+        if phi<-720.0:
+            phi=phi+720.0
 
-        dif = phi * self.convertion
-        orig = self.base * self.convertion
+        dif=phi*self.v2p_rot
 
-        pos_pulse = -self.sense_phi*(orig-dif)
-
+        orig=self.base*self.v2p_rot
+        pos_pulse=self.sense_phi*self.sense_phi_bl32xu*(orig+-dif)
         self.phi.move(pos_pulse)
-
-    # print pos_pulse
 
     def scan2D(self, prefix, zrange, yrange, ch, time):
         # output file
@@ -289,41 +267,44 @@ class Gonio:
             of.write("\n\n")
 
     def getXmm(self):
-        tmp = float(self.goniox.getPosition()[0])
-        # print "GETXMM:%8.3f"%tmp
-        return tmp / 10.0 / 1000.0
+        pls=float(self.goniox.getPosition()[0])
+        xmm = self.sense_x*pls/self.v2p_x
+        return xmm
 
     def getYmm(self):
-        tmp = float(self.gonioy.getPosition()[0])
-        return -tmp / 10.0 / 1000.0
+        pls=float(self.gonioy.getPosition()[0])
+        ymm = self.sense_y*pls/self.v2p_y
+        return ymm
 
     def getZmm(self):
-        tmp = float(self.gonioz.getPosition()[0])
-        return tmp / 10.0 / 1000.0
+        pls=float(self.gonioz.getPosition()[0])
+        zmm = self.sense_z*pls/self.v2p_z
+        return zmm
 
     def getZZmm(self):
-        tmp = float(self.goniozz.getPosition()[0])
-        return tmp * 0.25 / 1000.0
+        pls=float(self.goniozz.getPosition()[0])
+        zmm = pls/self.v2p_zz
+        return zmm
 
     def getZZ(self):
-        tmp = int(self.goniozz.getPosition()[0])
+        tmp=int(self.goniozz.getPosition()[0])
         return tmp
 
-    def moveZZpulse(self, value):
+    def moveZZpulse(self,value):
         self.goniozz.move(value)
 
-    def moveZZrel(self, value):  ## value is in [um]
-        move_pulse = value * 4
+    def moveZZrel(self,value): ## value is in [um]
+        move_pulse=value*4
 
         # current ZZ [pulse]
-        curr_zz = self.goniozz.getPosition()[0]
+        curr_zz=self.goniozz.getPosition()[0]
 
         # final position [pulse]
-        final = curr_zz + move_pulse
+        final=curr_zz+move_pulse
 
         # backlush 5[um]
-        if value < 0.0:
-            bl_pos = final - 20
+        if value<0.0:
+            bl_pos=final-20
             self.goniozz.move(bl_pos)
 
         # move
@@ -338,68 +319,66 @@ class Gonio:
     def getZ(self):
         return self.gonioz.getPosition()
 
-    def moveZ(self, value):
+    def moveZ(self,value):
         self.gonioz.move(value)
 
-    def moveY(self, value):
+    def moveY(self,value):
         self.gonioy.move(value)
 
-    def moveXYZ(self, movex, movey, movez):
+    def moveXYZ(self,movex,movey,movez):
         # UNIT: [pulse]
         self.goniox.move(movex)
         self.gonioy.move(movey)
         self.gonioz.move(movez)
 
     def getXYZmm(self):
-        x = self.getXmm()
-        y = self.getYmm()
-        z = self.getZmm()
+        x=self.getXmm()
+        y=self.getYmm()
+        z=self.getZmm()
 
-        return x, y, z
+        return x,y,z
 
-    def moveXYZmm(self, movex, movey, movez):
+    def moveXYZmm(self,movex,movey,movez):
         # convertion
-        xpulse = movex * 10000.0
-        ypulse = -movey * 10000.0
-        zpulse = movez * 10000.0
+        xpulse=self.sense_x*movex*self.v2p_x
+        ypulse=self.sense_y*movey*self.v2p_y
+        zpulse=self.sense_z*movez*self.v2p_z
         # UNIT: [pulse]
         self.goniox.move(xpulse)
         self.gonioy.move(ypulse)
         self.gonioz.move(zpulse)
 
-    def goXYZmm(self, movex, movey, movez):
+    def goXYZmm(self,movex,movey,movez):
         # convertion
-        xpulse = movex * 10000.0
-        ypulse = -movey * 10000.0
-        zpulse = movez * 10000.0
+        xpulse=self.sense_x*movex*self.v2p_x
+        ypulse=self.sense_y*movey*self.v2p_y
+        zpulse=self.sense_z*movez*self.v2p_z
         # UNIT: [pulse]
         self.goniox.nageppa(xpulse)
         self.gonioy.nageppa(ypulse)
         self.gonioz.nageppa(zpulse)
 
-    def moveXmm(self, movex):
+    def moveXmm(self,movex):
         # convertion
-        xpulse = movex * 10000.0
+        xpulse=self.sense_x*movex*self.v2p_x
         # UNIT: [pulse]
         self.goniox.move(xpulse)
 
-    def moveYmm(self, movey):
-        # convertion
-        ypulse = -movey * 10000.0
+    def moveYmm(self,movey):
+        ypulse=self.sense_y*movey*self.v2p_y
         # UNIT: [pulse]
         self.gonioy.move(ypulse)
 
-    def moveZmm(self, movez):
-        # convertion
-        zpulse = movez * 10000.0
+    def moveZmm(self,movez):
+        zpulse=self.sense_z*movez*self.v2p_z
         # UNIT: [pulse]
         self.gonioz.move(zpulse)
 
-    def moveXZ(self, movex, movez):
+    def moveXZ(self,movex,movez):
         self.goniox.move(movex)
         self.gonioz.move(movez)
 
-    def move(self, x, y, z):
+    def move(self,x,y,z):
         self.goniox.move(x)
         self.gonioy.move(y)
         self.gonioz.move(z)
@@ -897,7 +876,6 @@ class Gonio:
     def kill(self):
         del self
 
-
 if __name__ == "__main__":
     # host = '192.168.163.1'
     host = '172.24.242.41'
@@ -906,93 +884,9 @@ if __name__ == "__main__":
     s.connect((host, port))
 
     gonio = Gonio(s)
-
-    # print gonio.getXYZmm()
-    # print gonio.getZZmm()
-    # gonio.moveZZpulse(6032)
-
-    # gonio.rotatePhi(120.0)
-    # phirange=180.0
-
-    # for phirange in [90.0,180.0,270.0,360.0]:
-    # gonio.rotatePhi(0.0)
-
-    # for i in range (0,5):
-    # starttime=time.time()
-    # gonio.rotatePhiRelative(phirange)
-    # endtime=time.time()
-    # diff=endtime-starttime
-    # print phirange,diff,phirange/diff
-
-    # print gonio.getEnc()
-    # print gonio.getXmm()
-    # gonio.move(px,py,pz)
-
-    # gonio.scanYenc("test",-13242,-13220,0.5,0,3,0.2)
-    # gonio.moveXYZmm(3.6571,-13.3491,-0.6753)
-    # gonio.scanZenc("test2",-470,-450,0.5,0,3,0.2)
-    ##gonio.scanEncZ("test",-900,-800,0.5,2,0,0.2)
-
-    # print "####"
-    # curr_x= gonio.getX()[0]/10000.0
-    # curr_y=-gonio.getY()[0]/10000.0
-    # curr_z= gonio.getZ()[0]/10000.0
-
-    # print "final %8.4f %8.4f %8.4f\n"%(curr_x,curr_y,curr_z)
-
-    # print gonio.getXmm()
-
-    # value=float(raw_input())
-    # gonio.movePint(value)
-
-    # file=File("./")
-    # dir=file.getAbsolutePath()
-
-    # savex=gonio.getX()[0]
-    # savey=gonio.getY()[0]
-    # savez=gonio.getZ()[0]
-
-    # print savex,savey,savez
-
-    # index=0
-    # cap=Capture()
-    # for pint in arange(-10,10,1.0): # unit[um]
-    # index+=1
-    # print "pint=%5d\n"%pint
-    # gonio.movePint(savex,savez,pint)
-    # prefix="%02d"%index
-    #
-    # file="%s/%s.ppm"%(dir,prefix)
-    # print file
-    ##cap.capture(file)
-    # gonio.move(savex,savey,savez,"pulse")
-
-    # zrange=[-292,-1092,-100]
-    # yrange=[13329,14129,100]
-    # gonio.scan2D("TEST2",zrange,yrange,2,0.5)
-
-    # gonio.moveUpDown(5)
-
-    # cap.disconnect()
-
-    # coordinates [Y,Z]
-    # normal_position=[176400,-100]
-    # vscan_position= [176400,-100]
-    # hscan_position= [175000,-460]
-
-    # move normal position
-    # gonio.move(normal_position[0],normal_position[1],"pulse")
-
-    # vertical scankkk
-    # gonio.move(vscan_position[0],vscan_position[1],"pulse")
-    # gonio.scanZ("gz",300,500,10,0.2,"pulse")
-
-    # gonio.move(hscan_position[0],hscan_position[1],"pulse")
-    # gonio.scanY("gy",172640,173040,10,0.2,"pulse")
-    # gonio.presetPhi()
-
     print((gonio.getXYZmm()))
-    gonio.rotatePhi(90)
-
+    #gonio.moveXYZmm(-1.0,0.5,-0.3)
+    gonio.rotatePhi(135.0)
+    gonio.moveUpDown(100.0)
 
     s.close()

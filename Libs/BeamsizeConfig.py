@@ -29,8 +29,8 @@ class BeamsizeConfig:
         self.flux_const = 7E11  # 2017/05/10 FY2017 TCS 0.1x0.1mm
 
         # Default configure file
-        self.bssconfig_dir = self.config.get("dirs", "bssconfig_dir")
-        self.configfile = os.path.join(self.bssconfig_dir, "beamsize.config")
+        # read from 'beamline.ini" section: files, option: beamsize_conf_file
+        self.configfile = self.config.get("files", "beamsize_conf_file")
 
         self.debug = False
 

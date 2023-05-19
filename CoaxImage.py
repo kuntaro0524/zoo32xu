@@ -9,7 +9,6 @@ import CoaxPint
 import logging
 from configparser import ConfigParser, ExtendedInterpolation
 
-
 def read_camera_inf(infin):
     ret = {}
     origin_shift_x, origin_shift_y = None, None
@@ -54,8 +53,8 @@ class CoaxImage:
         # section: files, option: camera_inf
         self.camera_inf_path = self.config.get("files", "camera_inf")
         # bss.config パスは beamline.ini から取得
-        # section: files, option: bss_config
-        self.bss_config_path = self.config.get("files", "bss_config")
+        # section: files, option: bssconfig_file
+        self.bss_config_path = self.config.get("files", "bssconfig_file")
 
         # gonio direction : beamline.local.ini から取得
         self.gonio_direction = self.config.get("experiment", "gonio_direction")
@@ -77,7 +76,7 @@ class CoaxImage:
         # 使用しているのは set_zoom だけなのでこの関数をどっかで使っているかどうかって話 2023/05/12 K.Hirata
         self.coax_zpulse2pint = {0: 20367, -16000: 20367, -32000: 20367, -38000: 20367}  # zoom pulse to pint pulse   YK@210302
         self.gonio = Gonio.Gonio(ms)
-        self.capture = Capture.Capture(ms)
+        self.capture = Capture.Capture()
 
         # Flag for dark experiment
         self.isDark = False
@@ -200,7 +199,7 @@ class CoaxImage:
     def get_zoom(self):
         command = "get/bl_32in_st2_coax_1_zoom/query"
         recbuf = self.communicate(command)
-        print("RRRRRRRRRRRRRRRR%s"%recbuf)
+        #print("RRRRRRRRRRRRRRRR%s"%recbuf)
 
         sp = recbuf.split("/")
         if len(sp) == 5:
@@ -323,6 +322,7 @@ class CoaxImage:
     # pv: pixel coordinate of vertical axis
     def calc_gxyz_of_pix_at(self, ph, pv, gcenx, gceny, gcenz, phi):
         print("CoaxImage.calc_gxyz_of_pix_at is called")
+        print("EEEEEEE ", gcenx, gceny, gcenz, phi)
         if ph < 0 or pv < 0:
             print("Invalid ph or ph:", ph, pv)
             return
