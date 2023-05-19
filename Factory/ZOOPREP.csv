@@ -1,0 +1,6 @@
+root_dir,p_index,mode,puckid,pinid,sample_name,wavelength,raster_vbeam,raster_hbeam,att_raster,hebi_att,exp_raster,dist_raster,loopsize,score_min,score_max,maxhits,total_osc,osc_width,ds_vbeam,ds_hbeam,exp_ds,dist_ds,dose_ds,offset_angle,reduced_fact,ntimes,meas_name,cry_min_size_um,cry_max_size_um,hel_full_osc,hel_part_osc,raster_roi,ln2_flag,cover_scan_flag,zoomcap_flag,warm_time
+/staff/bl32xu/Staff/2023A/230412/01.Thl,0,multi,sample,1,thl,1,15,10,44.554,44.554,0.01,200,1100,10,100,30,10,0.1,15,10,0.02,125,10,0,1,1,normal,50,50,60,40,1,1,1,1,10
+/staff/bl32xu/Staff/2023A/230412/01.Thl,1,mixed,sample,3,thl,1,15,10,44.554,44.554,0.01,200,1100,10,9999,30,10,0.1,15,10,0.02,125,10,0,1,1,normal,50,50,60,40,1,1,1,1,10
+/staff/bl32xu/Staff/2023A/230412/01.Thl,2,mixed,sample,4,thl,1,15,10,44.554,44.554,0.01,200,1100,10,9999,30,10,0.1,15,10,0.02,125,10,0,1,1,normal,50,50,60,40,1,1,1,1,10
+/staff/bl32xu/Staff/2023A/230412/01.Thl,3,mixed,sample,5,thl,1,15,10,44.554,44.554,0.01,200,1100,10,9999,30,10,0.1,15,10,0.02,125,10,0,1,1,normal,50,50,60,40,1,1,1,1,10
+/staff/bl32xu/Staff/2023A/230412/01.Thl,4,multi,sample,6,thl,1,15,10,44.554,44.554,0.01,200,1100,10,100,30,10,0.1,15,10,0.02,125,10,0,1,1,normal,50,50,60,40,1,1,1,1,10

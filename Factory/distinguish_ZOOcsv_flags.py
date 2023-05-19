@@ -44,6 +44,8 @@ for index, row in df.iterrows():
             if col == "ago_flag":
                 if "ago_offset" not in row:
                     print("Complicated cases")
+                else:
+                    print("Ago loop condition Okay")
             else:
                 print(f"optional flag {col} is OK")
         else:
