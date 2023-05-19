@@ -1,12 +1,17 @@
 import GonioTest
 
 isCollect = False  # フラッグの値に応じて変更する
+isBL44XU = False
 
-if isCollect:
+if isBL44XU:
+    gonio_instance = GonioTest.GonioBL44XU()
+    print(gonio_instance.common_variable)
+    print(gonio_instance.cmount_position)
+else:
     gonio_instance = GonioTest.GonioNormal()
     print(gonio_instance.common_variable)
-else:
-    gonio_instance = GonioTest.GonioSpecial()
-    print(gonio_instance.common_variable)
+    print(gonio_instance.cmount_position)
 
-gonio_instance.process()
+
+dddd = {'test': 320, 'test2': 3325}
+gonio_instance.process(**dddd)
