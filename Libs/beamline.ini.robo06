@@ -12,7 +12,7 @@ zoologdir= ${dirs:zooroot}/ZooLogs/
 bssconfig_dir=/home/kuntaro/kundev/zoo32xu-honki/Libs
 
 [files]
-bssconfig_file=/staff/config/bl32xu/bss/bss.config
+bssconfig_file=/home/kuntaro/kundev/zoo32xu-honki/Libs/bss.config
 inocc_image=/staff/config/bl32xu/bss/test.ppm
 logging_conf=/staff/bl32xu/BLsoft/NewZoo/Libs/logging.conf
 dose_csv=${dirs:zooroot}/Libs/en_dose_lys.csv
@@ -50,7 +50,6 @@ score_max = 100
 raster_dose = 0.1
 dose_ds = 10.0
 raster_roi = 1
-exp_raster = 0.01
 att_raster = 20
 hebi_att = 20
 cover_flag = 1
@@ -65,5 +64,3 @@ gonio_direction = "FROM_RIGHT"
 min_camera_len=125.0
 # カメラの長さ（短て方向） [mm]
 min_camera_dim = 233.0
-
-
