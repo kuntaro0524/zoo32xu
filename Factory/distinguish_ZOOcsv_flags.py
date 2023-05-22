@@ -28,25 +28,42 @@ print("Required columns are OK")
 # zoomcap_flag
 # cover_scan_flag
 # ln2_flag
-# ago_flag
-# 条件
-# ago_flag　があるときには ago_offsetがないといけない
+# racket_offset
+# racket_offset があればオフセットしてセンタリング→ループサイズのSSROXをやる
 
-option_flag = "zoomcap_flag cover_scan_flag ln2_flag ago_flag".split()
+option_flags = "zoomcap_flag cover_scan_flag ln2_flag racket_offset roi_offset roi_v roi_h".split()
 
 # CSVファイル一行、つまり、pandasのDataFrameの一行ずつについてオプションフラグがあるかどうかを調べる
 # また条件を満たすかどうかも調べる
  
 for index, row in df.iterrows():
     print(f"row index: {index}")
-    for col in option_flag:
-        if col in row:
-            if col == "ago_flag":
-                if "ago_offset" not in row:
-                    print("Complicated cases")
-                else:
-                    print("Ago loop condition Okay")
+    # 各行ごとに optional_flags のカラムがあるかどうかを確認していく
+    # optional_flagsの内容によって、確認するべき事項がある
+    # racket_offset は loopsize よりも小さい値でなければ致命的なエラー
+    # racket_offset は　正の数
+    # roi_offset, roi_v, roi_h は正の数であり、これらは同時に３つ定義されていなければならない
+    # つまり、roi_offsetがあるならば、roi_v, roi_hもある
+    # 逆に、roi_v, roi_hがあるならば、roi_offsetもある
+    for flag in option_flags:
+        if flag in row:
+            print(f"flag {flag} is found")
+            if flag == "racket_offset":
+                print(f"racket_offset is {row[flag]}")
+                # 致命的なエラー
+                if row[flag] >= row["loopsize"]:
+                    print(f"racket_offset {row[flag]} is larger than loopsize {row['loopsize']}")
+                    sys.exit(1)
+                if row[flag] < 0:
+                    print(f"racket_offset {row[flag]} is negative")
+                    sys.exit(1)
             else:
-                print(f"optional flag {col} is OK")
+                print(f"flag is {flag}")
+            if flag == "roi_offset":
+                if "roi_v" not in row or "roi_h" not in row:
+                    print(f"NG:roi_offset is defined but roi_v or roi_h is not defined")
+                    sys.exit(1)
+                else:
+                    print(f"OKAY: roi_offset is defined and roi_v, roi_h are also defined")
         else:
-            print(f"{col} is not in row")
+            print(f"flag {flag} is not found")
