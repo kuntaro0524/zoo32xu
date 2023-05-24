@@ -35,10 +35,19 @@ import MBS
 import DSS
 import BeamsizeConfig
 import Flux
+from configparser import ConfigParser, ExtendedInterpolation
 
 class Device(Singleton.Singleton):
     def __init__(self,server):
         self.s=server
+        # beamline.ini is a configure file.
+        # reading config file.
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        config_path = "%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        self.config.read(config_path)
+        # coax x pulse is read from 'beamline.ini'
+        # section: inocc, option: zoom_pintx
+        self.coax_pintx_pulse = int(self.config.get("inocc", "zoom_pintx"))
 
     def readConfig(self):
         conf=ConfigFile.ConfigFile()
@@ -140,11 +149,9 @@ class Device(Singleton.Singleton):
     def prepCentering(self,zoom_out=False):
         if zoom_out==True:
             self.zoom.zoomOut()
-            # 2020/01/24 This must be stupid code.
-            # It is very dangerous code.
-            # 2021/01/22 This must be stupid code.
-            # It is very dangerous code.
-            self.coax_pint.move(20367)
+            # Currently, the value is read from 'beamline.ini'
+            # Finally, it should be read from 'bss.config'
+            self.coax_pint.move(self.coax_pintx_pulse)
         self.bs.on()
         self.colli.off()
         self.light.on()

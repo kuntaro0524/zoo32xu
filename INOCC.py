@@ -110,7 +110,6 @@ class INOCC:
         self.bssconfig = BSSconfig.BSSconfig()
         # Read Cmount position from configure file
         self.mx, self.my, self.mz = self.bssconfig.getCmount()
-        print("########################## ", self.mx, self.my, self.mz)
 
         # File name for each directory
         self.ff = File(self.loop_dir)

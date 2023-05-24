@@ -133,7 +133,9 @@ class ZooNavigator():
         self.flag10um_raster = False
         self.min_beamsize_10um_raster = 20.0
 
-        self.isDark = False
+        # isDark flag : read from 'beamline.ini'
+        # section: special_setting, option: isDark, value: boolean
+        self.isDark = self.config.getboolean("special_setting", "isDark")
 
     def readZooDB(self, dbfile):
         self.esa = ESA.ESA(dbfile)
