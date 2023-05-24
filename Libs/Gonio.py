@@ -205,8 +205,9 @@ class Gonio:
 
         # unit [um]
         # Correct at BL41XU? This line is not suitable for BL32XU.
-        #move_x=-height*math.sin(curr_phi)
-        move_x=height*math.sin(phi)
+        # The code is now same with BL41XU. 2023/05/24
+        # sense.phi is correctly used in 'getPhi' method.
+        move_x=-height*math.sin(phi)
         move_z=height*math.cos(phi)
 
         # marume[um]

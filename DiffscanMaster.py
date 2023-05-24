@@ -1,6 +1,5 @@
 import sys, math, numpy, os
 
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import MyException
 import StopWatch
 import AnaHeatmap
@@ -8,6 +7,8 @@ import CrystalList
 import logging
 import logging.config
 import LoopCrystals
+# python 3 sorted function
+from functools import cmp_to_key
 
 beamline = "BL32XU"
 
@@ -49,9 +50,6 @@ class NOU():
 
         # Data collection time for this pin
         self.time_limit = 60.0  # [min]
-
-        # Maximum number of repetition
-        self.max_num_vert = 2
 
     def setTimeLimit(self, limit_minutes):
         self.time_limit = limit_minutes
@@ -161,7 +159,7 @@ class NOU():
         try:
             left_phi = self.face_angle - 90.0  # [deg.]
             left_xyz = self.vertCentering(cond, left_phi, left_face_xyz, vscan_length, option="Left", dc_index=dc_index,
-                                          max_repeat=self.max_num_vert)
+                                          max_repeat=1)
         except Exception as e:
             self.logger.info("Left centering failed.")
             self.logger.info(self.commentException(e.args))
@@ -170,7 +168,7 @@ class NOU():
         try:
             right_phi = self.face_angle + 90.0  # [deg.]
             right_xyz = self.vertCentering(cond, right_phi, right_face_xyz, vscan_length, option="Right", dc_index=dc_index,
-                                           max_repeat=self.max_num_vert)
+                                           max_repeat=1)
         except Exception as e:
             self.logger.info("Right centering failed.")
             self.logger.info(self.commentException(e.args))
@@ -196,7 +194,7 @@ class NOU():
         # Left centering
         try:
             left_xyz = self.vertCentering(cond, osc_start, left_face_xyz, vscan_length, option="Left", dc_index=dc_index,
-                                          max_repeat=self.max_num_vert)
+                                          max_repeat=1)
         except Exception as e:
             self.logger.info("Left centering failed.")
             self.logger.info(self.commentException(e.args))
@@ -204,7 +202,7 @@ class NOU():
         # Right centering
         try:
             right_xyz = self.vertCentering(cond, osc_end, right_face_xyz, vscan_length, option="Right", dc_index=dc_index,
-                                           max_repeat=self.max_num_vert)
+                                           max_repeat=1)
         except Exception as e:
             self.logger.info("Right centering failed.")
             self.logger.info(self.commentException(e.args))
@@ -249,7 +247,7 @@ class NOU():
         try:
             centering_phi = self.face_angle + 90.0
             center_xyz = self.vertCentering(cond, centering_phi, center_face_xyz, vscan_length, option="center",
-                                            dc_index=dc_index, max_repeat=self.max_num_vert)
+                                            dc_index=dc_index, max_repeat=1)
         except Exception as e:
             self.logger.info("Side view centering failed.")
             self.logger.info(self.commentException(e.args))
@@ -278,7 +276,7 @@ class NOU():
         # Left centering
         try:
             center_xyz = self.vertCentering(cond, osc_end, center_face_xyz, vscan_length, option="center",
-                                            dc_index=dc_index, max_repeat=self.max_num_vert)
+                                            dc_index=dc_index, max_repeat=1)
         except Exception as e:
             self.logger.info("Side view centering failed.")
             self.logger.info(self.commentException(e.args))
@@ -388,9 +386,7 @@ class NOU():
 
         # There are no good crystals
         if len(sorted_crystal_list) == 0:
-            self.logger.info("Vertical scan cannot find the crystal.")
-            return None
-            # raise MyException.MyException("HEBI.anaVscan : no crystals are found in scan %s" % prefix)
+            raise MyException.MyException("HEBI.anaVscan : no crystals are found in scan %s" % prefix)
 
         the_best_crystal = sorted_crystal_list[0]
         if method == "peak_xyz":
@@ -501,16 +497,12 @@ class NOU():
             # Analysis of raster scan
             try:
                 new_xyz = self.anaVscan(scan_vert_path, scan_prefix, phi_scan, method="peak_xyz", isWeakScan=False)
-                if new_xyz == None:
-                    self.logger.info("Failed to center this edge. New edge will be used from now.")
-                    continue
-                else:
-                    self.logger.info("FOUND %s= (%9.4f %9.4f %9.4f)" % (prefix, new_xyz[0], new_xyz[1], new_xyz[2]))
-                    # When the scan finds the good point for data collection
-                    isFoundGoodPoint = True
-                    break
+                self.logger.info("FOUND %s= (%9.4f %9.4f %9.4f)" % (prefix, new_xyz[0], new_xyz[1], new_xyz[2]))
+                # When the scan finds the good point for data collection
+                isFoundGoodPoint = True
+                break
             except Exception as e:
-                print "Vertical scan analysis failed.\n"
+                print("Vertical scan analysis failed.\n")
                 self.logger.info("%s scan analysis failed." % option)
                 self.commentException(e.args)
                 raise Exception("vertCentering: analysis failed.")
@@ -531,21 +523,23 @@ class NOU():
             return -1
 
         if self.debug == True:
-            print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
             for c in dc_blocks:
-                print c
-            print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+                print(c)
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
 
         # Sorting data collection blocks
         # The top of crystal is the best one
         # The bottom is the worst one
-        dc_blocks.sort(cmp=compOscRange)
+        # dc_blocks.sort(cmp=compOscRange)
+        dc_blocks=sorted(dc_blocks, key=cmp_to_key(compOscRange))
+
 
         if self.debug == True:
-            print "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
             for c in dc_blocks:
-                print c
-            print "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+                print(c)
+            print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
 
         self.isSorted = True
 
@@ -566,7 +560,7 @@ class NOU():
             self.logger.info("Minimum score = %s" % self.min_score_smallbeam)
             self.logger.info("Maximum score = %s" % self.max_score)
             ahm.setMinMax(self.min_score_smallbeam, self.max_score)
-        print "HEBI.getSortedCryList: AnaHeatmap.searchPixelBunch starts"
+        print("HEBI.getSortedCryList: AnaHeatmap.searchPixelBunch starts")
         crystal_array = ahm.searchPixelBunch(scan_prefix, self.naname_include)
         crystals = CrystalList.CrystalList(crystal_array)
         sorted_crystals = crystals.getSortedCrystalList()

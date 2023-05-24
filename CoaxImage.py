@@ -56,6 +56,10 @@ class CoaxImage:
         # section: files, option: bssconfig_file
         self.bss_config_path = self.config.get("files", "bssconfig_file")
 
+        # beamline name is extracted from beamline.ini
+        # section: beamline, option: beamline
+        self.beamline = self.config.get("beamline", "beamline")
+
         # gonio direction : beamline.local.ini から取得
         self.gonio_direction = self.config.get("experiment", "gonio_direction")
 
@@ -71,10 +75,11 @@ class CoaxImage:
         self.pix_size = self.config.getfloat("coaximage", "pix_size")
         self.image_size = self.config.getfloat("coaximage", "image_size")
 
-        # This is very dangerous. Values should be referred from 'bl32xu.conf'
-        # このコードもはや不要なのではないかという説が
-        # 使用しているのは set_zoom だけなのでこの関数をどっかで使っているかどうかって話 2023/05/12 K.Hirata
-        self.coax_zpulse2pint = {0: 20367, -16000: 20367, -32000: 20367, -38000: 20367}  # zoom pulse to pint pulse   YK@210302
+        # zoom & coax_x pulse are read from 'beamline.ini'
+        # section: inocc, option: zoom_pintx
+        self.coax_pintx_pulse = self.config.getint("inocc", "zoom_pintx")
+
+        self.coax_pint = CoaxPint.CoaxPint(self.ms)
         self.gonio = Gonio.Gonio(ms)
         self.capture = Capture.Capture()
 
@@ -115,69 +120,8 @@ class CoaxImage:
     # read_camera_inf()
 
     def get_pixel_size(self):  # returns in microns
-        # BL45XU
-        # X[mm] = X[px] / (C * Zoom * TvExtender)
-        # C = 102.4375
-        # TvExtender = 1.5
-        #
-        #     MM2P = _MM2P * ci[GetVideoChannel()].zoom * ci[GetVideoChannel()].tvext / (GetBinning()+1);
-        # #define _MM2P 102.4375
-        #     double X = ((double)px - WIDTH/2.0) / MM2P;
-        # GetBinning()+1 == 4 when 4x4 bin (2 for 2x2 bin, 1 for 1x1 bin)
-        # BL45XU MM2P = 102.4375*
-        """
-        zoom, tvext: see $BLCONFIG/video/camera.inf
-        (for st2_coax_1_zoom pulse value, see $CLBONFIG/bss/bss.config Microscope_Zoom_Options:
-        """
-        """
-                XXX Not-thread safe!... but how this happened?
-        debug:: video_vdclickemu/put/3812_video_server/ok/0
-        Traceback (most recent call last):
-          File "shinoda_centering_server.py", line 500, in BtnRun_onclick
-            self.intr.do_centering()
-          File "shinoda_centering_server.py", line 398, in do_centering
-            oneaction(20*rotate_sign, i==0)
-          File "shinoda_centering_server.py", line 385, in oneaction
-            log_write("%.2d_shift= %.2f%% %.2f%% (%.2f %.2f um)"%((self.count, self.last_shift[0]*100., self.last_shift[1]*100.)+self.calc_shift_by_img_px(sx,sy, unit="um")))
-          File "shinoda_centering_server.py", line 256, in calc_shift_by_img_px
-            um_per_px = self.get_pixel_size()
-          File "shinoda_centering_server.py", line 148, in get_pixel_size
-            bin =  self.capture.getBinning()
-          File "/isilon/BL32XU/BLsoft/Other/Yam/yamtbx/bl32xu/centering_support/hiratalib/Capture.py", line 178, in getBinning
-            return int(sp[-2])
-        ValueError: invalid literal for int() with base 10: 'ok'
-        video_binning/get/3812_video_server/4/0
-        """
-        # 2016/09/18 Videosrv is very very unstable
-        # binning is 1 though real value is 4
-        # bin =  self.capture.getBinning()
-        # print "Binnign = ",bin
-
-        # Binning is fixed
-        # bin = 1
-
-        # zoom = self.get_zoom()
-        # print "Zoom=", zoom
-
-        # videosrv is not stable to acquire 'dynamic parameters' such as zoom, binning
-        # DANGEROUS: 
-        # they should be corrected after tuning ROI/magnification factor of OAV
-        # This is hard-coded on 2019/04/20 K.Hirata
-        # return 2.1626 #[um/pixel] at x3.0 magnification
-        # This is the newest pixel resolution without an extender 
-        # 2019/05/16 updated by K. Hirata
-        # For BL32XU
-        # return 2.7800 #[um/pixel] at x14.0 magnification
-
         # 2020/01/21 K.Hirata CentOS6 videosrv running on BSS machine
         return self.pix_size
-
-        """ ORIGINAL CODE
-        if zoom == 3.0:
-        else:
-            return 1.e3/(102.4375*zoom/1.5/bin)
-        """
-
     # get_pixel_size()
 
     def communicate(self, comstr):
@@ -219,14 +163,10 @@ class CoaxImage:
         zoom_pulse = self.coax_zoom2pulse[zoom]
         zoomaxis.move(zoom_pulse)
 
-        # Currently this function, at least required for BL32XU, is skipped
-        if zoom_pulse not in self.coax_zpulse2pint:
-            print("Error. Unknown zoom pulse for pint adjustment:", zoom_pulse)
-            return
-        else:
+        # Beamline BL32XU specific code to adjust pint position
+        if self.beamline == "BL32XU":
             pintaxis = CoaxPint.CoaxPint(self.ms)
-            pint_pulse = self.coax_zpulse2pint[zoom_pulse]
-            pintaxis.move(pint_pulse)
+            pintaxis.move(self.coax_pintx_pulse)
 
     # set_zoom()
 

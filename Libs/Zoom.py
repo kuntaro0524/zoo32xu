@@ -61,7 +61,7 @@ if __name__ == "__main__":
     start = zoom.getPosition()
     print(start)
 
-    zoom.move(-20000)
+    #zoom.move(-20000)
 
     end = zoom.getPosition()
     print(end)

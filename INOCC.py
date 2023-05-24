@@ -30,6 +30,9 @@ class INOCC:
 
         # beamline name is read from 'beamline.ini'
         beamline = config.get("beamline", "beamline")
+        # zoom ratio is read from 'beamline.ini'
+        # section: inocc, option: zoom
+        self.zoom = config.getfloat("inocc", "zoom")
 
         # back ground image
         self.backimg = config.get("files", "backimg")
@@ -100,8 +103,7 @@ class INOCC:
         # Log file for centering
         self.logfile = open("%s/inocc.log" % self.loop_dir, "a")
 
-        self.coi.set_zoom(14.0)
-        # This is for Zoom -48000, 4x4 binning image
+        self.coi.set_zoom(self.zoom)
         self.cenx, self.ceny = self.coi.get_cross_pix()
         # 170425-Yamagiwa safety
         # Configure file for reading gonio mount position
