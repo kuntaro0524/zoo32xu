@@ -10,6 +10,7 @@ zooroot = /staff/bl32xu/BLsoft/NewZoo/
 logdir = ${dirs:zooroot}/Logs/
 zoologdir= ${dirs:zooroot}/ZooLogs/
 bssconfig_dir=/staff/config/bl32xu/
+backimage_dir = ${dirs:zooroot}/BackImages/
 
 [files]
 bssconfig_file=${dirs:bssconfig_dir}/bss/bss.config
@@ -27,7 +28,11 @@ gain_default=1200
 contrast_default=18000
 # Dark mode
 bright_default_dark=5000
-gain_default_dark=500
+gain_default_dark=5000
+
+[special_setting]
+# True: Dark mode, False: Normal mode
+isDark=True
 
 [coaximage]
 width=612.0
@@ -46,7 +51,12 @@ filter_thresh_min=15
 filter_thresh_max=20
 # ２値化のときのしきい値
 bin_thresh=20
+# zoom value
+zoom=3.77
+# BL32XU specific (ignored at other beamlines)
+zoom_pintx=20558
 
+# Used in UserESA to generate ZOO csv file.
 [experiment]
 score_min = 10
 score_max = 100
@@ -88,3 +98,5 @@ cryo_evacinfo = cryo
 col_y_name = st2_collimator_1_y
 col_z_name = st2_collimator_1_z
 col_evacinfo = collimator
+# Camera distance
+ccdlen = st2_detector_1_x
