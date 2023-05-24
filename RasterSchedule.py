@@ -10,7 +10,7 @@ class RasterSchedule:
     def __init__(self):
         print("Raster schedule class is called")
         self.beamsizeIndex = 0
-        self.imgdir = "/isilon/users/admin41/admin41/ZooTest/"
+        self.imgdir = "/staff/bl32xu/Test/"
         self.prefix = "raster_test"
         self.exptime = 0.02
         self.wavelength = 1.0
@@ -208,8 +208,8 @@ class RasterSchedule:
         schstr.append("Number of Save PPM: 0")
         schstr.append("Number of Load PPM: 0")
         # schstr.append("Raster Zig-Zag Flag:1")
-        schstr.append("PPM save directory: /isilon/BL26B2/")
-        schstr.append("PPM load directory: /isilon/BL26B2/")
+        schstr.append("PPM save directory: /staff/bl32xu/")
+        schstr.append("PPM load directory: /staff/bl32xu/")
 
         # Mode is vertical
         if self.scan_mode == "Vert":

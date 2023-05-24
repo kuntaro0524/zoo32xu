@@ -61,6 +61,8 @@ class ZooNavigator():
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
         self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
         self.config_file = self.config.get("files", "bssconfig_file")
+        # directory to store background images.
+        self.backimage_dir = self.config.get("dirs", "backimage_dir")
 
         # beamline name is read from 'beamline.ini'
         # section:beamline, option: beamline
@@ -242,8 +244,7 @@ class ZooNavigator():
             self.logger.info("dismounting sample for capturing background image failed.")
             sys.exit()
         # Background image for centering
-        backdir = "/isilon/%s/BLsoft/PPPP/10.Zoo/BackImages/" % beamline.upper()
-        self.backimg = "%s/%s" % (backdir, datetime.datetime.now().strftime("back-%y%m%d%H%M.ppm"))
+        self.backimg = "%s/%s" % (self.backimage_dir, datetime.datetime.now().strftime("back-%y%m%d%H%M.ppm"))
         self.logger.debug("Before while loop for capturing.")
         while (True):
             try:
