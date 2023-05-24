@@ -76,11 +76,9 @@ class Gonio:
 
     def getPhi(self):
         phi_pulse=self.phi.getPosition()
-        #print phi_pulse
-        phi_deg=float(phi_pulse[0])/float(self.v2p_rot)+self.base
-
+        phi_deg=self.sense_phi*float(phi_pulse[0])/float(self.v2p_rot)+self.base
         phi_deg=round(phi_deg,3)
-        #print phi_deg
+
         return phi_deg
 
     def movePint(self,value_um):
@@ -884,9 +882,10 @@ if __name__ == "__main__":
     s.connect((host, port))
 
     gonio = Gonio(s)
-    print((gonio.getXYZmm()))
+    #print((gonio.getXYZmm()))
     #gonio.moveXYZmm(-1.0,0.5,-0.3)
-    gonio.rotatePhi(135.0)
-    gonio.moveUpDown(100.0)
+    #gonio.rotatePhi(135.0)
+    #gonio.moveUpDown(100.0)
+    print(gonio.getPhi())
 
     s.close()

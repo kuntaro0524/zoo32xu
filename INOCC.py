@@ -58,11 +58,10 @@ class INOCC:
         self.logger = logging.getLogger('ZOO').getChild("INOCC")
 
         # Dark experiment
-        self.isDark = False
-
-    def setDark(self):
-        self.isDark = True
-        self.coi.setDark()
+        # beamline.ini has a flag for dark experiment
+        # If it is True, the default bright and gain values are changed
+        # section: "special_setting", option: "isDark", value type: boolean
+        self.isDark = config.getboolean("special_setting", "isDark")
 
     # INOCC is called from Loopmeasurement
     # Basically each loop has an instance of LoopMeasurement
@@ -335,7 +334,6 @@ class INOCC:
 
     def simpleCenter(self, phi, loop_size=600.0, option='top'):
         new_idx = self.ff.getNewIdx3()
-        #print("DDDDDDDDDDDDDDDDDDDDD %d"% new_idx)
         self.fname = "%s/%03d_center.ppm" % (self.loop_dir, new_idx)
         self.logger.info("##################### TOP CENTERING %5.2f deg.\n" % phi)
         self.logger.info("INOCC.coreCentering captures %s\n" % self.fname)
@@ -683,7 +681,7 @@ if __name__ == "__main__":
     inocc.setRasterPicture(raster_picpath)
 
     # def doAll(self, ntimes=3, skip=False, loop_size=600.0, offset_angle=0.0):
-    rwidth, rheight, phi_face, gonio_info = inocc.doAll(ntimes=2, skip=False, loop_size=300.0)
+    rwidth, rheight, phi_face, gonio_info = inocc.doAll(ntimes=2, skip=False, loop_size=600.0)
 
     print(("Loop width/height=", rwidth, rheight))
 

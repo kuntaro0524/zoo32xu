@@ -36,6 +36,9 @@ class UserESA():
         import BeamsizeConfig
         self.bsconf = BeamsizeConfig.BeamsizeConfig()
 
+        # CSV prefix
+        self.csv_prefix = self.fname.replace(".xlsx","")
+
         # logger の設定
         self.logger = logging.getLogger("ZOO")
         self.logger.setLevel(logging.DEBUG)
@@ -489,7 +492,8 @@ class UserESA():
         # floatのフォーマットを指定
         float_format = '%.2f'
         # to_csv()メソッドでファイルに書き出す際にfloatのフォーマットを指定して書き出す
-        self.df.to_csv("qqqq.csv", columns=self.columns, index=False, float_format=float_format)
+        zoo_csv_name = f"{self.csv_prefix}.csv"
+        self.df.to_csv(zoo_csv_name, columns=self.columns, index=False, float_format=float_format)
         
         #line_str = "%s,%d,%s,%s,%s,%s," % (root_dir,p_index,mode,puckid,pinid,sample_name)
         #line_str += "%7.5f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%f,%f,%f,%f,0.02,%f,%f,%f,%f,%f,%s,%f,%f,%f," \

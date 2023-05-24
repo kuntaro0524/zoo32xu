@@ -24,15 +24,22 @@ class Capture:
         # Get information from beamline.ini file.
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
         config_path="%s/beamline.ini" % os.environ['ZOOCONFIGPATH']
+        print(config_path)
         self.config.read(config_path)
 
         self.contrast_default=self.config.getint("capture", "contrast_default")
         self.bright_default=self.config.getint("capture", "bright_default")
         self.gain_default=self.config.getint("capture", "gain_default")
 
+        # Dark experiment
+        # beamline.ini has a flag for dark experiment
+        # If it is True, the default bright and gain values are changed
+        # section: "special_setting", option: "isDark", value type: boolean
+        self.isDark = self.config.getboolean("special_setting", "isDark")
+
         if self.isDark == True:
-            self.bright_default = self.config.get("capture","bright_default_dark")
-            self.gain_default = self.config.get("capture", "gain_default_dark")
+            self.bright_default = self.config.getint("capture","bright_default_dark")
+            self.gain_default = self.config.getint("capture", "gain_default_dark")
 
         # Command for BL45XU
         # VIDEOSRV name for searching process via 'ps'
@@ -56,7 +63,7 @@ class Capture:
         return repr(recstr)
 
     # modified on 2023/05/08
-    def setDark(self):
+    def setDark_tobo_obsoleted(self):
         self.isDark = True
         self.bright_default = self.config.get("capture","bright_default_dark")
         self.gain_default = self.config.get("capture", "gain_default_dark")

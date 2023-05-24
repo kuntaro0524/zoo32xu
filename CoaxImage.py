@@ -78,12 +78,11 @@ class CoaxImage:
         self.gonio = Gonio.Gonio(ms)
         self.capture = Capture.Capture()
 
-        # Flag for dark experiment
-        self.isDark = False
-
-    def setDark(self):
-        self.isDark = True
-        self.capture.setDark()
+        # Dark experiment
+        # beamline.ini has a flag for dark experiment
+        # If it is True, the default bright and gain values are changed
+        # section: "special_setting", option: "isDark", value type: boolean
+        self.isDark = self.config.getboolean("special_setting", "isDark")
 
     def closeCapture(self):
         self.capture.disconnect()
