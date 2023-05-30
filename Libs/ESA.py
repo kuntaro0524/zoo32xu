@@ -5,7 +5,12 @@ import re
 import logging
 import logging.config
 
+from configparser import ConfigParser, ExtendedInterpolation
+import requests
+import pandas as pd
+
 # Version 2.0.0 2019/07/04 K.Hirata
+# Version 2.1.0 2023/05/29 K.Hirata
 
 class ESA:
     def __init__(self, dbname):
@@ -18,6 +23,10 @@ class ESA:
 
         # my log file
         self.logger = logging.getLogger('ZOO').getChild("ESA")
+
+        # beamline.ini
+        self.config = ConfigParser(interpolation=ExtendedInterpolation())
+        self.config.read("%s/beamline.ini" % os.environ['ZOOCONFIGPATH'])
 
     # For existing data base file
     def prepReadDB(self):
@@ -109,6 +118,15 @@ class ESA:
         if self.debug == True:
             print(("RESULTS=", results))
         return results
+
+    # This is re-coded for 'pandas data frame'
+    def getPriorPinCond2(self):
+        df = self.getEcha()
+        # df を カラム p_index でソートする
+        df = df.sort_values(by='p_index', ascending=True)
+        # df を１行ずつ出力する
+        for index, row in df.iterrows():
+            print(f"puckid={row['puckid']}, pinid={row['pinid']}, p_index={row['p_index']}, isDS={row['isDS']}, isSkip={row['isSkip']}, isDone={row['isDone']}")
 
     def getPriorPinCond(self):
         self.logger.info("getPriorPinCond starts")
@@ -457,6 +475,25 @@ class ESA:
 
     # makeTable
 
+    def getEcha(self):
+        # Echa server address
+        # read from the configure
+        # section: server, option: conds_server
+        server_url = self.config.get('server', 'conds_server')
+        response = requests.get(server_url)
+
+        if response.status_code == 200:
+            data = response.json()
+            # convert JSON to pandas dataframe
+            df = pd.DataFrame(data)
+        else:
+            # リクエストが失敗した場合
+            print("Error code: %d" % response.status_code)
+
+        return df
+
+    # def getEcha
+
     def makeDBlist(self, condition_list):
         # condition_list should have a same list of parameters
         # with CSV file.
@@ -603,35 +640,37 @@ class ESA:
 
 if __name__ == "__main__":
     esa = ESA(sys.argv[1])
-    esa.readCSV(sys.argv[2])
-    esa.makeTable(sys.argv[2],force_to_make=True)
+    # esa.readCSV(sys.argv[2])
+    # esa.makeTable(sys.argv[2],force_to_make=True)
     # esa.prepReadDB()
     # esa.getTableName()
     # esa.listDB()
     # esa.fetchAll()
-    print("BEFORE")
-    ppp = esa.getDict()
-    print(("LNE=", len(ppp)))
-    for p in ppp:
-        print(p)
-        print(("SCAN_WIDTH=", p['scan_width']))
-        print(("n_mount=", p['n_mount']))
-        print(("nds_multi=", p['nds_multi']))
-        print(("nds_helical=", p['nds_helical']))
-        print(("nds_helpart=", p['nds_helpart']))
-        print(("t_meas_start=", p['t_meas_start']))
-        print(("t_mount_end=", p['t_mount_end']))
-        print(("t_cent_start=", p['t_cent_start']))
-        print(("t_cent_end=", p['t_cent_end']))
-        print(("t_raster_start=", p['t_raster_start']))
-        print(("t_raster_end=", p['t_raster_end']))
-        print(("t_ds_start=", p['t_ds_start']))
-        print(("t_ds_end=", p['t_ds_end']))
-        print(("t_dismount_start=", p['t_dismount_start']))
-        print(("roi=", p['raster_roi']))
-        print(("ln2_flag=", p['ln2_flag']))
-        print(("cover_scan_flag=", p['cover_scan_flag']))
-        print(("zoomcap_flag=", p['zoomcap_flag']))
-        print(("warm_time=", p['warm_time']))
-        print(("wavelength=", p['wavelength'], type(p['wavelength'])))
+    df = esa.getEcha()
+    esa.getPriorPinCond2()
+    # print("BEFORE")
+    # ppp = esa.getDict()
+    # print(("LNE=", len(ppp)))
+    # for p in ppp:
+    #     print(p)
+    #     print(("SCAN_WIDTH=", p['scan_width']))
+    #     print(("n_mount=", p['n_mount']))
+    #     print(("nds_multi=", p['nds_multi']))
+    #     print(("nds_helical=", p['nds_helical']))
+    #     print(("nds_helpart=", p['nds_helpart']))
+    #     print(("t_meas_start=", p['t_meas_start']))
+    #     print(("t_mount_end=", p['t_mount_end']))
+    #     print(("t_cent_start=", p['t_cent_start']))
+    #     print(("t_cent_end=", p['t_cent_end']))
+    #     print(("t_raster_start=", p['t_raster_start']))
+    #     print(("t_raster_end=", p['t_raster_end']))
+    #     print(("t_ds_start=", p['t_ds_start']))
+    #     print(("t_ds_end=", p['t_ds_end']))
+    #     print(("t_dismount_start=", p['t_dismount_start']))
+    #     print(("roi=", p['raster_roi']))
+    #     print(("ln2_flag=", p['ln2_flag']))
+    #     print(("cover_scan_flag=", p['cover_scan_flag']))
+    #     print(("zoomcap_flag=", p['zoomcap_flag']))
+    #     print(("warm_time=", p['warm_time']))
+    #     print(("wavelength=", p['wavelength'], type(p['wavelength'])))
 
