@@ -135,7 +135,7 @@ class BeamsizeConfig:
         if self.isInit == False:
             self.readConfig()
 
-        # self.isDebug=True
+        self.isDebug=True
         if self.debug: print("LENG=",len(self.beamsize_flux_list))
         for (h_beam, v_beam), flux_wave_list in self.beamsize_flux_list:
             #print h_beam, v_beam, flux_wave_list
