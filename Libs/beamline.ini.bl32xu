@@ -32,7 +32,7 @@ gain_default_dark=5000
 
 [special_setting]
 # True: Dark mode, False: Normal mode
-isDark=True
+isDark=False
 
 [coaximage]
 width=612.0

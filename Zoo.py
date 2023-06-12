@@ -288,6 +288,11 @@ class Zoo:
                 break
             elif svoc_c.rfind("fail") != -1:
                 self.logger.debug("'fail' was detected RECBUF3= %s" % recstr)
+                # Suddenly, this code is required for processing error from SPACE.
+                # 2023/06/08 A log string includes a special characeter "'" in 
+                # error code "-1005100001" like "-100510001'".
+                # Then the next line is required to get rid of "'" from the string.
+                recstr = recstr.replace('\'','')
                 error_code = int(recstr.split('/')[4])
                 self.logger.debug("ErrorCode= %5d" % error_code)
                 if error_code == -1005000001:
