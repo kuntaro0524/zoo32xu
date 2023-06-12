@@ -1,11 +1,9 @@
-#!/bin/csh
-\rm -f Libs/*pyc ?
-\rm -f Libs/*png 
-\rm -f Libs/*jpg 
-\rm -f Libs/core*
+#!/bin/bash
+# add all python scripts
+find . -name '*.py' | xargs git add 
 
-# CentOS7
-#git add --ignore-removal ./KAMO/ ./*.py *zoo*sh Libs/ ./ZooConfig/bss/ ./ZooConfig/header/ LargeHolder/*.py *.com *.sh *.csh ./*txt ZOOGUI/*.py
+# beamline.ini files
+git add Libs/beamline.ini*
 
-# CentOS6
-git add  ./KAMO/ ./*.py *zoo*sh Libs/ ./ZooConfig/bss/ ./ZooConfig/header/ LargeHolder/*.py *.com *.sh *.csh ./*txt ZOOGUI/*.py
+# zoo.python
+git add zoo.python*
