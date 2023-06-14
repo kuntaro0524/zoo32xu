@@ -568,6 +568,17 @@ class ZooNavigator():
                 self.esa.updateValueAt(o_index, "isDone", 5001)
                 self.logger.info("Breaking the loop of %s-%02d" % (trayid, pinid))
                 return
+            # 220629 K.Hirata added from BSS log.
+            elif exception_message.rfind('-1005100007') != -1:
+                message = "'Failed to pickup the sample pin from the tray. %s_%s'" % (trayid, pinid)
+                self.logger.warning(message)
+                self.esa.updateValueAt(o_index, "log_mount", message)
+                self.zoo.skipSample()
+                self.logger.info("Go to the next sample...")
+                self.esa.addEventTimeAt(o_index, "meas_end")
+                self.esa.updateValueAt(o_index, "isDone", 5001)
+                self.logger.info("Breaking the loop of %s-%02d" % (trayid, pinid))
+                return
             else:
                 message = "Unknown Exception: %s. Program terminates" % ttt
                 self.logger.error(message)
