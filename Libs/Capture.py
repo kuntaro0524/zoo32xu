@@ -77,8 +77,8 @@ class Capture:
 
     def prep(self):
         if self.open_sig == True:
-            print("SDFDSFSDFSDFSDFSDFSDFSDFSDFDSFSDFSDFSDFSDFSDFSDF")
             self.isPrep = True
+            print("KKUKSDFSFSDFSFSDFSDF")
             # Set brightness 190418
             self.setBright(self.bright_default)
             # Set contrast 190418
@@ -179,7 +179,6 @@ class Capture:
         else:
             self.setCross()
         com1 = "get/video_grab/%s" % filename
-        print(com1)
         try:
             recbuf = self.communicate(com1)
         except socket.error as e:
@@ -236,13 +235,9 @@ class Capture:
 
 if __name__ == "__main__":
     cap = Capture()
-    # cappath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/"
-    cappath = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages"
-    # cappath = "/isilon/users/target/target/"
+    cappath = "/staff/bl32xu/BLsoft/NewZoo/Libs"
 
     print("START-connect from main")
-    # print cap.checkRunning()
-
     # cap.setGain(1500)
     # print "END  -connect from main"
     filename = os.path.join(cappath, "%s.ppm" % (sys.argv[1]))
