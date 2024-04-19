@@ -46,3 +46,7 @@ old al
 
 # Python 3 version is now 'main' branch
 2023/05/31
+
+2024/04/19
+HITO debugging at BL32XU was merged to the main.
+Also, all of '2to3' codes were merged to the main.
