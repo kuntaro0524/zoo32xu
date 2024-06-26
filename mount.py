@@ -7,19 +7,17 @@ import Date
 
 import logging, logging.config
 
-
-
 if __name__ == "__main__":
     zoo=Zoo.Zoo()
     zoo.connect()
     zoo.getSampleInformation()
-    time.sleep(10.0)
+    time.sleep(5.0)
 
     # kuntaro_log
     d = Date.Date()
     time_str = d.getNowMyFormat(option="date")
-    logname = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/ZooLogs/zoo_%s.log" % time_str
-    logging.config.fileConfig('/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/logging.conf', defaults={'logfile_name': logname})
+    logname = "/staff/bl32xu/BLsoft/NewZoo/ZooLogs/zoo_%s.log" % time_str
+    logging.config.fileConfig('/staff/bl32xu/BLsoft/NewZoo/Libs/logging.conf', defaults={'logfile_name': logname})
     logger = logging.getLogger('ZOO')
 
     print(len(sys.argv))
