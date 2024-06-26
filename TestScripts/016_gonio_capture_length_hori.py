@@ -2,7 +2,6 @@ import cv2,sys, time, os, socket
 import matplotlib.pyplot as plt
 import numpy as np
 import copy, glob
-sys.path.append("/isilon/BL32XU/BLsoft/PPPP/10.Zoo/Libs/")
 import Device
 import CryImageProc
 import Capture
@@ -16,8 +15,8 @@ if __name__=="__main__":
     dev = Device.Device(ms)
     dev.init()
 
-    root_dir = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/TestImages/"
-    bfile = "/isilon/BL32XU/BLsoft/PPPP/10.Zoo/BackImages/back_210120.ppm"
+    root_dir = "/staff/bl32xu/BLsoft/NewZoo/TestScripts/TestImages/"
+    bfile = "/staff/bl32xu/BLsoft/NewZoo/BackImages/back.ppm"
 
     inocc = INOCC.INOCC(ms, root_dir)
 
@@ -53,4 +52,4 @@ if __name__=="__main__":
         cip.drawTopOnTarget(top_xy, topimage)
         #xtarget, ytarget, area, hamidashi_flag = cip.getCenterInfo(loop_size = loop_size, option = option)
         #outfile.write("%s TARGET X,Y = %5.1f %5.1f\n" % (filename, xtarget, ytarget))
-        outfile.write("%s TARGET X,Y = %5.1f %5.1f\n" % (filename, top_xy[0], top_xy[1]))
+        outfile.write("%s %8.4f TARGET X,Y = %5.1f %5.1f\n" % (filename, y_mod, top_xy[0], top_xy[1]))

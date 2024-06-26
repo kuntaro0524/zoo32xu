@@ -1,4 +1,5 @@
 Log/
+Logs/
 00.VideoSrvImageDelete/
 02.Iwata/
 08.Hirata/
@@ -18,7 +19,6 @@ Data/
 ESAGUI/
 Error/
 ErrorLog/
-Factory/
 Failed/
 Fitting/
 GonioConvertion/

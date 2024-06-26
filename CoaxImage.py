@@ -157,7 +157,12 @@ class CoaxImage:
     def set_zoom(self, zoom):
         if zoom not in self.coax_zoom2pulse:
             print("Possible zoom:", list(self.coax_zoom2pulse.keys()))
+            sys.exit()
             return
+
+        print("ASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+        pulse = self.coax_zoom2pulse[zoom]
+        print("Moving to %d pulse" % pulse)
 
         zoomaxis = Zoom.Zoom(self.ms)
         zoom_pulse = self.coax_zoom2pulse[zoom]
